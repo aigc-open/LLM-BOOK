@@ -1,4 +1,4 @@
-# LMCache 博客文章
+# LMCache 大模型加速利器
 
 本目录包含关于 LMCache 框架的深度分析和技术文章。
 
