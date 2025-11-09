@@ -838,7 +838,7 @@ Liger-Kernel 目前支持以下硬件平台：
 | **NVIDIA GPU** | ✅ 完全支持 | CUDA, Triton | ✅ 有 CI |
 | **AMD GPU** | ✅ 完全支持 | ROCm, Triton | ✅ 有 CI |
 | **Intel GPU** | ✅ 实验性支持 | XPU, Triton | ✅ 有 CI |
-| **其他 NPU** | ❌ 不支持 | - | ❌ 无 CI |
+
 
 ### 5.2 技术依赖分析
 
@@ -945,6 +945,7 @@ model = AutoModelForCausalLM.from_pretrained("...", device="npu")
 
 ```python
 # 示例：为昇腾 NPU 重写 RMSNorm
+import triton_npu
 
 # 原始 Triton 实现
 @triton.jit
@@ -954,7 +955,7 @@ def _rms_norm_kernel(...):
 
 # 昇腾 NPU 实现（伪代码）
 import torch_npu  # 昇腾的 PyTorch 扩展
-
+# 或者
 @torch.library.custom_op("liger::rms_norm_npu", mutates_args=())
 def rms_norm_npu(x: torch.Tensor, weight: torch.Tensor, eps: float) -> torch.Tensor:
     # 调用昇腾的 AscendC 算子
