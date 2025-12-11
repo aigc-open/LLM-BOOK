@@ -303,6 +303,118 @@ ls /tmp/inductor_debug/
 cat /tmp/inductor_debug/*/output_code.py
 ```
 
+**output code**
+
+```python
+# AOT ID: ['0_inference']
+from ctypes import c_void_p, c_long, c_int
+import torch
+import math
+import random
+import os
+import tempfile
+from math import inf, nan
+from cmath import nanj
+from torch._inductor.hooks import run_intermediate_hooks
+from torch._inductor.utils import maybe_profile
+from torch._inductor.codegen.memory_planning import _align as align
+from torch import device, empty_strided
+from torch._inductor.async_compile import AsyncCompile
+from torch._inductor.select_algorithm import extern_kernels
+from torch._inductor.codegen.multi_kernel import MultiKernelCall
+import triton
+import triton.language as tl
+from torch._inductor.runtime.triton_heuristics import start_graph, end_graph
+from torch._C import _cuda_getCurrentRawStream as get_raw_stream
+from torch._C import _cuda_getCurrentRawStream as get_raw_stream
+
+aten = torch.ops.aten
+inductor_ops = torch.ops.inductor
+_quantized = torch.ops._quantized
+assert_size_stride = torch._C._dynamo.guards.assert_size_stride
+empty_strided_cpu = torch._C._dynamo.guards._empty_strided_cpu
+empty_strided_cuda = torch._C._dynamo.guards._empty_strided_cuda
+empty_strided_xpu = torch._C._dynamo.guards._empty_strided_xpu
+reinterpret_tensor = torch._C._dynamo.guards._reinterpret_tensor
+alloc_from_pool = torch.ops.inductor._alloc_from_pool
+async_compile = AsyncCompile()
+empty_strided_p2p = torch._C._distributed_c10d._SymmetricMemory.empty_strided_p2p
+
+
+# kernel path: /tmp/torchinductor_root/22/c22sdgamlk64ygyog2jgyspawzthh5xjbre6u57jkwfjrbn2noae.py
+# Topologically Sorted Source Nodes: [add, mul, sin], Original ATen: [aten.add, aten.mul, aten.sin]
+# Source node to ATen node mapping:
+#   add => add
+#   mul => mul
+#   sin => sin
+# Graph fragment:
+#   %add : [num_users=1] = call_function[target=torch.ops.aten.add.Tensor](args = (%arg0_1, 1), kwargs = {})
+#   %mul : [num_users=1] = call_function[target=torch.ops.aten.mul.Tensor](args = (%add, 2), kwargs = {})
+#   %sin : [num_users=1] = call_function[target=torch.ops.aten.sin.default](args = (%mul,), kwargs = {})
+triton_poi_fused_add_mul_sin_0 = async_compile.triton('triton_poi_fused_add_mul_sin_0', '''
+import triton
+import triton.language as tl
+
+from torch._inductor.runtime import triton_helpers, triton_heuristics
+from torch._inductor.runtime.triton_helpers import libdevice, math as tl_math
+from torch._inductor.runtime.hints import AutotuneHint, ReductionHint, TileHint, DeviceProperties
+triton_helpers.set_driver_to_gpu()
+
+@triton_heuristics.pointwise(
+    size_hints={'x': 1024}, 
+    filename=__file__,
+    triton_meta={'signature': {'in_ptr0': '*fp32', 'out_ptr0': '*fp32', 'xnumel': 'i32', 'XBLOCK': 'constexpr'}, 'device': DeviceProperties(type='cuda', index=0, multi_processor_count=170, cc=120, major=12, regs_per_multiprocessor=65536, max_threads_per_multi_processor=1536, warp_size=32), 'constants': {}, 'configs': [{(0,): [['tt.divisibility', 16]], (1,): [['tt.divisibility', 16]], (2,): [['tt.divisibility', 16]]}]},
+    inductor_meta={'grid_type': 'Grid1D', 'autotune_hints': set(), 'kernel_name': 'triton_poi_fused_add_mul_sin_0', 'mutated_arg_names': [], 'optimize_mem': True, 'no_x_dim': False, 'num_load': 1, 'num_reduction': 0, 'backend_hash': '55A6EF493402E0BEF4C44F13B3A4DFE62485551D5064B7A43C872C664AE8E85A', 'are_deterministic_algorithms_enabled': False, 'assert_indirect_indexing': True, 'autotune_local_cache': True, 'autotune_pointwise': True, 'autotune_remote_cache': None, 'force_disable_caches': False, 'dynamic_scale_rblock': True, 'max_autotune': False, 'max_autotune_pointwise': False, 'min_split_scan_rblock': 256, 'spill_threshold': 16, 'store_cubin': False},
+    min_elem_per_thread=0
+)
+@triton.jit
+def triton_poi_fused_add_mul_sin_0(in_ptr0, out_ptr0, xnumel, XBLOCK : tl.constexpr):
+    xnumel = 1024
+    xoffset = tl.program_id(0) * XBLOCK
+    xindex = xoffset + tl.arange(0, XBLOCK)[:]
+    xmask = xindex < xnumel
+    x0 = xindex
+    tmp0 = tl.load(in_ptr0 + (x0), xmask)
+    tmp1 = 1.0
+    tmp2 = tmp0 + tmp1
+    tmp3 = 2.0
+    tmp4 = tmp2 * tmp3
+    tmp5 = tl_math.sin(tmp4)
+    tl.store(out_ptr0 + (x0), tmp5, xmask)
+''', device_str='cuda')
+
+
+async_compile.wait(globals())
+del async_compile
+
+def call(args):
+    arg0_1, = args
+    args.clear()
+    assert_size_stride(arg0_1, (1024, ), (1, ))
+    with torch.cuda._DeviceGuard(0):
+        torch.cuda.set_device(0)
+        buf0 = empty_strided_cuda((1024, ), (1, ), torch.float32)
+        # Topologically Sorted Source Nodes: [add, mul, sin], Original ATen: [aten.add, aten.mul, aten.sin]
+        stream0 = get_raw_stream(0)
+        triton_poi_fused_add_mul_sin_0.run(arg0_1, buf0, 1024, stream=stream0)
+        del arg0_1
+    return (buf0, )
+
+
+def benchmark_compiled_module(times=10, repeat=10):
+    from torch._dynamo.testing import rand_strided
+    from torch._inductor.utils import print_performance
+    arg0_1 = rand_strided((1024, ), (1, ), device='cuda:0', dtype=torch.float32)
+    fn = lambda: call([arg0_1])
+    return print_performance(fn, times=times, repeat=repeat)
+
+
+if __name__ == "__main__":
+    from torch._inductor.wrapper_benchmark import compiled_module_main
+    compiled_module_main('None', benchmark_compiled_module)
+
+```
+
 **您之前找到的文件说明**：
 ```bash
 /tmp/torchinductor_root/triton/0/LBHSQGOAZD44.../
@@ -447,7 +559,9 @@ sequenceDiagram
 
 ### 6.2 动态 Shape 处理
 
-对于动态形状，TorchInductor 使用 **符号化 Shape**：
+对于动态形状，TorchInductor 使用 **符号化 Shape** 技术，生成可复用的通用代码。
+
+#### 6.2.1 符号化维度原理
 
 ```python
 def dynamic_fn(x):
@@ -464,6 +578,171 @@ compiled_fn(x1)  # 编译
 # 第二次调用：shape = (100, 200)
 x2 = torch.randn(100, 200)
 compiled_fn(x2)  # 复用编译结果（无需重新编译）
+```
+
+**为什么无需重新编译？**
+
+##### 1. 符号化维度推导
+
+第一次编译时，TorchInductor 不会硬编码具体数值 `(10, 20)`，而是推导出符号化的维度：
+
+```python
+# 编译时的符号推导
+x.shape = (s0, s1)  # s0 和 s1 是符号变量，不是具体数值
+
+# 生成的 FX Graph：
+def forward(self, x):
+    # 输入 x: shape = (s0, s1)
+    sum_1 = torch.ops.aten.sum.dim_IntList(x, [1], keepdim=False)
+    # 输出 sum_1: shape = (s0,)
+    return sum_1
+```
+
+##### 2. 参数化的 Kernel 代码
+
+生成的 Triton Kernel 将 shape 作为运行时参数：
+
+```python
+# TorchInductor 生成的 Triton Kernel（简化版）
+@triton.jit
+def sum_kernel(
+    in_ptr,      # 输入指针
+    out_ptr,     # 输出指针
+    M,           # 第一个维度（运行时参数）
+    N,           # 第二个维度（运行时参数）
+    BLOCK_SIZE: tl.constexpr
+):
+    # 关键：M 和 N 是运行时传入的参数，不是编译时常量
+    pid = tl.program_id(0)
+    row_idx = pid
+    
+    if row_idx < M:  # M 是动态的
+        # 计算该行的和
+        sum_val = 0.0
+        for col_idx in range(0, N, BLOCK_SIZE):  # N 是动态的
+            mask = col_idx + tl.arange(0, BLOCK_SIZE) < N
+            data = tl.load(in_ptr + row_idx * N + col_idx + tl.arange(0, BLOCK_SIZE), mask=mask)
+            sum_val += tl.sum(data)
+        
+        tl.store(out_ptr + row_idx, sum_val)
+
+# 第一次调用：传入 M=10, N=20
+sum_kernel[(10,)](in_ptr, out_ptr, M=10, N=20, BLOCK_SIZE=32)
+
+# 第二次调用：传入 M=100, N=200（复用同一个编译好的 Kernel）
+sum_kernel[(100,)](in_ptr, out_ptr, M=100, N=200, BLOCK_SIZE=32)
+```
+
+**关键点**：
+- Kernel 代码在编译时已经生成为 CUDA 二进制文件
+- 运行时只需传入不同的 `M` 和 `N` 参数
+- 无需重新编译整个 Kernel
+
+##### 3. Guard 机制保护
+
+虽然具体数值可以变化，但 TorchDynamo 的 Guard 确保某些属性不变：
+
+```python
+# 编译时建立的 Guards
+guards = [
+    x.ndim == 2,           # 维度数量必须是 2
+    x.dtype == torch.float32,  # 数据类型必须是 float32
+    x.device.type == 'cuda',   # 设备类型必须是 CUDA
+    x.requires_grad == False   # 是否需要梯度
+]
+
+# 以下情况会触发重新编译：
+x3 = torch.randn(10, 20, 30)  # ❌ ndim 变为 3，Guard 失败
+x4 = torch.randn(10, 20, dtype=torch.float64)  # ❌ dtype 变化
+x5 = torch.randn(10, 20, device='cpu')  # ❌ device 变化
+```
+
+#### 6.2.2 编译缓存与复用策略
+
+```python
+# 缓存的 Key 组成
+cache_key = hash((
+    fx_graph,           # 计算图结构
+    input_ndim,         # 输入维度数量（不是具体大小）
+    input_dtype,        # 输入数据类型
+    input_device,       # 输入设备
+    # 注意：不包括具体的 shape 数值
+))
+```
+
+**示例对比**：
+
+```python
+import torch
+
+def matmul_fn(a, b):
+    return torch.matmul(a, b)
+
+compiled_fn = torch.compile(matmul_fn)
+
+# 场景 1：shape 变化但维度数量不变（可复用）
+a1 = torch.randn(10, 20)
+b1 = torch.randn(20, 30)
+compiled_fn(a1, b1)  # 第一次编译
+
+a2 = torch.randn(100, 200)
+b2 = torch.randn(200, 300)
+compiled_fn(a2, b2)  # ✅ 复用（shape 数值变化，但都是 2D）
+
+# 场景 2：维度数量变化（需要重新编译）
+a3 = torch.randn(5, 10, 20)
+b3 = torch.randn(20, 30)
+compiled_fn(a3, b3)  # ❌ 重新编译（a3 从 2D 变为 3D）
+```
+
+#### 6.2.3 静态 Shape 优化
+
+某些情况下，固定 shape 可以获得更好的性能：
+
+```python
+import torch
+
+def static_shape_fn(x):
+    return x.sum(dim=1)
+
+# 方法 1：动态 Shape（默认）
+dynamic_compiled = torch.compile(static_shape_fn)
+
+# 方法 2：固定 Shape（通过 dynamic=False）
+static_compiled = torch.compile(static_shape_fn, dynamic=False)
+
+x1 = torch.randn(10, 20)
+dynamic_compiled(x1)  # 生成支持任意 shape 的代码
+static_compiled(x1)   # 生成针对 (10, 20) 优化的代码
+
+x2 = torch.randn(100, 200)
+dynamic_compiled(x2)  # ✅ 复用
+static_compiled(x2)   # ❌ 重新编译（shape 与 (10, 20) 不匹配）
+```
+
+**性能对比**：
+- 动态 Shape：灵活但可能略慢（需要运行时计算索引）
+- 静态 Shape：性能更优（可以做更激进的编译时优化）
+
+#### 6.2.4 符号化 Shape 的实现
+
+在 PyTorch 内部，使用 `SymInt` 类型表示符号化整数：
+
+```python
+# TorchInductor 内部表示
+from torch.fx.experimental.symbolic_shapes import ShapeEnv
+
+env = ShapeEnv()
+s0 = env.create_symbol(10, source="input_x_dim0")   # 符号变量 s0，初始值 10
+s1 = env.create_symbol(20, source="input_x_dim1")   # 符号变量 s1，初始值 20
+
+# 使用符号变量进行推导
+output_shape = (s0,)  # sum(dim=1) 后的 shape
+
+# 第二次调用时，只需绑定新的值
+env.bind(s0, 100)
+env.bind(s1, 200)
+# 无需重新生成代码
 ```
 
 ---
