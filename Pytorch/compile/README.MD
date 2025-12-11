@@ -176,6 +176,45 @@
 
 ---
 
+### 第八章：国产设备适配与 Triton 后端扩展
+
+**核心内容**
+- PyTorch 后端架构
+  - Dispatcher 机制
+  - PrivateUse1 自定义设备
+  - 算子注册流程
+- Triton 编译器架构
+  - 多后端设计
+  - Backend 抽象层
+  - 编译管道
+- 实现 Triton GCU 后端
+  - GCUBackend 编译器
+  - GCULauncher 驱动封装
+  - IR 转换与代码生成
+- TorchInductor 后端集成
+  - 设备注册
+  - 内存管理
+  - Guard 机制
+- 完整实现流程
+  - 端到端示例
+  - 编译流程追踪
+  - 调试日志
+- 调试与优化
+  - 常见问题诊断
+  - 性能优化技巧
+  - Profiling 工具
+- 实战案例
+  - 矩阵乘法实现
+  - 模型训练集成
+
+**学习目标**
+- 理解 PyTorch 的设备抽象机制
+- 掌握 Triton 后端扩展方法
+- 实现完整的国产设备支持
+- 将自定义后端集成到 TorchInductor
+
+---
+
 ## 技术栈架构
 
 ```
@@ -215,11 +254,75 @@ TorchInductor (代码生成)
 
 ---
 
+## 学习路线
+
+### 路线一：快速入门
+适合希望快速掌握 PyTorch 2.0 核心特性的开发者。
+
+**章节顺序**：
+- 第一章：PyTorch 2.0 新特性概览
+
+**预计时间**：2-3 小时
+
+---
+
+### 路线二：完整理解
+适合希望深入理解 PyTorch 编译栈完整原理的开发者。
+
+**章节顺序**：
+- 第一章：PyTorch 2.0 新特性概览
+- 第二章：TorchScript 详解
+- 第三章：TorchFX 图捕获技术
+- 第四章：LazyTensor 延迟执行机制
+- 第五章：TorchDynamo 动态图编译
+- 第六章：AOTAutograd 自动微分
+- 第七章：TorchInductor 代码生成
+
+**预计时间**：2-3 周
+
+---
+
+### 路线三：性能优化专题
+适合关注模型性能优化的工程师。
+
+**章节顺序**：
+- 第一章：PyTorch 2.0 新特性概览
+- 第三章：TorchFX 图捕获技术
+- 第五章：TorchDynamo 动态图编译
+- 第六章：AOTAutograd 自动微分
+- 第七章：TorchInductor 代码生成
+
+**预计时间**：1-2 周
+
+---
+
+### 路线四：硬件适配专题
+适合需要为国产或自定义硬件实现 PyTorch 支持的开发者。
+
+**章节顺序**：
+- 第一章：PyTorch 2.0 新特性概览
+- 第七章：TorchInductor 代码生成
+- 第八章：国产设备适配与 Triton 后端扩展
+
+**预计时间**：1 周
+
+**前置要求**：
+- 熟悉 PyTorch 基础
+- 了解 CUDA 编程或其他 GPU 编程
+- 具备编译原理基础知识
+
+---
+
 ## 前置知识
 
 - Python 编程基础
 - 神经网络基础概念
 - PyTorch 基本使用经验
+
+**进阶内容（第八章）额外要求**：
+- C/C++ 编程经验
+- GPU 编程基础（CUDA 或其他）
+- 编译原理基础
 
 ---
 
@@ -234,6 +337,7 @@ TorchInductor (代码生成)
 | TorchDynamo | 字节码拦截 | 支持动态特性 | 第5章 |
 | AOTAutograd | 编译时自动微分 | 前向反向联合优化 | 第6章 |
 | TorchInductor | 代码生成 | 高效Kernel生成 | 第7章 |
+| Triton Backend | 后端扩展 | 支持自定义硬件 | 第8章 |
 
 ---
 
@@ -263,17 +367,26 @@ TorchInductor (代码生成)
 第6章：AOTAutograd (自动微分)
     ↓
 第7章：TorchInductor (代码生成)
+    ↓
+第8章：国产设备适配 (后端扩展)
 ```
 
 ---
 
 ## 参考资源
 
+**官方文档**
 - [PyTorch 官方文档](https://pytorch.org/docs/stable/index.html)
 - [PyTorch 2.0 发布说明](https://pytorch.org/get-started/pytorch-2.0/)
 - [TorchDynamo 设计文档](https://dev-discuss.pytorch.org/t/torchdynamo-an-experiment-in-dynamic-python-bytecode-transformation/361)
 - [Triton 编译器](https://github.com/openai/triton)
 - [PyTorch 源码仓库](https://github.com/pytorch/pytorch)
+
+**后端扩展相关（第八章）**
+- [PyTorch Device Extension Guide](https://pytorch.org/tutorials/advanced/extend_device.html)
+- [Triton Backend Tutorial](https://github.com/openai/triton/blob/main/docs/backend.md)
+- [AMD ROCm Triton Backend](https://github.com/ROCmSoftwarePlatform/triton)
+- [Intel XPU Backend](https://github.com/intel/intel-extension-for-pytorch)
 
 ---
 
