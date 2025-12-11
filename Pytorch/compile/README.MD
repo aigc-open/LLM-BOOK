@@ -215,6 +215,73 @@
 
 ---
 
+### 第九章：Pointwise 操作与 Kernel Fusion
+
+**核心内容**
+- Pointwise 操作详解
+  - 什么是 Pointwise 操作
+  - 操作类型分类（Pointwise / Reduction / Matmul）
+  - 数据依赖分析
+- TorchInductor 的 Kernel 策略
+  - Pointwise → Triton Kernel
+  - Matmul → extern_kernels (cuBLAS)
+  - 策略决策树
+- Kernel Fusion 原理
+  - Fusion 的性能收益
+  - TorchInductor 的 Fusion 策略
+  - Fusion 边界与限制
+- 实战：观察 Kernel Fusion 效果
+  - 测试模型设计
+  - 性能对比分析
+- 优化建议
+  - 最大化 Fusion 效果
+  - 模型设计建议
+
+**学习目标**
+- 理解 Pointwise 操作的本质
+- 掌握 Kernel Fusion 的原理与收益
+- 了解如何设计模型以最大化编译优化效果
+
+**示例代码**
+- `examples/example_kernel_fusion.py` - Kernel Fusion 效果演示
+- `examples/gcu_triton_1d.py` - 1D Pointwise 操作测试
+- `examples/gcu_triton_2d.py` - 2D 复杂操作测试
+
+---
+
+### 第十章：Triton GCU Backend 集成详解
+
+**核心内容**
+- GCU 集成架构概述
+  - TorchInductor 多后端架构
+  - Monkey Patching 入口
+- 核心组件注册
+  - DeviceInterface 注册
+  - DeviceOpOverrides 注册
+  - Backend 调度器注册
+- Triton 代码生成定制
+  - Import 语句定制
+  - i64 → i32 数据类型转换
+  - Kernel 代码结构调整
+- GCU 特定优化
+  - Block Size / Grid Size 限制
+  - num_warps ≤ 4 限制
+  - Kernel 循环结构
+- 延迟加载机制
+  - torch.compile 拦截
+  - 模块导入钩子
+- 完整 Patch 函数列表
+
+**学习目标**
+- 深入理解 torch_gcu 的集成机制
+- 掌握 Monkey Patching 技术细节
+- 了解 GCU 硬件限制的适配方法
+
+**示例代码**
+- `examples/gcu_patches.py` - GCU 补丁模块
+
+---
+
 ## 技术栈架构
 
 ```
@@ -303,8 +370,10 @@ TorchInductor (代码生成)
 - 第一章：PyTorch 2.0 新特性概览
 - 第七章：TorchInductor 代码生成
 - 第八章：国产设备适配与 Triton 后端扩展
+- 第九章：Pointwise 操作与 Kernel Fusion
+- 第十章：Triton GCU Backend 集成详解
 
-**预计时间**：1 周
+**预计时间**：1-2 周
 
 **前置要求**：
 - 熟悉 PyTorch 基础
@@ -338,6 +407,8 @@ TorchInductor (代码生成)
 | AOTAutograd | 编译时自动微分 | 前向反向联合优化 | 第6章 |
 | TorchInductor | 代码生成 | 高效Kernel生成 | 第7章 |
 | Triton Backend | 后端扩展 | 支持自定义硬件 | 第8章 |
+| Kernel Fusion | 算子融合 | 减少内存访问、提升性能 | 第9章 |
+| GCU Backend | GCU集成 | Monkey Patching 技术 | 第10章 |
 
 ---
 
@@ -369,6 +440,41 @@ TorchInductor (代码生成)
 第7章：TorchInductor (代码生成)
     ↓
 第8章：国产设备适配 (后端扩展)
+    ↓
+第9章：Pointwise 与 Kernel Fusion (优化原理)
+    ↓
+第10章：GCU Backend 集成详解 (实现细节)
+```
+
+---
+
+## 示例代码
+
+本系列包含丰富的示例代码，位于 `examples/` 目录：
+
+| 文件 | 说明 | 对应章节 |
+|------|------|----------|
+| `example_kernel_fusion.py` | Kernel Fusion 效果演示 | 第9章 |
+| `gcu_triton_1d.py` | 1D Pointwise 操作 pytest 测试 | 第9章 |
+| `gcu_triton_2d.py` | 2D 复杂操作 pytest 测试 | 第9章 |
+| `gcu_patches.py` | GCU 补丁模块（num_warps 限制等） | 第10章 |
+| `example_triton.py` | Triton 基础示例 | 第7章 |
+
+**运行测试示例**：
+```bash
+cd examples/
+
+# 运行所有 1D 测试
+pytest gcu_triton_1d.py -v -s
+
+# 运行所有 2D 测试
+pytest gcu_triton_2d.py -v -s
+
+# 只运行 pointwise 测试
+pytest gcu_triton_1d.py -v -k "pointwise"
+
+# 只运行性能测试
+pytest gcu_triton_2d.py -v -k "performance"
 ```
 
 ---
@@ -382,7 +488,7 @@ TorchInductor (代码生成)
 - [Triton 编译器](https://github.com/openai/triton)
 - [PyTorch 源码仓库](https://github.com/pytorch/pytorch)
 
-**后端扩展相关（第八章）**
+**后端扩展相关（第八章-第十章）**
 - [PyTorch Device Extension Guide](https://pytorch.org/tutorials/advanced/extend_device.html)
 - [Triton Backend Tutorial](https://github.com/openai/triton/blob/main/docs/backend.md)
 - [AMD ROCm Triton Backend](https://github.com/ROCmSoftwarePlatform/triton)

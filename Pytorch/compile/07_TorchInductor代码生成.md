@@ -415,7 +415,7 @@ if __name__ == "__main__":
 
 ```
 
-**您之前找到的文件说明**：
+**编译产物**：
 ```bash
 /tmp/torchinductor_root/triton/0/LBHSQGOAZD44.../
 ├── triton_poi_fused_add_mul_sin_0.cubin   # CUDA 二进制（GPU 直接执行的机器码）
