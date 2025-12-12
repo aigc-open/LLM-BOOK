@@ -3,7 +3,7 @@
 ## 📖 适用场景
 
 本章适用于已有芯片供应商提供的 Triton Backend 包的情况：
-- ✅ 已有 `triton-xxx.whl` 和运行时库（如 `triton_gcu.deb`）
+- ✅ 已有 `triton-xxx.whl` 和运行时库（如 `triton_gxu.deb`）
 - ✅ 需要让 TorchInductor 使用现有的 Triton 后端
 - ✅ 需要针对硬件特性进行性能优化（如 grid size、num_warps）
 
@@ -11,17 +11,18 @@
 
 **主体章节**
 1. [概述](#1-概述)
-2. [PyTorch 后端架构](#2-pytorch-后端架构)
-3. [Triton 编译器架构](#3-triton-编译器架构)
-4. [实战：使用已有的 Triton GCU 包进行适配](#4-实战使用已有的-triton-gcu-包进行适配) ⭐ **核心**
-5. [进阶调试与性能分析](#5-进阶调试与性能分析)
-6. [实战案例](#6-实战案例)
-7. [常见问题](#7-常见问题)
-8. [总结与展望](#8-总结与展望)
+2. [TorchInductor 设备注册架构](#2-torchinductor-设备注册架构)
+3. [核心组件详解](#3-核心组件详解)
+4. [实战：为 GXU 实现 TorchInductor 后端](#4-实战为-gxu-实现-torchinductor-后端) ⭐ **核心**
+5. [Triton Heuristics 自定义](#5-triton-heuristics-自定义)
+6. [进阶调试与性能分析](#6-进阶调试与性能分析)
+7. [完整示例](#7-完整示例)
+8. [常见问题](#8-常见问题)
+9. [总结与展望](#9-总结与展望)
 
-**附录（供参考）**
+**附录**
 - [附录 A：完整代码清单](#附录-a完整代码清单)
-- [附录 B：GCU Runtime API 参考](#附录-bgcu-runtime-api-参考)
+- [附录 B：参考实现链接](#附录-b参考实现链接)
 
 ---
 
@@ -30,7 +31,7 @@
 ### 1.1 为什么需要自定义后端
 
 在学习了 TorchInductor 和 Triton 之后，您可能希望：
-- 支持国产 AI 芯片（如昆仑芯、海光 DCU、华为昇腾等）
+- 支持国产 AI 芯片（如昆仑芯、海光 DCU、华为昇腾、摩尔线程等）
 - 利用 `torch.compile` 的自动优化能力
 - 复用 TorchInductor 的图优化和算子融合能力
 - 避免从零实现整个编译栈
@@ -50,570 +51,1028 @@ AOTAutograd (自动微分)
     ↓
 TorchInductor (代码生成器)
     ↓
-    ├─→ Triton Backend (GPU)
-    │       ↓
-    │   ├─→ NVIDIA CUDA (官方)
-    │   ├─→ AMD ROCm (社区)
-    │   └─→ GCU (自定义) ← 我们要实现这个
+    ├─→ Scheduling (内核代码生成调度)
+    │       ├─→ TritonScheduling (Triton 内核)
+    │       ├─→ CppScheduling (C++/OpenMP 内核)
+    │       └─→ 自定义 Scheduling
     │
-    └─→ C++ Backend (CPU)
+    └─→ WrapperCodegen (宿主代码生成)
+            ├─→ PythonWrapperCodegen (Python wrapper)
+            ├─→ CppWrapperGpu (AOTInductor C++ wrapper)
+            └─→ 自定义 WrapperCodegen
 ```
 
 ### 1.3 本章目标
 
-- 理解 PyTorch 的设备抽象层
-- 掌握 Triton 后端的工作原理
-- 学会使用已有的 Triton Backend 包
+- 理解 TorchInductor 的设备注册架构
+- 掌握 `DeviceOpOverrides` 的作用和实现
+- 学会使用 `register_backend_for_device` 注册自定义后端
+- 理解 `PrivateUse1` 机制和自定义设备模块注册
 - 针对硬件特性进行性能优化（grid size、num_warps）
-- 实现完整的 TorchInductor 集成
 
 ---
 
-## 2. PyTorch 后端架构
+## 2. TorchInductor 设备注册架构
 
-### 2.1 设备抽象层
+### 2.1 架构总览
 
-PyTorch 使用 Dispatcher 机制实现多后端支持：
+TorchInductor 生成的代码分为两部分：**内核代码**和**包装代码**。
 
 ```mermaid
 graph TB
-    A[PyTorch API] --> B[Dispatcher]
-    B --> C[CUDA Backend]
-    B --> D[CPU Backend]
-    B --> E[XLA Backend]
-    B --> F[Custom Backend]
+    subgraph "TorchInductor 代码生成"
+        A[FX Graph] --> B[Lowering]
+        B --> C{设备类型}
+        
+        C -->|CUDA/XPU| D[Scheduling]
+        C -->|CPU| E[CppScheduling]
+        C -->|自定义| F[CustomScheduling]
+        
+        D --> G[Triton Kernel Code]
+        E --> H[C++ Kernel Code]
+        F --> I[Custom Kernel Code]
+        
+        G --> J[WrapperCodegen]
+        H --> J
+        I --> J
+        
+        J --> K[Python/C++ Wrapper]
+    end
     
-    C --> G[libcuda.so]
-    D --> H[MKL/OpenBLAS]
-    E --> I[XLA Runtime]
-    F --> J[GCU Runtime]
+    subgraph "设备注册"
+        L[register_backend_for_device] --> M[device_codegens dict]
+        N[register_device_op_overrides] --> O[device_op_overrides_dict]
+    end
 ```
 
-**核心组件**：
-1. **Dispatcher**：根据 Tensor 的设备类型分发算子调用
-2. **Backend Key**：标识不同的后端（CUDA、CPU、XLA、PrivateUse1 等）
-3. **Kernel Registration**：为特定后端注册算子实现
+### 2.2 核心注册函数
 
-### 2.2 PrivateUse1 机制
+TorchInductor 提供了两个核心注册 API：
 
-PyTorch 提供了 `PrivateUse1` 作为自定义设备的后端标识：
-
-```cpp
-// PyTorch 内部定义
-enum class DeviceType : int8_t {
-    CPU = 0,
-    CUDA = 1,
-    // ... 其他官方设备 ...
-    PrivateUse1 = 15,  // 预留给自定义设备
-};
-```
-
-**使用示例**：
+#### 2.2.1 `register_backend_for_device`
 
 ```python
-import torch
-
-# 注册自定义设备名称
-torch.utils.rename_privateuse1_backend("gcu")
-
-# 现在可以使用 "gcu" 作为设备类型
-x = torch.randn(10, 20, device="gcu")
-print(x.device)  # device(type='gcu', index=0)
+# torch/_inductor/codegen/common.py
+def register_backend_for_device(
+    device: str,                                        # 设备名称，如 "gxu"
+    device_scheduling: SchedulingConstructor,           # 调度器构造函数
+    device_wrapper_codegen: WrapperConstructor,         # Python wrapper 代码生成器
+    device_cpp_wrapper_codegen: Optional[WrapperConstructor] = None,  # C++ wrapper
+    device_fx_wrapper_codegen: Optional[WrapperConstructor] = None,   # FX wrapper
+    device_custom_pass: Optional[CustomGraphModulePass] = None,       # 自定义 Pass
+    device_custom_config: Optional[ConfigModule] = None,              # 自定义配置
+) -> None:
 ```
 
-### 2.3 算子注册流程
+#### 2.2.2 `register_device_op_overrides`
 
 ```python
-# 伪代码：注册 GCU 后端的算子
-from torch.library import Library
+# torch/_inductor/codegen/common.py
+def register_device_op_overrides(
+    device: str, 
+    device_op_overrides: DeviceOpOverrides
+) -> None:
+    """注册设备特定的操作覆盖"""
+    device_op_overrides_dict[device] = device_op_overrides
+```
 
-# 创建库
-gcu_lib = Library("aten", "IMPL", "PrivateUse1")
+### 2.3 内置设备注册示例
 
-# 注册算子实现
-@gcu_lib.impl("add.Tensor")
-def add_gcu(a: Tensor, b: Tensor) -> Tensor:
-    # 调用 GCU 的底层库
-    return gcu_runtime.add(a, b)
+```python
+# torch/_inductor/codegen/common.py - init_backend_registration()
 
-@gcu_lib.impl("matmul")
-def matmul_gcu(a: Tensor, b: Tensor) -> Tensor:
-    return gcu_runtime.matmul(a, b)
+# CPU 后端
+register_backend_for_device(
+    "cpu",
+    lambda scheduling: cpu_backends[config.cpu_backend](scheduling),
+    PythonWrapperCodegen,
+    CppWrapperCpuArrayRef if config.aot_inductor.allow_stack_allocation else CppWrapperCpu,
+    WrapperFxCodegen,
+)
+
+# CUDA 后端
+register_backend_for_device(
+    "cuda",
+    lambda scheduling: cuda_backends[config.cuda_backend](scheduling),
+    PythonWrapperCodegen,
+    CppWrapperGpu,
+    WrapperFxCodegen,
+)
+
+# XPU 后端 (Intel GPU)
+register_backend_for_device(
+    "xpu",
+    TritonScheduling,
+    PythonWrapperCodegen,
+    CppWrapperGpu,
+    WrapperFxCodegen,
+)
 ```
 
 ---
 
-## 3. Triton 编译器架构
+## 3. 核心组件详解
 
-### 3.1 Triton 的多后端设计
+### 3.1 DeviceOpOverrides 类
 
-Triton 从设计上支持多种硬件后端：
+`DeviceOpOverrides` 定义了设备特定的代码片段，用于生成 wrapper 代码：
+
+```python
+# torch/_inductor/codegen/common.py
+
+class DeviceOpOverrides:
+    """设备操作覆盖基类，定义设备特定的代码生成方法"""
+    
+    def import_get_raw_stream_as(self, name: str) -> str:
+        """生成获取原始流的导入语句"""
+        raise NotImplementedError
+
+    def set_device(self, device_idx: int) -> str:
+        """生成设置设备的代码"""
+        raise NotImplementedError
+
+    def synchronize(self) -> str:
+        """生成同步代码"""
+        raise NotImplementedError
+
+    def device_guard(self, device_idx: int) -> str:
+        """生成设备上下文管理器代码"""
+        raise NotImplementedError
+
+    def cpp_device_guard(self) -> str:
+        """C++ 设备 Guard 类名"""
+        raise NotImplementedError
+
+    def cpp_aoti_device_guard(self) -> str:
+        """AOTInductor 设备 Guard 类名"""
+        raise NotImplementedError
+
+    def cpp_stream_guard(self) -> str:
+        """C++ Stream Guard 类名"""
+        raise NotImplementedError
+
+    def cpp_aoti_stream_guard(self) -> str:
+        """AOTInductor Stream Guard 类名"""
+        raise NotImplementedError
+
+    def cpp_getStreamFromExternal(self) -> str:
+        """获取外部流的 C++ 函数"""
+        raise NotImplementedError
+
+    def kernel_header(self) -> str:
+        """内核头文件包含"""
+        raise NotImplementedError
+
+    def kernel_driver(self) -> str:
+        """内核驱动代码（加载/启动内核）"""
+        raise NotImplementedError
+
+    def cpp_stream_type(self) -> str:
+        """C++ 流类型"""
+        raise NotImplementedError
+
+    def aoti_get_stream(self) -> str:
+        """AOTInductor 获取流的函数"""
+        raise NotImplementedError
+
+    def cpp_kernel_type(self) -> str:
+        """C++ 内核类型"""
+        raise NotImplementedError
+
+    def cpp_device_ptr(self) -> str:
+        """C++ 设备指针类型"""
+        raise NotImplementedError
+```
+
+### 3.2 现有实现参考
+
+#### 3.2.1 CUDA DeviceOpOverrides
+
+```python
+# torch/_inductor/codegen/cuda/device_op_overrides.py
+
+class CUDADeviceOpOverrides(DeviceOpOverrides):
+    def import_get_raw_stream_as(self, name: str) -> str:
+        return f"from torch._C import _cuda_getCurrentRawStream as {name}"
+
+    def set_device(self, device_idx: int) -> str:
+        return f"torch.cuda.set_device({device_idx})"
+
+    def synchronize(self) -> str:
+        return "torch.cuda.synchronize()"
+
+    def device_guard(self, device_idx: int) -> str:
+        return f"torch.cuda._DeviceGuard({device_idx})"
+
+    def cpp_device_guard(self) -> str:
+        return "at::cuda::CUDAGuard"
+
+    def cpp_aoti_device_guard(self) -> str:
+        return "AOTICudaGuard"
+
+    def cpp_stream_guard(self) -> str:
+        return "at::cuda::CUDAStreamGuard"
+
+    def cpp_aoti_stream_guard(self) -> str:
+        return "AOTICudaStreamGuard"
+
+    def cpp_getStreamFromExternal(self) -> str:
+        return "at::cuda::getStreamFromExternal"
+
+    def kernel_header(self) -> str:
+        return """
+        #include <c10/cuda/CUDAGuard.h>
+        #include <c10/cuda/CUDAStream.h>
+        #include <ATen/cuda/EmptyTensor.h>
+        """
+
+    def kernel_driver(self) -> str:
+        # 包含 CUDA driver API 调用代码
+        # loadKernel, launchKernel 等函数
+        return "..."  # 见完整源码
+
+    def cpp_stream_type(self) -> str:
+        return "cudaStream_t"
+
+    def aoti_get_stream(self) -> str:
+        return "aoti_torch_get_current_cuda_stream"
+
+    def cpp_kernel_type(self) -> str:
+        return "CUfunction"
+
+    def cpp_device_ptr(self) -> str:
+        return "CUdeviceptr"
+
+# 注册
+register_device_op_overrides("cuda", CUDADeviceOpOverrides())
+```
+
+#### 3.2.2 XPU DeviceOpOverrides
+
+```python
+# torch/_inductor/codegen/xpu/device_op_overrides.py
+
+class XPUDeviceOpOverrides(DeviceOpOverrides):
+    def import_get_raw_stream_as(self, name: str) -> str:
+        return f"from torch._C import _xpu_getCurrentRawStream as {name}"
+
+    def set_device(self, device_idx: int) -> str:
+        return f"torch.xpu.set_device({device_idx})"
+
+    def synchronize(self) -> str:
+        return "torch.xpu.synchronize()"
+
+    def device_guard(self, device_idx: int) -> str:
+        return f"torch.xpu._DeviceGuard({device_idx})"
+
+    def cpp_device_guard(self) -> str:
+        return "at::DeviceGuard"
+
+    def cpp_stream_guard(self) -> str:
+        return "at::xpu::XPUStreamGuard"
+
+    def kernel_header(self) -> str:
+        return """
+        #include <torch/csrc/inductor/aoti_runtime/sycl_runtime_wrappers.h>
+        """
+
+    def cpp_stream_type(self) -> str:
+        return "sycl::queue*"
+
+    def cpp_kernel_type(self) -> str:
+        return "std::unique_ptr<sycl::kernel>"
+
+    def cpp_device_ptr(self) -> str:
+        return "void *"
+
+register_device_op_overrides("xpu", XPUDeviceOpOverrides())
+```
+
+### 3.3 PrivateUse1 自动发现机制
+
+对于自定义设备，TorchInductor 会尝试自动发现：
+
+```python
+# torch/_inductor/codegen/common.py - init_backend_registration()
+
+private_backend = torch._C._get_privateuse1_backend_name()
+if (
+    private_backend != "privateuseone"
+    and get_scheduling_for_device(private_backend) is None
+):
+    from torch.utils.backend_registration import _get_custom_mod_func
+
+    try:
+        # 从自定义设备模块获取必要组件
+        device_scheduling = _get_custom_mod_func("Scheduling")
+        wrapper_codegen = _get_custom_mod_func("PythonWrapperCodegen")
+        cpp_wrapper_codegen = _get_custom_mod_func("CppWrapperCodegen")
+        fx_wrapper_codegen = _get_custom_mod_func("WrapperFxCodegen")
+        
+        if device_scheduling and wrapper_codegen and cpp_wrapper_codegen:
+            register_backend_for_device(
+                private_backend,
+                device_scheduling,
+                wrapper_codegen,
+                cpp_wrapper_codegen,
+                fx_wrapper_codegen,
+            )
+    except RuntimeError:
+        pass
+```
+
+---
+
+## 4. 实战：为 GXU 实现 TorchInductor 后端
+
+### 4.1 整体步骤
 
 ```mermaid
 graph LR
-    A[Triton Python DSL] --> B[Triton IR]
-    B --> C[LLVM IR]
-    C --> D{Backend}
-    D -->|NVIDIA| E[PTX]
-    D -->|AMD| F[AMDGCN]
-    D -->|Intel| G[SPIR-V]
-    D -->|Custom| H[GCU ISA]
-    
-    E --> I[CUDA Driver]
-    F --> J[ROCm Driver]
-    G --> K[Level Zero]
-    H --> L[GCU Driver]
+    A[1. 安装 Triton GXU] --> B[2. 注册 PrivateUse1]
+    B --> C[3. 实现 DeviceOpOverrides]
+    C --> D[4. 实现设备模块]
+    D --> E[5. 注册到 TorchInductor]
+    E --> F[6. 测试验证]
 ```
 
-### 3.2 Triton Backend 抽象层
+### 4.2 步骤 1：安装 Triton GXU 包
 
-Triton 定义了 Backend 接口：
+```bash
+# 安装 GXU 运行时库
+sudo dpkg -i triton_gxu.deb
+
+# 安装 Triton GXU Python 包
+pip install triton-gxu.whl
+
+# 验证安装
+python -c "import triton; print(triton.__version__)"
+python -c "import triton.backends.gxu; print('GXU backend loaded')"
+```
+
+### 4.3 步骤 2：注册 PrivateUse1 后端名称
 
 ```python
-# triton/compiler/backend.py (简化版)
-class Backend:
-    def __init__(self, target: str):
-        self.target = target
-    
-    def add_stages(self, stages: dict, options: dict):
-        """定义编译管道的各个阶段"""
-        pass
-    
-    def get_module_map(self) -> dict:
-        """返回模块映射"""
-        pass
-    
-    def load_binary(self, name: str, binary: bytes, shared: int, device: int):
-        """加载编译后的二进制到设备"""
-        pass
+# gxu/__init__.py
+import torch
+
+# 注册 PrivateUse1 后端名称为 "gxu"
+torch.utils.rename_privateuse1_backend("gxu")
 ```
 
-### 3.3 编译流程
+### 4.4 步骤 3：实现 GXU DeviceOpOverrides
 
-```mermaid
-sequenceDiagram
-    participant User as Python 代码
-    participant Compiler as Triton Compiler
-    participant Backend as GCU Backend
-    participant Driver as GCU Driver
+创建文件 `gxu/device_op_overrides.py`：
+
+```python
+# gxu/device_op_overrides.py
+from __future__ import annotations
+
+from typing import Optional
+
+from torch._inductor.codegen.common import (
+    DeviceOpOverrides,
+    register_device_op_overrides,
+    TritonScratchWorkspace,
+)
+
+
+class GXUDeviceOpOverrides(DeviceOpOverrides):
+    """GXU 设备的操作覆盖实现"""
     
-    User->>Compiler: @triton.jit 装饰器
-    Compiler->>Compiler: 解析为 Triton IR
-    Compiler->>Compiler: 优化 (循环展开、向量化)
-    Compiler->>Backend: 调用 add_stages
-    Backend->>Backend: Triton IR → LLVM IR
-    Backend->>Backend: LLVM IR → GCU ISA
-    Backend->>Driver: 加载 Binary
-    Driver-->>User: 返回可执行 Kernel
+    def import_get_raw_stream_as(self, name: str) -> str:
+        """获取原始流的导入语句"""
+        # 需要 GXU 提供类似 CUDA 的 getCurrentRawStream API
+        return f"from torch._C import _gxu_getCurrentRawStream as {name}"
+
+    def set_device(self, device_idx: int) -> str:
+        """设置设备"""
+        return f"torch.gxu.set_device({device_idx})"
+
+    def synchronize(self) -> str:
+        """同步设备"""
+        return "torch.gxu.synchronize()"
+
+    def device_guard(self, device_idx: int) -> str:
+        """设备上下文管理器"""
+        return f"torch.gxu._DeviceGuard({device_idx})"
+
+    def cpp_device_guard(self) -> str:
+        """C++ 设备 Guard"""
+        return "at::gxu::GXUGuard"
+
+    def cpp_aoti_device_guard(self) -> str:
+        """AOTInductor Guard"""
+        return "AOTIGcuGuard"
+
+    def cpp_stream_guard(self) -> str:
+        """C++ Stream Guard"""
+        return "at::gxu::GXUStreamGuard"
+
+    def cpp_aoti_stream_guard(self) -> str:
+        """AOTInductor Stream Guard"""
+        return "AOTIGcuStreamGuard"
+
+    def cpp_getStreamFromExternal(self) -> str:
+        """从外部获取流"""
+        return "at::gxu::getStreamFromExternal"
+
+    def kernel_header(self) -> str:
+        """内核头文件"""
+        return """
+        #include <c10/gxu/GXUGuard.h>
+        #include <c10/gxu/GXUStream.h>
+        #include <ATen/gxu/EmptyTensor.h>
+        """
+
+    def kernel_driver(self) -> str:
+        """内核驱动代码"""
+        return """
+            #define GXU_DRIVER_CHECK(EXPR)                    \\
+            do {                                               \\
+                gxuError_t code = EXPR;                        \\
+                if (code != GXU_SUCCESS) {                     \\
+                    const char *msg = gxuGetErrorString(code); \\
+                    throw std::runtime_error(                  \\
+                        std::string("GXU driver error: ") +    \\
+                        std::string(msg));                     \\
+                }                                              \\
+            } while (0);
+
+            static inline gxuFunction loadKernel(
+                    std::string filePath,
+                    const std::string &funcName,
+                    uint32_t sharedMemBytes,
+                    const std::optional<std::string> &cubinDir = std::nullopt) {
+                if (cubinDir) {
+                    std::filesystem::path p1{*cubinDir};
+                    std::filesystem::path p2{filePath};
+                    filePath = (p1 / p2.filename()).string();
+                }
+
+                gxuModule mod;
+                gxuFunction func;
+                GXU_DRIVER_CHECK(gxuModuleLoad(&mod, filePath.c_str()));
+                GXU_DRIVER_CHECK(gxuModuleGetFunction(&func, mod, funcName.c_str()));
+                if (sharedMemBytes > 0) {
+                    GXU_DRIVER_CHECK(gxuFuncSetAttribute(
+                        func,
+                        GXU_FUNC_ATTRIBUTE_MAX_DYNAMIC_SHARED_SIZE_BYTES,
+                        sharedMemBytes
+                    ))
+                }
+                return func;
+            }
+
+            static inline void launchKernel(
+                    gxuFunction func,
+                    uint32_t gridX,
+                    uint32_t gridY,
+                    uint32_t gridZ,
+                    uint32_t numWarps,
+                    uint32_t sharedMemBytes,
+                    void* args[],
+                    gxuStream_t stream) {
+                // GXU 特性：warp size 可能不同于 32
+                const uint32_t GXU_WARP_SIZE = 32;  // 根据实际硬件调整
+                GXU_DRIVER_CHECK(gxuLaunchKernel(
+                    func, gridX, gridY, gridZ, 
+                    GXU_WARP_SIZE * numWarps, 1, 1, 
+                    sharedMemBytes, stream, args, nullptr
+                ));
+            }
+        """
+
+    def cpp_stream_type(self) -> str:
+        """流类型"""
+        return "gxuStream_t"
+
+    def aoti_get_stream(self) -> str:
+        """AOTInductor 获取流函数"""
+        return "aoti_torch_get_current_gxu_stream"
+
+    def cpp_kernel_type(self) -> str:
+        """内核类型"""
+        return "gxuFunction"
+
+    def cpp_device_ptr(self) -> str:
+        """设备指针类型"""
+        return "gxuDevicePtr"
+
+    def cpp_scratch(
+        self, idx: int, workspace: TritonScratchWorkspace, prefix: Optional[str] = None
+    ) -> Optional[tuple[list[str], str]]:
+        """临时空间分配"""
+        prefix = f"{prefix}_" if prefix else ""
+        var_name = f"{prefix}scratch_{idx}"
+        if workspace.size > 0:
+            size_array = f"int64_t {var_name}_size[] = {{{workspace.size}}};"
+            stride_array = f"int64_t {var_name}_stride[] = {{1}};"
+            device_type = "cached_torch_device_type_gxu"
+            device_idx = "device_idx_"
+
+            return (
+                [
+                    f"{size_array}",
+                    f"{stride_array}",
+                    f"AtenTensorHandle {var_name}_handle;",
+                    (
+                        f"AOTI_TORCH_ERROR_CODE_CHECK(aoti_torch_empty_strided(1, {var_name}_size, {var_name}_stride, "
+                        f"{workspace.generate_dtype_str()}, {device_type}, {device_idx}, &{var_name}_handle));"
+                    ),
+                    f"RAIIAtenTensorHandle {var_name}_tensor({var_name}_handle);",
+                    f"gxuDevicePtr {var_name} = reinterpret_cast<gxuDevicePtr>({var_name}_tensor.data_ptr());",
+                ],
+                var_name,
+            )
+        else:
+            return [f"gxuDevicePtr {var_name} = 0;"], var_name
+
+
+# 注册 GXU DeviceOpOverrides
+register_device_op_overrides("gxu", GXUDeviceOpOverrides())
+```
+
+### 4.5 步骤 4：实现 GXU 设备模块
+
+创建文件 `gxu/module.py`：
+
+```python
+# gxu/module.py
+import torch
+import ctypes
+from typing import Optional
+
+# 加载 GXU 运行时库
+try:
+    _libgxu = ctypes.CDLL("libgxu_runtime.so")
+except OSError:
+    _libgxu = None
+
+
+class GXUModule:
+    """GXU 设备模块，提供设备管理功能"""
+    
+    @staticmethod
+    def is_available() -> bool:
+        """检查 GXU 是否可用"""
+        if _libgxu is None:
+            return False
+        try:
+            count = GXUModule.device_count()
+            return count > 0
+        except Exception:
+            return False
+    
+    @staticmethod
+    def is_initialized() -> bool:
+        """检查是否已初始化"""
+        return _libgxu is not None
+    
+    @staticmethod
+    def device_count() -> int:
+        """获取 GXU 设备数量"""
+        if _libgxu is None:
+            return 0
+        count = ctypes.c_int()
+        ret = _libgxu.gxuGetDeviceCount(ctypes.byref(count))
+        if ret != 0:
+            return 0
+        return count.value
+    
+    @staticmethod
+    def current_device() -> int:
+        """获取当前设备索引"""
+        device = ctypes.c_int()
+        _libgxu.gxuGetDevice(ctypes.byref(device))
+        return device.value
+    
+    @staticmethod
+    def set_device(device: int) -> None:
+        """设置当前设备"""
+        ret = _libgxu.gxuSetDevice(device)
+        if ret != 0:
+            raise RuntimeError(f"Failed to set GXU device {device}")
+    
+    @staticmethod
+    def synchronize(device: Optional[int] = None) -> None:
+        """同步设备"""
+        if device is not None:
+            old_device = GXUModule.current_device()
+            GXUModule.set_device(device)
+            _libgxu.gxuDeviceSynchronize()
+            GXUModule.set_device(old_device)
+        else:
+            _libgxu.gxuDeviceSynchronize()
+    
+    @staticmethod
+    def _is_in_bad_fork() -> bool:
+        """检查是否在 fork 后的坏状态"""
+        return False
+    
+    # ========== TorchInductor 需要的组件 ==========
+    
+    @staticmethod
+    def Scheduling(scheduler):
+        """返回调度器类"""
+        from torch._inductor.codegen.triton import TritonScheduling
+        return TritonScheduling(scheduler)
+    
+    @staticmethod
+    def PythonWrapperCodegen():
+        """返回 Python Wrapper 代码生成器"""
+        from torch._inductor.codegen.wrapper import PythonWrapperCodegen
+        return PythonWrapperCodegen
+    
+    @staticmethod
+    def CppWrapperCodegen():
+        """返回 C++ Wrapper 代码生成器"""
+        from torch._inductor.codegen.cpp_wrapper_gpu import CppWrapperGpu
+        return CppWrapperGpu
+    
+    @staticmethod
+    def WrapperFxCodegen():
+        """返回 FX Wrapper 代码生成器"""
+        from torch._inductor.codegen.wrapper_fxir import WrapperFxCodegen
+        return WrapperFxCodegen
+
+
+class _DeviceGuard:
+    """GXU 设备上下文管理器"""
+    
+    def __init__(self, device_idx: int):
+        self.device_idx = device_idx
+        self.prev_device = None
+    
+    def __enter__(self):
+        self.prev_device = GXUModule.current_device()
+        GXUModule.set_device(self.device_idx)
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.prev_device is not None:
+            GXUModule.set_device(self.prev_device)
+        return False
+
+
+# 注册设备模块
+torch._register_device_module("gxu", GXUModule)
+
+# 添加快捷访问
+torch.gxu = GXUModule
+torch.gxu._DeviceGuard = _DeviceGuard
+```
+
+### 4.6 步骤 5：实现自定义 Scheduling（可选）
+
+如果需要针对 GXU 优化 Triton 内核配置，可以创建自定义 Scheduling：
+
+```python
+# gxu/scheduling.py
+from torch._inductor.codegen.triton import TritonScheduling
+from torch._inductor.codegen.common import BackendFeature
+from torch.utils._ordered_set import OrderedSet
+
+
+class GXUTritonScheduling(TritonScheduling):
+    """GXU 专用的 Triton 调度器"""
+    
+    backend_features = OrderedSet([
+        BackendFeature.FOREACH,
+        BackendFeature.BUCKETIZE,
+        BackendFeature.INPLACE_BUFFERS,
+        BackendFeature.MASKED_SCATTER_WITH_INDEX,
+        BackendFeature.SCAN,
+        BackendFeature.SORT,
+        BackendFeature.TRITON_TEMPLATES,
+        BackendFeature.TUPLE_REDUCTION,
+    ])
+    
+    def __init__(self, scheduler):
+        super().__init__(scheduler)
+        # GXU 特定的配置
+        self.gxu_max_grid_size = 48
+        self.gxu_optimal_num_warps = 1
+    
+    def get_backend_features(self, device):
+        """返回后端支持的特性"""
+        return self.backend_features
+```
+
+### 4.7 步骤 6：完整初始化脚本
+
+创建 `gxu/__init__.py`：
+
+```python
+# gxu/__init__.py
+"""
+GXU TorchInductor 后端
+用法：
+    import gxu  # 自动完成所有注册
+    
+    model = MyModel().to("gxu")
+    compiled = torch.compile(model)
+"""
+import torch
+
+# 1. 注册后端名称
+torch.utils.rename_privateuse1_backend("gxu")
+
+# 2. 导入并注册设备模块
+from . import module  # 注册 torch.gxu
+
+# 3. 导入并注册 DeviceOpOverrides
+from . import device_op_overrides
+
+# 4. 可选：导入自定义 Scheduling
+# from . import scheduling
+
+# 5. 导出公共 API
+__all__ = ["is_available", "device_count", "set_device", "synchronize"]
+
+is_available = module.GXUModule.is_available
+device_count = module.GXUModule.device_count
+set_device = module.GXUModule.set_device
+synchronize = module.GXUModule.synchronize
+
+print(f"GXU backend initialized. {device_count()} device(s) available.")
 ```
 
 ---
 
+## 5. Triton Heuristics 自定义
 
-## 4. 实战：使用已有的 Triton GCU 包进行适配
+### 5.1 理解 Triton Heuristics
 
-### 4.1 场景说明
-
-假设您已经有了供应商提供的：
-- `triton_gcu.deb`：GCU 运行时库
-- `triton-gcu.whl`：Triton GCU 后端 Python 包
-
-现在需要：
-1. 让 TorchInductor 使用这个 Triton GCU 后端
-2. 针对 GCU 的性能特点进行优化：
-   - **Grid Size**：最好小于 48 或者是 48 的倍数
-   - **Num Warps**：最好设置为 1
-
-### 4.2 安装与环境配置
-
-```bash
-# 步骤 1：安装 GCU 运行时
-sudo dpkg -i triton_gcu.deb
-
-# 步骤 2：安装 Triton GCU Python 包
-pip install triton-gcu.whl
-
-# 步骤 3：验证安装
-python -c "import triton; print(triton.__version__)"
-python -c "import triton.backends.gcu; print('GCU backend loaded')"
-
-# 步骤 4：设置环境变量
-export TRITON_BACKEND=gcu
-export GCU_VISIBLE_DEVICES=0
-```
-
-### 4.3 注册 GCU 设备到 PyTorch
+TorchInductor 使用 heuristics 决定 Triton kernel 的启动配置：
 
 ```python
-# gcu_device_setup.py
-import torch
-import ctypes
-import os
+# torch/_inductor/runtime/triton_heuristics.py
 
-# 1. 注册 PrivateUse1 为 "gcu"
-torch.utils.rename_privateuse1_backend("gcu")
-
-# 2. 加载 GCU 运行时库
-libgcu = ctypes.CDLL("libgcu_runtime.so")
-
-# 3. 实现基础的设备管理函数
-class GCUModule:
-    @staticmethod
-    def device_count():
-        """获取 GCU 设备数量"""
-        count = ctypes.c_int()
-        libgcu.gcuGetDeviceCount(ctypes.byref(count))
-        return count.value
-    
-    @staticmethod
-    def set_device(device: int):
-        """设置当前 GCU 设备"""
-        libgcu.gcuSetDevice(device)
-    
-    @staticmethod
-    def get_device():
-        """获取当前 GCU 设备"""
-        device = ctypes.c_int()
-        libgcu.gcuGetDevice(ctypes.byref(device))
-        return device.value
-    
-    @staticmethod
-    def synchronize():
-        """同步 GCU 设备"""
-        libgcu.gcuDeviceSynchronize()
-
-# 4. 注册到 torch.gcu 命名空间
-torch.gcu = GCUModule
-
-# 5. 实现内存分配器
-def gcu_malloc(size: int, device: int) -> int:
-    ptr = ctypes.c_void_p()
-    ret = libgcu.gcuMalloc(ctypes.byref(ptr), size)
-    if ret != 0:
-        raise RuntimeError(f"GCU malloc failed: {ret}")
-    return ptr.value
-
-def gcu_free(ptr: int, device: int):
-    ret = libgcu.gcuFree(ctypes.c_void_p(ptr))
-    if ret != 0:
-        raise RuntimeError(f"GCU free failed: {ret}")
-
-# 注册内存分配器
-torch._C._set_privateuse1_backend_allocator(gcu_malloc, gcu_free)
-
-print(f"GCU device registered: {torch.gcu.device_count()} devices available")
+def triton_config(
+    size_hints,
+    x,
+    y=None,
+    z=None,
+    num_stages=1,
+    num_elements_per_warp=256,
+    min_elem_per_thread=0,
+    num_warps=None,
+    matrix_instr=None,
+    waves_per_eu=None,
+) -> Config:
+    """构造 pointwise Triton 配置"""
+    # 默认 grid 和 block 大小限制
+    maxGridSize = [2147483647, 65535, 65535]
+    # ...
 ```
 
-### 4.4 配置 TorchInductor 使用 GCU
+### 5.2 设备属性感知
+
+heuristics 通过 `DeviceProperties` 获取设备信息：
 
 ```python
-# inductor_gcu_config.py
-import torch
-import torch._inductor.config as config
+# torch/_inductor/runtime/hints.py
 
-# 1. 启用 GCU 后端
-config.cpp.device = "gcu"
+class DeviceProperties(typing.NamedTuple):
+    type: str
+    index: int
+    multi_processor_count: int
+    cc: int  # compute capability
+    major: int | None = None
+    regs_per_multiprocessor: int | None = None
+    max_threads_per_multi_processor: int | None = None
+    max_threads_per_block: int | None = None
+    warp_size: int | None = None
 
-# 2. 配置 Triton 使用 GCU 后端
-# Triton 会自动检测 TRITON_BACKEND 环境变量
-# 或者在代码中显式设置
-import triton
-triton.runtime.driver.set_active("gcu")
+    @classmethod
+    @functools.cache
+    def create(cls, device) -> DeviceProperties:
+        """从设备获取属性"""
+        device_interface = get_interface_for_device(device)
+        props = device_interface.get_device_properties(device)
+        
+        # 特殊处理不同设备类型
+        if device_type == "xpu":
+            multi_processor_count = props.gpu_subslice_count
+        elif device_type == "mtia":
+            multi_processor_count = 64
+        # ...
+```
 
-# 3. GCU 特定的性能配置
-class GCUConfig:
-    """GCU 设备性能配置"""
+### 5.3 为 GXU 自定义 Heuristics
+
+```python
+# gxu/heuristics.py
+import functools
+from torch._inductor.runtime.triton_heuristics import triton_config
+from torch._inductor.runtime.hints import DeviceProperties
+
+
+class GXUHeuristics:
+    """GXU 专用的启发式配置"""
     
-    # Grid 限制：最好 < 48 或 48 的倍数
-    MAX_GRID_SIZE = 48
-    
-    # Warp 配置：最好为 1
-    OPTIMAL_NUM_WARPS = 1
-    
-    # Block Size 推荐值（根据 GCU 硬件特性）
-    BLOCK_SIZE_CANDIDATES = [16, 32, 64, 128]
+    # GXU 硬件限制
+    MAX_GRID_SIZE = 48  # Grid 最好 < 48 或 48 的倍数
+    OPTIMAL_NUM_WARPS = 1  # Warp 数最好为 1
+    WARP_SIZE = 32  # 可能需要根据实际硬件调整
     
     @staticmethod
-    def adjust_grid_size(original_grid):
-        """调整 Grid Size 以适应 GCU 性能特点"""
-        if isinstance(original_grid, (list, tuple)):
+    def adjust_grid(grid):
+        """调整 grid 大小以适应 GXU"""
+        if isinstance(grid, (list, tuple)):
             adjusted = []
-            for dim in original_grid:
-                # 如果小于 48，保持不变
-                if dim <= GCUConfig.MAX_GRID_SIZE:
+            for dim in grid:
+                if dim <= GXUHeuristics.MAX_GRID_SIZE:
                     adjusted.append(dim)
-                # 如果大于 48，调整为 48 的倍数
+                elif dim % GXUHeuristics.MAX_GRID_SIZE == 0:
+                    adjusted.append(dim)
                 else:
                     # 向上取整到 48 的倍数
-                    adjusted.append(
-                        ((dim + GCUConfig.MAX_GRID_SIZE - 1) 
-                         // GCUConfig.MAX_GRID_SIZE) * GCUConfig.MAX_GRID_SIZE
-                    )
+                    new_dim = ((dim + GXUHeuristics.MAX_GRID_SIZE - 1) 
+                               // GXUHeuristics.MAX_GRID_SIZE 
+                               * GXUHeuristics.MAX_GRID_SIZE)
+                    adjusted.append(new_dim)
             return tuple(adjusted)
         else:
-            if original_grid <= GCUConfig.MAX_GRID_SIZE:
-                return original_grid
+            if grid <= GXUHeuristics.MAX_GRID_SIZE:
+                return grid
+            elif grid % GXUHeuristics.MAX_GRID_SIZE == 0:
+                return grid
             else:
-                return (
-                    ((original_grid + GCUConfig.MAX_GRID_SIZE - 1) 
-                     // GCUConfig.MAX_GRID_SIZE) * GCUConfig.MAX_GRID_SIZE
-                )
+                return ((grid + GXUHeuristics.MAX_GRID_SIZE - 1) 
+                        // GXUHeuristics.MAX_GRID_SIZE 
+                        * GXUHeuristics.MAX_GRID_SIZE)
+    
+    @staticmethod
+    def get_config(size_hints, **kwargs):
+        """获取 GXU 优化的配置"""
+        # 强制使用最优 num_warps
+        kwargs['num_warps'] = GXUHeuristics.OPTIMAL_NUM_WARPS
+        return triton_config(size_hints, **kwargs)
 
-# 应用配置
-torch._inductor.config.triton.max_tiles = GCUConfig.MAX_GRID_SIZE
+
+# Monkey patch 示例（如果需要）
+def patch_triton_heuristics():
+    """修改 TorchInductor 的默认 heuristics"""
+    import torch._inductor.runtime.triton_heuristics as th
+    
+    _original_triton_config = th.triton_config
+    
+    @functools.wraps(_original_triton_config)
+    def gxu_triton_config(*args, **kwargs):
+        # 强制 num_warps=1 for GXU
+        import torch
+        if torch.gxu.is_available():
+            kwargs['num_warps'] = GXUHeuristics.OPTIMAL_NUM_WARPS
+        return _original_triton_config(*args, **kwargs)
+    
+    th.triton_config = gxu_triton_config
 ```
 
-### 4.5 自定义 Triton Heuristics for GCU
-
-TorchInductor 使用 Heuristics 来决定 Triton Kernel 的启动配置。我们需要为 GCU 自定义这些规则：
+### 5.4 自定义 DeviceProperties
 
 ```python
-# gcu_heuristics.py
+# gxu/device_properties.py
+from torch._inductor.runtime.hints import DeviceProperties
+
+
+def create_gxu_device_properties(device) -> DeviceProperties:
+    """创建 GXU 设备属性"""
+    import torch
+    
+    # 从 GXU runtime 获取属性
+    props = get_gxu_device_properties(device.index)
+    
+    return DeviceProperties(
+        type="gxu",
+        index=device.index,
+        multi_processor_count=props.multi_processor_count,
+        cc=props.compute_capability,
+        major=props.major,
+        regs_per_multiprocessor=props.regs_per_multiprocessor,
+        max_threads_per_multi_processor=props.max_threads_per_sm,
+        max_threads_per_block=props.max_threads_per_block,
+        warp_size=32,  # 或 GXU 实际的 warp size
+    )
+```
+
+---
+
+## 6. 进阶调试与性能分析
+
+### 6.1 查看生成的代码
+
+```python
 import torch
-from torch._inductor.ir import ReductionHint, TileHint
-from torch._inductor.codegen.triton import (
-    triton_config,
-    triton_heuristics,
-)
-import triton
-
-class GCUTritonConfig:
-    """GCU 专用的 Triton 配置生成器"""
-    
-    @staticmethod
-    def pointwise_heuristics(size_hints, triton_meta):
-        """针对 pointwise 操作的 GCU 优化配置"""
-        configs = []
-        
-        # GCU 最优配置：num_warps=1
-        for block_size in [128, 256, 512]:
-            configs.append(
-                triton.Config(
-                    {"BLOCK_SIZE": block_size},
-                    num_warps=1,  # GCU 最优值
-                    num_stages=2,
-                )
-            )
-        
-        return triton.autotune(
-            configs=configs,
-            key=["n_elements"],
-        )
-    
-    @staticmethod
-    def reduction_heuristics(size_hints, reduction_hint, triton_meta):
-        """针对 reduction 操作的 GCU 优化配置"""
-        configs = []
-        
-        # 根据 reduction_hint 选择配置
-        if reduction_hint == ReductionHint.INNER:
-            # 内部 reduction（例如 sum(dim=1)）
-            block_sizes = [64, 128, 256]
-        elif reduction_hint == ReductionHint.OUTER:
-            # 外部 reduction（例如 sum(dim=0)）
-            block_sizes = [32, 64, 128]
-        else:
-            block_sizes = [128, 256]
-        
-        for block_size in block_sizes:
-            configs.append(
-                triton.Config(
-                    {"BLOCK_SIZE": block_size},
-                    num_warps=1,  # GCU 最优值
-                    num_stages=2,
-                )
-            )
-        
-        return triton.autotune(
-            configs=configs,
-            key=["xnumel", "rnumel"],
-        )
-    
-    @staticmethod
-    def matmul_heuristics(triton_meta):
-        """针对矩阵乘法的 GCU 优化配置"""
-        configs = []
-        
-        # GCU 针对矩阵乘法的最优配置
-        for BLOCK_M in [16, 32]:
-            for BLOCK_N in [16, 32]:
-                for BLOCK_K in [16, 32]:
-                    configs.append(
-                        triton.Config(
-                            {
-                                "BLOCK_SIZE_M": BLOCK_M,
-                                "BLOCK_SIZE_N": BLOCK_N,
-                                "BLOCK_SIZE_K": BLOCK_K,
-                            },
-                            num_warps=1,  # GCU 最优值
-                            num_stages=2,
-                        )
-                    )
-        
-        return triton.autotune(
-            configs=configs,
-            key=["M", "N", "K"],
-        )
-
-# 猴子补丁：替换 TorchInductor 的默认 heuristics
-def patch_inductor_heuristics():
-    """修改 TorchInductor 的 Triton 配置生成逻辑"""
-    import torch._inductor.codegen.triton as inductor_triton
-    
-    # 保存原始函数
-    original_pointwise = inductor_triton.triton_config_pointwise
-    original_reduction = inductor_triton.triton_config_reduction
-    
-    # 替换为 GCU 优化版本
-    def gcu_pointwise_config(size_hints, tile_hint, **kwargs):
-        """GCU 优化的 pointwise 配置"""
-        # 强制 num_warps=1
-        cfg = original_pointwise(size_hints, tile_hint, **kwargs)
-        if hasattr(cfg, 'kwargs'):
-            cfg.kwargs['num_warps'] = 1
-        return cfg
-    
-    def gcu_reduction_config(size_hints, reduction_hint, tile_hint, **kwargs):
-        """GCU 优化的 reduction 配置"""
-        # 强制 num_warps=1
-        cfg = original_reduction(size_hints, reduction_hint, tile_hint, **kwargs)
-        if hasattr(cfg, 'kwargs'):
-            cfg.kwargs['num_warps'] = 1
-        return cfg
-    
-    # 应用补丁
-    inductor_triton.triton_config_pointwise = gcu_pointwise_config
-    inductor_triton.triton_config_reduction = gcu_reduction_config
-    
-    print("Inductor heuristics patched for GCU")
-
-# 应用补丁
-patch_inductor_heuristics()
-```
-
-### 4.6 调整 Grid Size 的运行时拦截
-
-由于 TorchInductor 生成的代码可能不满足 GCU 的 Grid 限制，我们需要在运行时拦截并调整：
-
-```python
-# gcu_grid_wrapper.py
-import triton
-import functools
-
-# 保存原始的 JITFunction.__getitem__
-original_getitem = triton.JITFunction.__getitem__
-
-def gcu_grid_wrapper(func):
-    """包装 Triton Kernel，自动调整 Grid Size"""
-    
-    @functools.wraps(func)
-    def wrapper(grid):
-        # 调整 grid
-        if callable(grid):
-            # grid 是一个 lambda 函数
-            original_grid_fn = grid
-            
-            def adjusted_grid_fn(meta):
-                original_grid = original_grid_fn(meta)
-                return adjust_grid_for_gcu(original_grid)
-            
-            return func(adjusted_grid_fn)
-        else:
-            # grid 是一个固定值
-            adjusted_grid = adjust_grid_for_gcu(grid)
-            return func(adjusted_grid)
-    
-    return wrapper
-
-def adjust_grid_for_gcu(grid):
-    """调整 Grid Size 以适应 GCU"""
-    MAX_GRID = 48
-    
-    if isinstance(grid, (list, tuple)):
-        adjusted = []
-        for dim in grid:
-            if dim <= MAX_GRID:
-                adjusted.append(dim)
-            elif dim % MAX_GRID == 0:
-                # 已经是 48 的倍数
-                adjusted.append(dim)
-            else:
-                # 调整为 48 的倍数
-                # 策略：向下取整（减少 Grid，增加每个 Block 的工作量）
-                adjusted_dim = (dim // MAX_GRID) * MAX_GRID
-                if adjusted_dim == 0:
-                    adjusted_dim = MAX_GRID
-                adjusted.append(adjusted_dim)
-                print(f"[GCU] Adjusted grid dim: {dim} -> {adjusted_dim}")
-        return tuple(adjusted)
-    else:
-        if grid <= MAX_GRID:
-            return grid
-        elif grid % MAX_GRID == 0:
-            return grid
-        else:
-            adjusted_grid = (grid // MAX_GRID) * MAX_GRID
-            if adjusted_grid == 0:
-                adjusted_grid = MAX_GRID
-            print(f"[GCU] Adjusted grid: {grid} -> {adjusted_grid}")
-            return adjusted_grid
-
-# 猴子补丁：拦截所有 Triton Kernel 的启动
-def patch_triton_kernel_launch():
-    """修改 Triton Kernel 启动逻辑"""
-    
-    def new_getitem(self, grid):
-        # 调整 grid
-        adjusted_grid = adjust_grid_for_gcu(grid)
-        # 调用原始的 __getitem__
-        launcher = original_getitem(self, adjusted_grid)
-        
-        # 包装 launcher 以强制 num_warps=1
-        original_run = launcher.run
-        
-        def gcu_run(*args, **kwargs):
-            # 强制设置 num_warps=1
-            if 'num_warps' in kwargs:
-                kwargs['num_warps'] = 1
-            return original_run(*args, **kwargs)
-        
-        launcher.run = gcu_run
-        return launcher
-    
-    # 应用补丁
-    triton.JITFunction.__getitem__ = new_getitem
-    print("Triton kernel launch patched for GCU")
-
-# 应用补丁
-patch_triton_kernel_launch()
-```
-
-### 4.7 完整的集成示例
-
-```python
-# main_gcu_integration.py
-import torch
-import torch.nn as nn
 import os
 
-# ==================== 第一步：环境配置 ====================
-os.environ["TRITON_BACKEND"] = "gcu"
-os.environ["GCU_VISIBLE_DEVICES"] = "0"
+# 启用代码输出
+os.environ["TORCH_LOGS"] = "+output_code"
+torch._inductor.config.debug = True
+torch._inductor.config.trace.enabled = True
+torch._inductor.config.trace.output_dir = "/tmp/inductor_gxu"
 
-# ==================== 第二步：注册 GCU 设备 ====================
-from gcu_device_setup import *  # 注册 GCU 设备
+# 编译模型
+model = MyModel().to("gxu")
+compiled = torch.compile(model, backend="inductor")
 
-# ==================== 第三步：配置 TorchInductor ====================
-from inductor_gcu_config import *  # 配置 Inductor
+# 运行
+x = torch.randn(32, 128, device="gxu")
+output = compiled(x)
 
-# ==================== 第四步：应用 GCU 优化 ====================
-from gcu_heuristics import patch_inductor_heuristics
-from gcu_grid_wrapper import patch_triton_kernel_launch
+print(f"生成的代码保存在: /tmp/inductor_gxu")
+```
 
-patch_inductor_heuristics()   # 修改 heuristics
-patch_triton_kernel_launch()  # 拦截 kernel 启动
+### 6.2 调试 DeviceOpOverrides
 
-# ==================== 第五步：定义和编译模型 ====================
+```python
+# 验证 DeviceOpOverrides 注册
+from torch._inductor.codegen.common import get_device_op_overrides
+
+try:
+    overrides = get_device_op_overrides("gxu")
+    print("DeviceOpOverrides 已注册")
+    print(f"  set_device: {overrides.set_device(0)}")
+    print(f"  synchronize: {overrides.synchronize()}")
+    print(f"  device_guard: {overrides.device_guard(0)}")
+except KeyError:
+    print("错误: GXU DeviceOpOverrides 未注册")
+```
+
+### 6.3 调试 Backend 注册
+
+```python
+from torch._inductor.codegen.common import (
+    get_scheduling_for_device,
+    get_wrapper_codegen_for_device,
+)
+
+# 检查调度器
+scheduling = get_scheduling_for_device("gxu")
+print(f"Scheduling: {scheduling}")
+
+# 检查 wrapper codegen
+wrapper = get_wrapper_codegen_for_device("gxu")
+print(f"Wrapper Codegen: {wrapper}")
+
+cpp_wrapper = get_wrapper_codegen_for_device("gxu", cpp_wrapper=True)
+print(f"C++ Wrapper Codegen: {cpp_wrapper}")
+```
+
+### 6.4 常见问题诊断
+
+#### 问题 1：设备未找到
+
+```python
+# 检查设备注册
+import torch
+print(f"PrivateUse1 后端名: {torch._C._get_privateuse1_backend_name()}")
+print(f"GXU 模块是否存在: {hasattr(torch, 'gxu')}")
+print(f"设备数量: {torch.gxu.device_count()}")
+```
+
+#### 问题 2：Triton 编译失败
+
+```python
+# 检查 Triton 后端
+import triton
+print(f"Triton 版本: {triton.__version__}")
+
+# 检查 GXU 后端是否加载
+try:
+    import triton.backends.gxu
+    print("Triton GXU 后端已加载")
+except ImportError:
+    print("错误: Triton GXU 后端未安装")
+```
+
+---
+
+## 7. 完整示例
+
+### 7.1 完整目录结构
+
+```
+gxu/
+├── __init__.py           # 初始化和导出
+├── module.py             # 设备模块
+├── device_op_overrides.py # DeviceOpOverrides 实现
+├── scheduling.py         # 自定义 Scheduling (可选)
+├── heuristics.py         # 自定义 heuristics (可选)
+└── device_properties.py  # 设备属性 (可选)
+```
+
+### 7.2 使用示例
+
+```python
+import torch
+import torch.nn as nn
+
+# 导入 GXU 后端（自动完成注册）
+import gxu
+
+# 定义模型
 class SimpleModel(nn.Module):
     def __init__(self):
         super().__init__()
@@ -627,714 +1086,156 @@ class SimpleModel(nn.Module):
         x = self.linear3(x)
         return x
 
-# 创建模型并移到 GCU
-model = SimpleModel().to("gcu")
+# 创建模型并移到 GXU
+model = SimpleModel().to("gxu")
 
 # 编译模型
 compiled_model = torch.compile(model, backend="inductor")
 
-# ==================== 第六步：运行测试 ====================
-# 创建输入
-x = torch.randn(64, 512, device="gcu")
-
-# 前向传播
-print("Running forward pass...")
+# 运行推理
+x = torch.randn(64, 512, device="gxu")
 with torch.no_grad():
     output = compiled_model(x)
 
-print(f"Output shape: {output.shape}")
-print(f"Output device: {output.device}")
-print("Success! Model compiled and ran on GCU")
+print(f"输出形状: {output.shape}")
+print(f"输出设备: {output.device}")
 
-# ==================== 第七步：验证性能 ====================
+# 性能对比
 import time
 
 def benchmark(model, x, num_runs=100):
     # 预热
     for _ in range(10):
         _ = model(x)
-    torch.gcu.synchronize()
+    torch.gxu.synchronize()
     
     # 计时
     start = time.time()
     for _ in range(num_runs):
         _ = model(x)
-    torch.gcu.synchronize()
-    end = time.time()
+    torch.gxu.synchronize()
     
-    avg_time = (end - start) / num_runs * 1000  # ms
-    return avg_time
+    return (time.time() - start) / num_runs * 1000  # ms
 
-# 对比编译前后
 eager_time = benchmark(model, x)
 compiled_time = benchmark(compiled_model, x)
 
-print(f"\nPerformance:")
-print(f"  Eager mode:    {eager_time:.2f} ms")
-print(f"  Compiled mode: {compiled_time:.2f} ms")
-print(f"  Speedup:       {eager_time / compiled_time:.2f}x")
+print(f"\n性能对比:")
+print(f"  Eager 模式:    {eager_time:.2f} ms")
+print(f"  Compiled 模式: {compiled_time:.2f} ms")
+print(f"  加速比:        {eager_time / compiled_time:.2f}x")
 ```
 
-### 4.8 查看生成的 Triton Kernel
+---
+
+## 8. 常见问题
+
+### Q1: DeviceOpOverrides 和 register_backend_for_device 的区别？
+
+**DeviceOpOverrides**：定义设备特定的**代码片段**，用于 wrapper 代码生成
+- `set_device()` 返回的是代码字符串，如 `"torch.cuda.set_device(0)"`
+- 用于生成 Python/C++ wrapper 中的设备管理代码
+
+**register_backend_for_device**：注册**代码生成器类**
+- `Scheduling` 决定如何生成内核代码
+- `WrapperCodegen` 决定如何生成 wrapper 代码框架
+
+### Q2: 如何处理不同的 warp size？
 
 ```python
-# inspect_generated_kernels.py
-import torch
+# 在 DeviceOpOverrides.kernel_driver() 中调整
+def kernel_driver(self) -> str:
+    return f"""
+        static inline void launchKernel(...) {{
+            // GXU warp size 可能不是 32
+            const uint32_t GXU_WARP_SIZE = {self.warp_size};
+            gxuLaunchKernel(
+                func, gridX, gridY, gridZ,
+                GXU_WARP_SIZE * numWarps, 1, 1,
+                ...
+            );
+        }}
+    """
+```
+
+### Q3: 如何使用自定义的 Triton 后端？
+
+Triton 会通过环境变量或 `triton.runtime.driver.set_active()` 选择后端：
+
+```python
 import os
+os.environ["TRITON_BACKEND"] = "gxu"
 
-# 启用代码输出
-os.environ["TORCH_LOGS"] = "+output_code"
-os.environ["TRITON_PRINT_IR"] = "1"
-
-# 也可以保存到文件
-import torch._inductor.config as config
-config.debug = True
-config.trace.enabled = True
-config.trace.output_dir = "/tmp/inductor_gcu_kernels"
-
-# 运行编译
-compiled_model = torch.compile(model, backend="inductor")
-output = compiled_model(x)
-
-print(f"\nGenerated kernels saved to: {config.trace.output_dir}")
-```
-
-**生成的 Triton Kernel 示例**（会自动应用我们的优化）：
-
-```python
-# 自动生成的 Triton Kernel (已应用 GCU 优化)
-@triton.jit
-def triton_poi_fused_relu_0(
-    in_ptr0,
-    out_ptr0,
-    xnumel,
-    BLOCK_SIZE: tl.constexpr
-):
-    pid = tl.program_id(0)
-    xoffset = pid * BLOCK_SIZE
-    xindex = xoffset + tl.arange(0, BLOCK_SIZE)
-    xmask = xindex < xnumel
-    
-    x0 = tl.load(in_ptr0 + xindex, xmask)
-    x1 = tl.maximum(x0, 0.0)  # ReLU
-    tl.store(out_ptr0 + xindex, x1, xmask)
-
-# 启动配置（已自动调整）
-grid = lambda meta: (
-    triton.cdiv(xnumel, meta["BLOCK_SIZE"]),
-)
-# 自动应用了我们的优化：
-# - num_warps=1
-# - grid 调整为 <= 48 或 48 的倍数
-triton_poi_fused_relu_0[grid](
-    in_ptr, out_ptr, xnumel,
-    BLOCK_SIZE=256,
-    num_warps=1,  # GCU 最优配置
-)
-```
-
-### 4.9 高级调优：自定义 AutoTuner
-
-如果需要更精细的控制，可以为特定算子编写自定义的 AutoTuner：
-
-```python
-# gcu_autotuner.py
+# 或
 import triton
-from triton.runtime import driver
-
-class GCUAutotuner(triton.KernelInterface):
-    """GCU 专用的 AutoTuner"""
-    
-    def __init__(self, fn, configs, key):
-        self.fn = fn
-        self.configs = self._filter_configs_for_gcu(configs)
-        self.key = key
-        self.cache = {}
-    
-    def _filter_configs_for_gcu(self, configs):
-        """过滤并调整配置以适应 GCU"""
-        filtered = []
-        for cfg in configs:
-            # 强制 num_warps=1
-            new_cfg = triton.Config(
-                cfg.kwargs,
-                num_warps=1,
-                num_stages=cfg.num_stages
-            )
-            filtered.append(new_cfg)
-        return filtered
-    
-    def run(self, *args, **kwargs):
-        # 提取 key
-        key_values = tuple(kwargs.get(k) for k in self.key)
-        
-        # 检查缓存
-        if key_values in self.cache:
-            best_config = self.cache[key_values]
-        else:
-            # 运行 AutoTune
-            best_config = self._autotune(*args, **kwargs)
-            self.cache[key_values] = best_config
-        
-        # 使用最佳配置运行
-        return self.fn[best_config](*args, **kwargs)
-    
-    def _autotune(self, *args, **kwargs):
-        """运行 AutoTune 找到最佳配置"""
-        best_time = float('inf')
-        best_config = self.configs[0]
-        
-        for config in self.configs:
-            try:
-                # 测试这个配置
-                time = self._benchmark_config(config, *args, **kwargs)
-                if time < best_time:
-                    best_time = time
-                    best_config = config
-            except Exception as e:
-                # 配置不适用，跳过
-                continue
-        
-        print(f"[GCU AutoTuner] Best config: {best_config}, time: {best_time:.3f}ms")
-        return best_config
-    
-    def _benchmark_config(self, config, *args, **kwargs):
-        """测试单个配置的性能"""
-        import time
-        
-        # 预热
-        for _ in range(10):
-            self.fn[config](*args, **kwargs)
-        torch.gcu.synchronize()
-        
-        # 计时
-        start = time.time()
-        for _ in range(100):
-            self.fn[config](*args, **kwargs)
-        torch.gcu.synchronize()
-        end = time.time()
-        
-        return (end - start) / 100 * 1000  # ms
-
-# 使用示例
-@triton.jit
-def my_kernel(x_ptr, y_ptr, N, BLOCK_SIZE: tl.constexpr):
-    pid = tl.program_id(0)
-    offsets = pid * BLOCK_SIZE + tl.arange(0, BLOCK_SIZE)
-    mask = offsets < N
-    x = tl.load(x_ptr + offsets, mask=mask)
-    y = x * 2.0
-    tl.store(y_ptr + offsets, y, mask=mask)
-
-# 应用 GCU AutoTuner
-configs = [
-    triton.Config({"BLOCK_SIZE": 64}, num_warps=1),
-    triton.Config({"BLOCK_SIZE": 128}, num_warps=1),
-    triton.Config({"BLOCK_SIZE": 256}, num_warps=1),
-]
-
-my_kernel_tuned = GCUAutotuner(my_kernel, configs, key=["N"])
+triton.runtime.driver.set_active("gxu")
 ```
 
-### 4.10 常见问题排查
+### Q4: AOTInductor 支持需要什么额外工作？
 
-#### 问题 1：Grid Size 不符合要求
-
-**症状**：
-```
-GCU Error: Invalid grid size 57 (must be <= 48 or multiple of 48)
-```
-
-**解决方案**：
-```python
-# 确保应用了 grid wrapper
-from gcu_grid_wrapper import patch_triton_kernel_launch
-patch_triton_kernel_launch()
-
-# 或者手动调整
-def safe_grid(size, block_size):
-    grid = triton.cdiv(size, block_size)
-    if grid <= 48:
-        return grid
-    else:
-        # 向上取整到 48 的倍数
-        return ((grid + 47) // 48) * 48
-```
-
-#### 问题 2：num_warps 未生效
-
-**症状**：
-```
-[GCU] Warning: num_warps=4 is not optimal, recommend num_warps=1
-```
-
-**解决方案**：
-```python
-# 方法 1：确保应用了 heuristics 补丁
-from gcu_heuristics import patch_inductor_heuristics
-patch_inductor_heuristics()
-
-# 方法 2：在 Triton Kernel 中显式指定
-@triton.autotune(
-    configs=[
-        triton.Config({"BLOCK_SIZE": 256}, num_warps=1, num_stages=2),
-    ],
-    key=["n"],
-)
-@triton.jit
-def my_kernel(...):
-    pass
-```
-
-#### 问题 3：性能不如预期
-
-**排查步骤**：
-```python
-# 1. 启用性能分析
-import torch._inductor.config as config
-config.triton.cudagraph_trees = False  # 禁用 CUDA Graph（可能不兼容 GCU）
-
-# 2. 查看生成的 Kernel 数量
-config.trace.enabled = True
-config.trace.output_dir = "/tmp/gcu_debug"
-
-# 3. 使用 GCU Profiler
-# 假设 GCU 提供了类似 CUDA 的 Profiler
-import gcu_profiler
-with gcu_profiler.profile() as prof:
-    output = compiled_model(x)
-print(prof.key_averages().table())
-
-# 4. 检查 Grid/Block 配置是否合理
-# 在 /tmp/gcu_debug 中查看生成的 Kernel 代码
-```
+1. 实现 C++ 头文件（`c10/gxu/GXUGuard.h` 等）
+2. 实现 AOTInductor runtime wrapper（`AOTIGcuGuard` 等）
+3. 在 `cpp_aoti_*` 方法中返回正确的类名
 
 ---
 
-## 5. 进阶调试与性能分析
+## 9. 总结与展望
 
-### 5.1 常见问题诊断
+### 9.1 实现总结
 
-#### 问题 1：Kernel 启动失败
+通过本章学习，您已经掌握：
 
-```python
-# 启用 GCU Runtime 的错误检查
-import ctypes
+| 组件 | 作用 | 文件位置 |
+|------|------|----------|
+| `DeviceOpOverrides` | 设备特定代码片段 | `codegen/common.py` |
+| `register_device_op_overrides` | 注册 DeviceOpOverrides | `codegen/common.py` |
+| `register_backend_for_device` | 注册后端代码生成器 | `codegen/common.py` |
+| `PrivateUse1` 机制 | 自定义设备支持 | `torch.utils.rename_privateuse1_backend` |
+| `_get_custom_mod_func` | 自动发现设备模块 | `torch.utils.backend_registration` |
 
-libgcu = ctypes.CDLL("libgcu_runtime.so")
-
-def gcu_check_error():
-    """检查最后的 GCU 错误"""
-    ret = libgcu.gcuGetLastError()
-    if ret != 0:
-        error_str = ctypes.c_char_p()
-        libgcu.gcuGetErrorString(ret, ctypes.byref(error_str))
-        raise RuntimeError(f"GCU Error: {error_str.value.decode()}")
-
-# 在 Kernel 启动后调用
-launcher(grid, stream, *args)
-gcu_check_error()
-```
-
-#### 问题 2：性能不如预期
-
-```python
-# 使用 GCU Profiler
-import gcu_profiler
-
-with gcu_profiler.profile() as prof:
-    output = compiled_model(x)
-
-print(prof.key_averages().table(sort_by="gcu_time_total"))
-```
-
-#### 问题 3：内存泄漏
-
-```python
-import torch
-
-# 启用内存检查
-torch.gcu.memory._record_memory_history(enabled=True)
-
-# 运行模型
-for _ in range(100):
-    output = compiled_model(x)
-    del output
-
-# 生成内存快照
-torch.gcu.memory._dump_snapshot("gcu_memory.pickle")
-
-# 使用工具分析
-# python -m torch.gcu.memory._snapshot_viewer gcu_memory.pickle
-```
-
-### 5.2 性能优化技巧
-
-#### 优化 1：调整 Block Size
-
-```python
-# 在 Triton Kernel 中调整 BLOCK_SIZE
-@triton.jit
-def optimized_kernel(
-    x_ptr,
-    output_ptr,
-    N,
-    BLOCK_SIZE: tl.constexpr  # 编译时常量
-):
-    # 根据 GCU 的架构特性选择最优的 BLOCK_SIZE
-    # GCU 可能与 NVIDIA GPU 的最优值不同
-    pid = tl.program_id(0)
-    offsets = pid * BLOCK_SIZE + tl.arange(0, BLOCK_SIZE)
-    # ...
-
-# 配置 GCU 最优的 BLOCK_SIZE
-config.triton.gcu_block_size = 128  # 假设 GCU 最优为 128
-```
-
-#### 优化 2：启用特定优化
-
-```python
-# 启用 GCU 特定的优化
-config.triton.gcu_enable_tensor_cores = True  # 如果 GCU 有 Tensor Core
-config.triton.gcu_enable_async_copy = True    # 异步内存拷贝
-```
-
-#### 优化 3：预热编译
-
-```python
-# 预热，避免首次运行的编译开销
-def warmup(model, input_shapes, device="gcu"):
-    """预热模型编译"""
-    for shape in input_shapes:
-        x = torch.randn(*shape, device=device)
-        with torch.no_grad():
-            _ = model(x)
-
-warmup(compiled_model, [(32, 128), (64, 128), (128, 128)])
-```
-
----
-
-## 6. 实战案例
-
-### 6.1 完整示例：矩阵乘法
-
-```python
-# gcu_matmul_example.py
-import torch
-import triton
-import triton.language as tl
-
-@triton.jit
-def matmul_kernel(
-    a_ptr, b_ptr, c_ptr,
-    M, N, K,
-    stride_am, stride_ak,
-    stride_bk, stride_bn,
-    stride_cm, stride_cn,
-    BLOCK_SIZE_M: tl.constexpr,
-    BLOCK_SIZE_N: tl.constexpr,
-    BLOCK_SIZE_K: tl.constexpr,
-):
-    """GCU 矩阵乘法 Kernel"""
-    pid_m = tl.program_id(0)
-    pid_n = tl.program_id(1)
-    
-    # 计算偏移
-    offs_am = pid_m * BLOCK_SIZE_M + tl.arange(0, BLOCK_SIZE_M)
-    offs_bn = pid_n * BLOCK_SIZE_N + tl.arange(0, BLOCK_SIZE_N)
-    offs_k = tl.arange(0, BLOCK_SIZE_K)
-    
-    # 初始化累加器
-    accumulator = tl.zeros((BLOCK_SIZE_M, BLOCK_SIZE_N), dtype=tl.float32)
-    
-    # 分块计算
-    for k in range(0, K, BLOCK_SIZE_K):
-        # 加载 A 块
-        a = tl.load(a_ptr + (offs_am[:, None] * stride_am + (offs_k[None, :] + k) * stride_ak))
-        # 加载 B 块
-        b = tl.load(b_ptr + ((offs_k[:, None] + k) * stride_bk + offs_bn[None, :] * stride_bn))
-        # 累加
-        accumulator += tl.dot(a, b)
-    
-    # 写回结果
-    offs_cm = pid_m * BLOCK_SIZE_M + tl.arange(0, BLOCK_SIZE_M)
-    offs_cn = pid_n * BLOCK_SIZE_N + tl.arange(0, BLOCK_SIZE_N)
-    c = accumulator.to(tl.float16)
-    tl.store(c_ptr + (offs_cm[:, None] * stride_cm + offs_cn[None, :] * stride_cn), c)
-
-def matmul_gcu(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
-    """GCU 矩阵乘法封装"""
-    assert a.shape[1] == b.shape[0], "Incompatible dimensions"
-    assert a.device.type == "gcu" and b.device.type == "gcu", "Inputs must be on GCU"
-    
-    M, K = a.shape
-    K, N = b.shape
-    
-    # 分配输出
-    c = torch.empty((M, N), device="gcu", dtype=a.dtype)
-    
-    # 配置 Grid 和 Block
-    BLOCK_SIZE = 16
-    grid = lambda meta: (
-        triton.cdiv(M, meta["BLOCK_SIZE_M"]),
-        triton.cdiv(N, meta["BLOCK_SIZE_N"]),
-    )
-    
-    # 启动 Kernel
-    matmul_kernel[grid](
-        a, b, c,
-        M, N, K,
-        a.stride(0), a.stride(1),
-        b.stride(0), b.stride(1),
-        c.stride(0), c.stride(1),
-        BLOCK_SIZE_M=BLOCK_SIZE,
-        BLOCK_SIZE_N=BLOCK_SIZE,
-        BLOCK_SIZE_K=BLOCK_SIZE,
-    )
-    
-    return c
-
-# 测试
-a = torch.randn(1024, 512, device="gcu")
-b = torch.randn(512, 2048, device="gcu")
-
-# 使用自定义 Kernel
-c_custom = matmul_gcu(a, b)
-
-# 使用 PyTorch 原生实现（应该也会调用 GCU 后端）
-c_torch = torch.matmul(a, b)
-
-# 验证结果
-print(f"Max difference: {(c_custom - c_torch).abs().max().item()}")
-```
-
-### 6.2 与 TorchInductor 集成
-
-```python
-# gcu_inductor_integration.py
-import torch
-import torch.nn as nn
-
-# 注册 GCU 后端
-from gcu_backend import register_gcu_backend
-register_gcu_backend()
-
-class ConvNet(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.conv1 = nn.Conv2d(3, 64, 3, padding=1)
-        self.bn1 = nn.BatchNorm2d(64)
-        self.conv2 = nn.Conv2d(64, 128, 3, padding=1)
-        self.bn2 = nn.BatchNorm2d(128)
-        self.fc = nn.Linear(128 * 8 * 8, 10)
-    
-    def forward(self, x):
-        x = torch.relu(self.bn1(self.conv1(x)))
-        x = torch.max_pool2d(x, 2)
-        x = torch.relu(self.bn2(self.conv2(x)))
-        x = torch.max_pool2d(x, 2)
-        x = x.view(x.size(0), -1)
-        x = self.fc(x)
-        return x
-
-# 移到 GCU
-model = ConvNet().to("gcu")
-
-# 编译（TorchInductor 会自动使用 Triton GCU 后端）
-compiled_model = torch.compile(model, backend="inductor")
-
-# 准备数据
-x = torch.randn(32, 3, 32, 32, device="gcu")
-
-# 训练
-import torch.optim as optim
-
-optimizer = optim.Adam(compiled_model.parameters())
-criterion = nn.CrossEntropyLoss()
-
-for epoch in range(10):
-    optimizer.zero_grad()
-    output = compiled_model(x)
-    target = torch.randint(0, 10, (32,), device="gcu")
-    loss = criterion(output, target)
-    loss.backward()
-    optimizer.step()
-    
-    print(f"Epoch {epoch}, Loss: {loss.item():.4f}")
-```
-
----
-
-## 7. 常见问题
-
-### Q1: 如何处理不支持的算子？
-
-**方案 1：回退到 CPU**
-
-```python
-# 为不支持的算子提供 CPU 回退
-def unsupported_op_fallback(op_name):
-    def wrapper(*args, **kwargs):
-        # 将输入移到 CPU
-        cpu_args = [arg.cpu() if isinstance(arg, torch.Tensor) else arg for arg in args]
-        # 在 CPU 上执行
-        result = getattr(torch.ops.aten, op_name)(*cpu_args, **kwargs)
-        # 移回 GCU
-        return result.to("gcu")
-    return wrapper
-
-# 注册回退
-torch.library.register_fake("aten::custom_op", unsupported_op_fallback("custom_op"))
-```
-
-**方案 2：分解为支持的算子**
-
-```python
-from torch._decomp import register_decomposition
-
-@register_decomposition(torch.ops.aten.custom_op)
-def custom_op_decomp(x):
-    # 将 custom_op 分解为 GCU 支持的基础算子
-    return torch.add(torch.mul(x, 2), 1)
-```
-
-### Q2: 如何优化编译时间？
-
-```python
-# 1. 启用持久化缓存
-import torch._inductor.config as config
-config.fx_graph_cache = True
-config.triton.persistent_cache = True
-
-# 2. 预编译常见 shape
-from torch._inductor.compile_fx import compile_fx
-
-def precompile_shapes(model, shapes):
-    for shape in shapes:
-        x = torch.randn(*shape, device="gcu")
-        compile_fx(model, [x])
-
-precompile_shapes(model, [(32, 128), (64, 128)])
-```
-
-### Q3: 如何调试生成的 Kernel？
-
-```python
-# 1. 保存生成的代码
-import os
-os.environ["TRITON_INTERPRET"] = "1"  # 使用解释模式
-os.environ["TRITON_DUMP_DIR"] = "/tmp/triton_dumps"
-
-# 2. 使用 Triton 的 interpret 模式
-@triton.jit(interpret=True)
-def debug_kernel(...):
-    # 在解释模式下运行，可以打印中间值
-    tl.device_print("Debug value:", some_var)
-    ...
-
-# 3. 使用 GCU Profiler
-from gcu_profiler import profile, record_function
-
-with profile(activities=["GCU"]) as prof:
-    with record_function("model_inference"):
-        output = model(x)
-
-print(prof.key_averages().table())
-```
-
----
-
-## 8. 总结与展望
-
-### 8.1 实现总结
-
-通过本章的学习，您已经掌握：
-
-1. **PyTorch 后端架构**：PrivateUse1、Dispatcher、算子注册
-2. **Triton 后端扩展**：Backend 接口、编译管道、Driver 封装
-3. **TorchInductor 集成**：配置、设备注册、内存管理
-4. **端到端实现**：从模型定义到编译执行的完整流程
-
-### 8.2 技术路线图
+### 9.2 技术路线图
 
 ```mermaid
 graph TB
-    A[学习 PyTorch 编译栈] --> B[理解 Triton 架构]
-    B --> C[实现 Triton GCU Backend]
-    C --> D[实现 PyTorch 设备注册]
-    D --> E[测试基础算子]
-    E --> F[优化性能]
-    F --> G[支持完整模型]
-    G --> H[生产环境部署]
+    A[1. 安装 Triton GXU 包] --> B[2. 注册 PrivateUse1 后端]
+    B --> C[3. 实现 DeviceOpOverrides]
+    C --> D[4. 实现设备模块]
+    D --> E[5. 验证基础功能]
+    E --> F[6. 优化 Heuristics]
+    F --> G[7. 支持 AOTInductor]
+    G --> H[8. 生产环境部署]
 ```
 
-### 8.3 下一步
+### 9.3 参考资源
 
-1. **算子覆盖率**：逐步实现更多算子的 GCU 支持
-2. **性能优化**：针对 GCU 架构进行 Kernel 优化
-3. **自动调优**：集成 Triton AutoTuner 自动寻找最优参数
-4. **分布式训练**：支持多 GCU 卡训练
-
-### 8.4 参考资源
-
+- [Intel IPEX Inductor 实现](https://github.com/intel/intel-extension-for-pytorch/blob/main/intel_extension_for_pytorch/_inductor/__init__.py)
 - [PyTorch Device Extension Guide](https://pytorch.org/tutorials/advanced/extend_device.html)
-- [Triton Backend Tutorial](https://github.com/openai/triton/blob/main/docs/backend.md)
 - [TorchInductor 源码](https://github.com/pytorch/pytorch/tree/main/torch/_inductor)
-- [AMD ROCm Backend](https://github.com/ROCmSoftwarePlatform/triton)（参考实现）
 
 ---
 
 ## 附录 A：完整代码清单
 
-参考 GitHub 仓库：`https://github.com/example/triton-gcu`
+完整代码见：
 
-- `triton/backends/gcu/compiler.py`：GCU 编译器后端
-- `triton/backends/gcu/driver.py`：GCU 驱动封装
-- `pytorch/gcu_backend.py`：PyTorch GCU 设备注册
-- `examples/gcu_matmul.py`：矩阵乘法示例
-- `tests/test_gcu_backend.py`：单元测试
-
----
-
-## 附录 B：GCU Runtime API 参考
-
-```c
-// GCU Runtime API（C 接口）
-
-// 设备管理
-gcuError_t gcuGetDeviceCount(int* count);
-gcuError_t gcuGetDevice(int* device);
-gcuError_t gcuSetDevice(int device);
-gcuError_t gcuGetDeviceCapability(int* major, int* minor, int device);
-
-// 内存管理
-gcuError_t gcuMalloc(void** ptr, size_t size);
-gcuError_t gcuFree(void* ptr);
-gcuError_t gcuMemcpy(void* dst, const void* src, size_t size, gcuMemcpyKind kind);
-
-// 模块管理
-gcuError_t gcuModuleLoadData(gcuModule_t* module, const void* image, size_t size);
-gcuError_t gcuModuleGetFunction(gcuFunction_t* func, gcuModule_t module, const char* name);
-gcuError_t gcuModuleUnload(gcuModule_t module);
-
-// Kernel 启动
-gcuError_t gcuLaunchKernel(
-    gcuFunction_t func,
-    unsigned int gridDimX, unsigned int gridDimY, unsigned int gridDimZ,
-    unsigned int blockDimX, unsigned int blockDimY, unsigned int blockDimZ,
-    unsigned int sharedMemBytes,
-    gcuStream_t stream,
-    void** kernelParams,
-    void** extra
-);
-
-// 错误处理
-gcuError_t gcuGetLastError();
-const char* gcuGetErrorString(gcuError_t error);
+```
+gxu/
+├── __init__.py
+├── module.py
+├── device_op_overrides.py
+├── scheduling.py (可选)
+├── heuristics.py (可选)
+└── device_properties.py (可选)
 ```
 
----
+## 附录 B：参考实现链接
 
-[返回目录](./README.MD) | [上一章：TorchInductor 代码生成](./07_TorchInductor代码生成.md)
+| 项目 | 链接 | 说明 |
+|------|------|------|
+| Intel IPEX | [GitHub](https://github.com/intel/intel-extension-for-pytorch) | XPU 后端参考 |
+| AMD ROCm | [GitHub](https://github.com/ROCmSoftwarePlatform/triton) | Triton AMD 后端 |
+| PyTorch XPU | `torch/_inductor/codegen/xpu/` | XPU DeviceOpOverrides |
+| PyTorch CUDA | `torch/_inductor/codegen/cuda/` | CUDA DeviceOpOverrides |
+
+---
 
