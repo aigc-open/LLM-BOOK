@@ -38,3 +38,5 @@ for node in traced.graph.nodes:
 print("-"*20)
 print(traced.graph)
 print(traced.graph.python_code(root_module='self'))
+
+from torch._inductor import lowering
