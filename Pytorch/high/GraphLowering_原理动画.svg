@@ -346,15 +346,5 @@
     </g>
   </g>
 
-  <!-- 循环动画指示器 -->
-  <g id="replay-hint" opacity="0">
-    <text x="700" y="980" font-size="12" text-anchor="middle" fill="#999">
-      动画将循环播放...
-    </text>
-    <animate attributeName="opacity" values="0;1;0" begin="14s" dur="2s" repeatCount="indefinite"/>
-  </g>
-
-  <!-- 循环整个动画 -->
-  <animate attributeName="opacity" from="1" to="1" begin="16s" dur="0.1s" onend="document.documentElement.setCurrentTime(0)"/>
 </svg>
 

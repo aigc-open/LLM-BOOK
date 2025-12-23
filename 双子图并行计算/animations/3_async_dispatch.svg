@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <style>
+      .title { font: bold 20px sans-serif; fill: #333; }
+      .subtitle { font: bold 16px sans-serif; fill: #666; }
+      .label { font: 14px sans-serif; fill: #666; }
+      .small-text { font: 12px sans-serif; fill: #999; }
+      .kr-box { fill: #e6f3ff; stroke: #0066cc; stroke-width: 2; }
+      .task-box { fill: #ffeecc; stroke: #ff9900; stroke-width: 2; }
+      .queue-box { fill: #f0f0f0; stroke: #666; stroke-width: 2; }
+      .device-box { fill: #ccffcc; stroke: #00cc00; stroke-width: 2; }
+      .arrow { stroke: #666; stroke-width: 2; fill: none; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666" />
+    </marker>
+  </defs>
+  
+  <!-- 标题 -->
+  <text x="400" y="30" class="title" text-anchor="middle">技术二：异步下发（Asynchronous Dispatch）</text>
+  
+  <!-- 同步模式 -->
+  <g transform="translate(50, 60)">
+    <text x="0" y="0" class="subtitle" fill="#cc0000">同步模式（慢）</text>
+    
+    <!-- KernelRunner -->
+    <rect x="0" y="20" width="150" height="140" class="kr-box" rx="5"/>
+    <text x="75" y="35" class="label" text-anchor="middle">KernelRunner</text>
+    
+    <!-- 步骤 -->
+    <g id="sync-step1">
+      <rect x="10" y="50" width="130" height="18" fill="#ffe6e6" stroke="#cc0000" rx="3" opacity="0">
+        <animate attributeName="opacity" values="0;1;0.3;0.3;0.3;0.3" keyTimes="0;0.1;0.25;0.4;0.6;1" dur="5s" repeatCount="indefinite"/>
+      </rect>
+      <text x="75" y="63" class="small-text" text-anchor="middle">1. PrepareInput (10μs)</text>
+    </g>
+    
+    <g id="sync-step2">
+      <rect x="10" y="72" width="130" height="18" fill="#ffe6e6" stroke="#cc0000" rx="3" opacity="0">
+        <animate attributeName="opacity" values="0;0;1;0.3;0.3;0.3" keyTimes="0;0.1;0.25;0.4;0.6;1" dur="5s" repeatCount="indefinite"/>
+      </rect>
+      <text x="75" y="85" class="small-text" text-anchor="middle">2. AllocMemory (20μs)</text>
+    </g>
+    
+    <g id="sync-step3">
+      <rect x="10" y="94" width="130" height="18" fill="#ffe6e6" stroke="#cc0000" rx="3" opacity="0">
+        <animate attributeName="opacity" values="0;0;0;1;0.3;0.3" keyTimes="0;0.1;0.25;0.4;0.6;1" dur="5s" repeatCount="indefinite"/>
+      </rect>
+      <text x="75" y="107" class="small-text" text-anchor="middle">3. Launch (30μs)</text>
+    </g>
+    
+    <g id="sync-step4">
+      <rect x="10" y="116" width="130" height="18" fill="#ffe6e6" stroke="#cc0000" rx="3" opacity="0">
+        <animate attributeName="opacity" values="0;0;0;0;1;0.3" keyTimes="0;0.1;0.25;0.4;0.6;1" dur="5s" repeatCount="indefinite"/>
+      </rect>
+      <text x="75" y="129" class="small-text" text-anchor="middle">4. FreeMemory (10μs)</text>
+    </g>
+    
+    <g id="sync-step5">
+      <rect x="10" y="138" width="130" height="18" fill="#e6ffe6" stroke="#00cc00" rx="3" opacity="0">
+        <animate attributeName="opacity" values="0;0;0;0;0;1" keyTimes="0;0.1;0.25;0.4;0.6;1" dur="5s" repeatCount="indefinite"/>
+      </rect>
+      <text x="75" y="151" class="small-text" text-anchor="middle">✓ 算子2开始</text>
+    </g>
+    
+    <text x="75" y="180" class="label" text-anchor="middle" fill="#cc0000">总耗时：70μs</text>
+  </g>
+  
+  <!-- 异步模式 -->
+  <g transform="translate(450, 60)">
+    <text x="0" y="0" class="subtitle" fill="#00cc00">异步模式（快）</text>
+    
+    <!-- KernelRunner -->
+    <rect x="0" y="20" width="150" height="80" class="kr-box" rx="5"/>
+    <text x="75" y="35" class="label" text-anchor="middle">KernelRunner</text>
+    
+    <g id="async-kr-step1">
+      <rect x="10" y="50" width="130" height="18" fill="#e6f3ff" stroke="#0066cc" rx="3" opacity="0">
+        <animate attributeName="opacity" values="0;1;0.3;0.3;0.3;0.3" keyTimes="0;0.1;0.2;0.4;0.6;1" dur="5s" repeatCount="indefinite"/>
+      </rect>
+      <text x="75" y="63" class="small-text" text-anchor="middle">1. PrepareInput (10μs)</text>
+    </g>
+    
+    <g id="async-kr-step2">
+      <rect x="10" y="72" width="130" height="18" fill="#e6f3ff" stroke="#0066cc" rx="3" opacity="0">
+        <animate attributeName="opacity" values="0;0;1;0.3;0.3;0.3" keyTimes="0;0.1;0.2;0.4;0.6;1" dur="5s" repeatCount="indefinite"/>
+      </rect>
+      <text x="75" y="85" class="small-text" text-anchor="middle">2. Push Task (1μs)</text>
+    </g>
+    
+    <!-- 箭头 -->
+    <path d="M 75,100 L 75,120" class="arrow" marker-end="url(#arrow)" opacity="0">
+      <animate attributeName="opacity" values="0;0;1;1;1;1" keyTimes="0;0.1;0.2;0.4;0.6;1" dur="5s" repeatCount="indefinite"/>
+    </path>
+    
+    <!-- Launch Queue -->
+    <rect x="0" y="130" width="150" height="80" class="queue-box" rx="5"/>
+    <text x="75" y="145" class="label" text-anchor="middle">Launch Queue</text>
+    
+    <rect x="10" y="155" width="130" height="50" class="task-box" rx="3" opacity="0">
+      <animate attributeName="opacity" values="0;0;1;1;1;1" keyTimes="0;0.1;0.2;0.4;0.6;1" dur="5s" repeatCount="indefinite"/>
+    </rect>
+    <text x="75" y="172" class="small-text" text-anchor="middle" font-size="10">Task{</text>
+    <text x="75" y="184" class="small-text" text-anchor="middle" font-size="10">Alloc, Launch, Free</text>
+    <text x="75" y="196" class="small-text" text-anchor="middle" font-size="10">}</text>
+    
+    <text x="75" y="230" class="label" text-anchor="middle" fill="#00cc00">Host耗时：11μs ⬇84%</text>
+  </g>
+  
+  <!-- 后台线程处理 -->
+  <g transform="translate(200, 300)">
+    <text x="200" y="0" class="subtitle" text-anchor="middle">后台线程异步处理</text>
+    
+    <!-- 后台线程 -->
+    <rect x="50" y="20" width="300" height="100" fill="#f9f9f9" stroke="#999" stroke-width="2" stroke-dasharray="5,5" rx="5"/>
+    <text x="200" y="40" class="label" text-anchor="middle">后台线程（异步执行）</text>
+    
+    <!-- 任务处理流程 -->
+    <g id="bg-task1">
+      <rect x="70" y="55" width="80" height="25" class="task-box" rx="3" opacity="0">
+        <animate attributeName="opacity" values="0;0;0;1;1;1" keyTimes="0;0.1;0.2;0.4;0.6;1" dur="5s" repeatCount="indefinite"/>
+      </rect>
+      <text x="110" y="72" class="small-text" text-anchor="middle">AllocMemory</text>
+    </g>
+    
+    <path d="M 150,67 L 165,67" class="arrow" marker-end="url(#arrow)" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;1;1;1" keyTimes="0;0.1;0.2;0.4;0.6;1" dur="5s" repeatCount="indefinite"/>
+    </path>
+    
+    <g id="bg-task2">
+      <rect x="175" y="55" width="80" height="25" class="task-box" rx="3" opacity="0">
+        <animate attributeName="opacity" values="0;0;0;0;1;1" keyTimes="0;0.1;0.2;0.4;0.6;1" dur="5s" repeatCount="indefinite"/>
+      </rect>
+      <text x="215" y="72" class="small-text" text-anchor="middle">LaunchKernel</text>
+    </g>
+    
+    <path d="M 255,67 L 270,67" class="arrow" marker-end="url(#arrow)" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;0;1;1" keyTimes="0;0.1;0.2;0.4;0.6;1" dur="5s" repeatCount="indefinite"/>
+    </path>
+    
+    <g id="bg-task3">
+      <rect x="280" y="55" width="60" height="25" class="task-box" rx="3" opacity="0">
+        <animate attributeName="opacity" values="0;0;0;0;0;1" keyTimes="0;0.1;0.2;0.4;0.6;1" dur="5s" repeatCount="indefinite"/>
+      </rect>
+      <text x="310" y="72" class="small-text" text-anchor="middle" font-size="10">FreeMem</text>
+    </g>
+    
+    <!-- Device执行 -->
+    <rect x="70" y="90" width="270" height="20" class="device-box" rx="3" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;0;1;1" keyTimes="0;0.1;0.2;0.4;0.6;1" dur="5s" repeatCount="indefinite"/>
+    </rect>
+    <text x="205" y="104" class="small-text" text-anchor="middle">Device执行（与Host并行）</text>
+  </g>
+  
+  <!-- 关键优势 -->
+  <g transform="translate(100, 450)">
+    <text x="0" y="0" class="label" fill="#00cc00">✓ 关键优势：KernelRunner快速返回，不阻塞后续算子调度，Device和Host并行工作</text>
+  </g>
+</svg>
+

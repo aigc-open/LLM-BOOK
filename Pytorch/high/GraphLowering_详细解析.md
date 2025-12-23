@@ -4,7 +4,6 @@
 
 ## 动画演示
 
-**完整转换流程可视化**（自动播放循环动画）：
 
 ![GraphLowering 原理动画](./GraphLowering_原理动画.svg)
 

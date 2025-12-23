@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 550">
+  <defs>
+    <style>
+      .title { font: bold 22px sans-serif; fill: #333; }
+      .subtitle { font: bold 16px sans-serif; fill: #666; }
+      .label { font: 14px sans-serif; fill: #666; }
+      .small-text { font: 12px sans-serif; fill: #999; }
+      .tech-label { font: bold 14px sans-serif; }
+      .cpu-area { fill: #ffd699; opacity: 0.3; }
+      .npu-area { fill: #99ccff; opacity: 0.3; }
+      .queue-box { fill: #f0f0f0; stroke: #666; stroke-width: 1; }
+      .arrow { stroke: #666; stroke-width: 2; fill: none; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666" />
+    </marker>
+  </defs>
+  
+  <!-- 标题 -->
+  <text x="450" y="30" class="title" text-anchor="middle">三大技术协同：最终性能提升30%</text>
+  
+  <!-- 技术标签 -->
+  <g transform="translate(50, 60)">
+    <rect x="0" y="0" width="250" height="30" fill="#ffe6e6" stroke="#cc0000" stroke-width="2" rx="5"/>
+    <text x="125" y="20" class="tech-label" text-anchor="middle" fill="#cc0000">① 异构并行</text>
+    
+    <rect x="270" y="0" width="250" height="30" fill="#e6ffe6" stroke="#00cc00" stroke-width="2" rx="5"/>
+    <text x="395" y="20" class="tech-label" text-anchor="middle" fill="#00cc00">② 异步下发</text>
+    
+    <rect x="540" y="0" width="250" height="30" fill="#e6e6ff" stroke="#0000cc" stroke-width="2" rx="5"/>
+    <text x="665" y="20" class="tech-label" text-anchor="middle" fill="#0000cc">③ 三级流水</text>
+  </g>
+  
+  <!-- 系统架构 -->
+  <g transform="translate(50, 120)">
+    <!-- CPU子图区域 -->
+    <rect x="0" y="0" width="350" height="180" class="cpu-area" stroke="#ff9900" stroke-width="3" rx="10"/>
+    <text x="10" y="20" class="subtitle" fill="#ff9900">CPU子图（异构并行①）</text>
+    
+    <rect x="20" y="40" width="150" height="40" fill="#ffd699" stroke="#ff9900" stroke-width="2" rx="5"/>
+    <text x="95" y="65" class="label" text-anchor="middle">SuperKernelActor-CPU</text>
+    
+    <rect x="20" y="100" width="100" height="30" fill="#ffeecc" stroke="#ff9900" rx="3" opacity="0">
+      <animate attributeName="opacity" values="0;1;1;1;1;1" keyTimes="0;0.15;0.3;0.5;0.7;1" dur="8s" repeatCount="indefinite"/>
+    </rect>
+    <text x="70" y="120" class="small-text" text-anchor="middle">DynamicShape</text>
+    
+    <rect x="140" y="100" width="80" height="30" fill="#ffeecc" stroke="#ff9900" rx="3" opacity="0">
+      <animate attributeName="opacity" values="0;0;1;1;1;1" keyTimes="0;0.15;0.3;0.5;0.7;1" dur="8s" repeatCount="indefinite"/>
+    </rect>
+    <text x="180" y="120" class="small-text" text-anchor="middle">Reshape</text>
+    
+    <rect x="240" y="100" width="80" height="30" fill="#ffeecc" stroke="#ff9900" rx="3" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;1;1;1" keyTimes="0;0.15;0.3;0.5;0.7;1" dur="8s" repeatCount="indefinite"/>
+    </rect>
+    <text x="280" y="120" class="small-text" text-anchor="middle">Unique</text>
+    
+    <text x="175" y="165" class="label" text-anchor="middle" fill="#ff9900">执行时间：3ms</text>
+  </g>
+  
+  <!-- NPU子图区域 -->
+  <g transform="translate(450, 120)">
+    <rect x="0" y="0" width="400" height="300" class="npu-area" stroke="#0066cc" stroke-width="3" rx="10"/>
+    <text x="10" y="20" class="subtitle" fill="#0066cc">NPU子图（异构并行①）</text>
+    
+    <rect x="20" y="40" width="180" height="40" fill="#99ccff" stroke="#0066cc" stroke-width="2" rx="5"/>
+    <text x="110" y="65" class="label" text-anchor="middle">SuperKernelActor-NPU</text>
+    
+    <!-- 异步下发② -->
+    <path d="M 110,80 L 110,100" class="arrow" marker-end="url(#arrow)"/>
+    <text x="120" y="95" class="small-text" fill="#00cc00">异步下发②</text>
+    
+    <!-- 三级流水③ -->
+    <rect x="20" y="110" width="360" height="120" fill="#f5f5ff" stroke="#0000cc" stroke-width="2" stroke-dasharray="5,5" rx="5"/>
+    <text x="25" y="130" class="small-text" fill="#0000cc">三级流水③</text>
+    
+    <!-- InferQueue -->
+    <rect x="30" y="140" width="100" height="25" class="queue-box" rx="3"/>
+    <text x="80" y="157" class="small-text" text-anchor="middle">InferQueue</text>
+    <circle cx="50" cy="152" r="5" fill="#ffe6e6" opacity="0">
+      <animate attributeName="opacity" values="0;1;1;1;1;1" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="8s" repeatCount="indefinite"/>
+      <animate attributeName="cx" values="50;110;110;110;110;110" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="8s" repeatCount="indefinite"/>
+    </circle>
+    
+    <path d="M 130,152 L 150,152" class="arrow" marker-end="url(#arrow)"/>
+    
+    <!-- ResizeQueue -->
+    <rect x="160" y="140" width="100" height="25" class="queue-box" rx="3"/>
+    <text x="210" y="157" class="small-text" text-anchor="middle">ResizeQueue</text>
+    <circle cx="180" cy="152" r="5" fill="#e6ffe6" opacity="0">
+      <animate attributeName="opacity" values="0;0;1;1;1;1" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="8s" repeatCount="indefinite"/>
+      <animate attributeName="cx" values="180;180;240;240;240;240" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="8s" repeatCount="indefinite"/>
+    </circle>
+    
+    <path d="M 260,152 L 280,152" class="arrow" marker-end="url(#arrow)"/>
+    
+    <!-- LaunchQueue -->
+    <rect x="290" y="140" width="80" height="25" class="queue-box" rx="3"/>
+    <text x="330" y="157" class="small-text" text-anchor="middle">LaunchQ</text>
+    <circle cx="310" cy="152" r="5" fill="#e6e6ff" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;1;1;1" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="8s" repeatCount="indefinite"/>
+      <animate attributeName="cx" values="310;310;310;350;350;350" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="8s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- 多层并行 -->
+    <g transform="translate(0, 30)">
+      <circle cx="50" cy="152" r="5" fill="#ffe6e6" opacity="0">
+        <animate attributeName="opacity" values="0;0;1;1;1;1" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="8s" repeatCount="indefinite"/>
+        <animate attributeName="cx" values="50;110;170;230;290;350" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="8s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="50" cy="162" r="5" fill="#ffe6e6" opacity="0">
+        <animate attributeName="opacity" values="0;0;0;1;1;1" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="8s" repeatCount="indefinite"/>
+        <animate attributeName="cx" values="50;50;110;170;230;290" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="8s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    
+    <path d="M 200,165 L 200,180" class="arrow" marker-end="url(#arrow)"/>
+    
+    <!-- Device执行 -->
+    <rect x="20" y="190" width="360" height="35" fill="#ccffcc" stroke="#00cc00" stroke-width="2" rx="5"/>
+    <text x="200" y="212" class="label" text-anchor="middle">NPU Device执行（持续计算）</text>
+    
+    <!-- 执行进度条 -->
+    <rect x="30" y="200" width="0" height="15" fill="#00cc00" rx="3" opacity="0.7">
+      <animate attributeName="width" values="0;340" dur="8s" repeatCount="indefinite"/>
+    </rect>
+    
+    <text x="200" y="255" class="label" text-anchor="middle" fill="#0066cc">执行时间：23ms</text>
+  </g>
+  
+  <!-- 数据交换 -->
+  <path d="M 400,180 L 450,180" stroke="#9966ff" stroke-width="3" stroke-dasharray="5,5" opacity="0">
+    <animate attributeName="opacity" values="0;0;0;0;1;1" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="8s" repeatCount="indefinite"/>
+  </path>
+  <text x="425" y="175" class="small-text" fill="#9966ff" text-anchor="middle" opacity="0">
+    D2H/H2D
+    <animate attributeName="opacity" values="0;0;0;0;1;1" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="8s" repeatCount="indefinite"/>
+  </text>
+  
+  <!-- 并行标注 -->
+  <g transform="translate(200, 320)">
+    <text x="0" y="0" class="subtitle" fill="#ff9900">CPU和NPU同时工作</text>
+    <path d="M 0,10 L 0,30 M -20,30 L 20,30" stroke="#ff9900" stroke-width="3"/>
+    <path d="M 300,10 L 300,30 M 280,30 L 320,30" stroke="#ff9900" stroke-width="3"/>
+    
+    <path d="M 50,20 L 250,20" stroke="#ff9900" stroke-width="2" stroke-dasharray="10,5" opacity="0.5">
+      <animate attributeName="stroke-dashoffset" from="0" to="30" dur="1s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  
+  <!-- 性能对比 -->
+  <g transform="translate(50, 460)">
+    <rect x="0" y="0" width="800" height="60" fill="#f0f0f0" stroke="#333" stroke-width="2" rx="5"/>
+    
+    <text x="20" y="25" class="label">基线(KBK)</text>
+    <rect x="150" y="10" width="452" height="20" fill="#ffcccc" stroke="#cc0000" rx="3"/>
+    <text x="376" y="25" class="small-text" text-anchor="middle">45.2ms</text>
+    
+    <text x="20" y="50" class="label" fill="#00cc00">全部启用</text>
+    <rect x="150" y="35" width="315" height="20" fill="#ccffcc" stroke="#00cc00" stroke-width="2" rx="3" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;0;1;1" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="8s" repeatCount="indefinite"/>
+      <animate attributeName="width" values="0;315" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="8s" repeatCount="indefinite"/>
+    </rect>
+    <text x="307" y="50" class="small-text" text-anchor="middle" fill="#00cc00" font-weight="bold" opacity="0">
+      31.5ms ⬇30.3%
+      <animate attributeName="opacity" values="0;0;0;0;1;1" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="8s" repeatCount="indefinite"/>
+    </text>
+    
+    <text x="650" y="32" class="subtitle" fill="#00cc00" opacity="0">
+      性能提升30%
+      <animate attributeName="opacity" values="0;0;0;0;1;1" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="8s" repeatCount="indefinite"/>
+    </text>
+  </g>
+</svg>
+
