@@ -825,6 +825,7 @@ def lowering_func(x: TensorBox):
 ```python
 import torch
 import torch.fx as fx
+import operator
 from typing import Callable, List, Dict, Any
 from dataclasses import dataclass
 
@@ -1144,7 +1145,6 @@ class MockGraphLowering:
         """运行 lowering 过程,遍历fx graph,调用对应的lowering函数"""
         input_idx = 0
         for node in self.graph.nodes:
-            print("---------",node)
             if node.op == "placeholder":
                 self.placeholder(node, input_idx)
                 input_idx += 1
@@ -1189,6 +1189,12 @@ class MockGraphLowering:
         
     def _get_node_fn(self, node: fx.Node):
         """获取节点函数"""
+        # 检查是否是融合算子
+        if node.target in [fused_mul_add, fused_add_sigmoid, fused_mul_add_sigmoid]:
+            target_name = node.target.__name__
+            return lowerings[target_name]
+        
+        # 标准 aten 算子
         target_name = "aten." + str(node.target.__name__)
         return lowerings[target_name]
         
@@ -1479,7 +1485,247 @@ class MockGraphLowering:
         return True
 
 # ============================================================
-# 第四部分：测试
+# 第四部分：FX Graph 融合优化
+# ============================================================
+
+class FXGraphFusion:
+    """FX Graph 层面的融合优化"""
+    
+    def __init__(self, gm: fx.GraphModule):
+        self.gm = gm
+        self.graph = gm.graph
+        
+    def apply_fusions(self):
+        """应用所有融合规则"""
+        print("\n" + "="*80)
+        print("FX Graph 融合优化")
+        print("="*80)
+        
+        # 融合规则1: mul + add -> fused_mul_add
+        self.fuse_mul_add()
+        
+        # 融合规则2: add + sigmoid -> fused_add_sigmoid  
+        self.fuse_add_sigmoid()
+        
+        # 重新编译
+        self.gm.recompile()
+        
+        return self.gm
+    
+    def fuse_mul_add(self):
+        """
+        融合模式: x * scalar + scalar -> fused_mul_add(x, mul_scalar, add_scalar)
+        
+        匹配:
+            mul = x * 2
+            add = mul + 1
+        融合为:
+            result = fused_mul_add(x, 2, 1)
+        """
+        fused_count = 0
+        nodes_to_remove = []
+        
+        for node in self.graph.nodes:
+            # 查找 add 节点（支持 operator.add 和 torch.add）
+            if node.op == 'call_function' and node.target in [operator.add, torch.add, torch.ops.aten.add]:
+                # 检查 add 的第一个参数是否是 mul
+                if len(node.args) >= 2:
+                    mul_node = node.args[0]
+                    add_scalar = node.args[1]
+                    
+                    # 检查 mul_node 是否是乘法操作
+                    if (isinstance(mul_node, fx.Node) and 
+                        mul_node.op == 'call_function' and 
+                        mul_node.target in [operator.mul, torch.mul, torch.ops.aten.mul] and
+                        len(mul_node.args) >= 2):
+                        
+                        input_tensor = mul_node.args[0]
+                        mul_scalar = mul_node.args[1]
+                        
+                        # 检查是否是标量
+                        if isinstance(mul_scalar, (int, float)) and isinstance(add_scalar, (int, float)):
+                            # 检查 mul_node 只被当前 add_node 使用
+                            if len(mul_node.users) == 1:
+                                print(f"✓ 融合: {mul_node.name} * {mul_scalar} + {add_scalar} -> fused_mul_add")
+                                
+                                # 在 add 节点之前插入融合节点
+                                with self.graph.inserting_before(node):
+                                    fused_node = self.graph.call_function(
+                                        fused_mul_add,
+                                        args=(input_tensor, mul_scalar, add_scalar))
+                                    fused_node.name = f"fused_mul_add_{fused_count}"
+                                
+                                # 替换所有使用 add 节点的地方
+                                node.replace_all_uses_with(fused_node)
+                                # 先删除 add，再删除 mul（反向依赖顺序）
+                                nodes_to_remove.append((node, mul_node))
+                                fused_count += 1
+        
+        # 删除被融合的节点（先删除消费者，再删除生产者）
+        for add_node, mul_node in nodes_to_remove:
+            self.graph.erase_node(add_node)
+            self.graph.erase_node(mul_node)
+        
+        if fused_count > 0:
+            print(f"  → 融合了 {fused_count} 个 mul+add 模式")
+        
+        return fused_count
+    
+    def fuse_add_sigmoid(self):
+        """
+        融合模式: sigmoid(add(x, y)) -> fused_add_sigmoid(x, y)
+        或者: sigmoid(fused_mul_add(x, a, b)) -> fused_mul_add_sigmoid(x, a, b)
+        
+        匹配:
+            add = x + y (或 fused_mul_add)
+            sigmoid = sigmoid(add)
+        融合为:
+            result = fused_add_sigmoid(x, y) 或 fused_mul_add_sigmoid(x, a, b)
+        """
+        fused_count = 0
+        nodes_to_remove = []
+        
+        for node in self.graph.nodes:
+            # 查找 sigmoid 节点
+            if node.op == 'call_function' and node.target in [torch.sigmoid, torch.ops.aten.sigmoid]:
+                if len(node.args) >= 1:
+                    add_node = node.args[0]
+                    
+                    # 检查输入是否是 fused_mul_add
+                    if (isinstance(add_node, fx.Node) and 
+                        add_node.op == 'call_function' and 
+                        add_node.target == fused_mul_add):
+                        
+                        # 检查 add_node 只被当前 sigmoid_node 使用
+                        if len(add_node.users) == 1:
+                            print(f"✓ 融合: {add_node.name} + {node.name} -> fused_mul_add_sigmoid")
+                            
+                            # 在 sigmoid 节点之前插入融合节点
+                            with self.graph.inserting_before(node):
+                                fused_node = self.graph.call_function(
+                                    fused_mul_add_sigmoid,
+                                    args=add_node.args)
+                                fused_node.name = f"fused_mul_add_sigmoid_{fused_count}"
+                            
+                            # 替换所有使用 sigmoid 节点的地方
+                            node.replace_all_uses_with(fused_node)
+                            # 先删除 sigmoid，再删除 fused_mul_add（反向依赖顺序）
+                            nodes_to_remove.append((node, add_node))
+                            fused_count += 1
+                    
+                    # 检查输入是否是普通 add 操作
+                    elif (isinstance(add_node, fx.Node) and 
+                          add_node.op == 'call_function' and 
+                          add_node.target in [operator.add, torch.add, torch.ops.aten.add]):
+                        
+                        # 检查 add_node 只被当前 sigmoid_node 使用
+                        if len(add_node.users) == 1:
+                            print(f"✓ 融合: {add_node.name} + {node.name} -> fused_add_sigmoid")
+                            
+                            # 在 sigmoid 节点之前插入融合节点
+                            with self.graph.inserting_before(node):
+                                fused_node = self.graph.call_function(
+                                    fused_add_sigmoid,
+                                    args=add_node.args)
+                                fused_node.name = f"fused_add_sigmoid_{fused_count}"
+                            
+                            # 替换所有使用 sigmoid 节点的地方
+                            node.replace_all_uses_with(fused_node)
+                            # 先删除 sigmoid，再删除 add（反向依赖顺序）
+                            nodes_to_remove.append((node, add_node))
+                            fused_count += 1
+        
+        # 删除被融合的节点（先删除消费者，再删除生产者）
+        for sigmoid_node, add_node in nodes_to_remove:
+            self.graph.erase_node(sigmoid_node)
+            self.graph.erase_node(add_node)
+        
+        if fused_count > 0:
+            print(f"  → 融合了 {fused_count} 个 [fused_mul_add/add]+sigmoid 模式")
+        
+        return fused_count
+
+
+# 定义融合算子（实际计算逻辑）
+def fused_mul_add(x, mul_scalar, add_scalar):
+    """融合的 mul+add 操作: x * mul_scalar + add_scalar"""
+    return x * mul_scalar + add_scalar
+
+def fused_add_sigmoid(x, y):
+    """融合的 add+sigmoid 操作: sigmoid(x + y)"""
+    return torch.sigmoid(x + y)
+
+def fused_mul_add_sigmoid(x, mul_scalar, add_scalar):
+    """融合的 mul+add+sigmoid 操作: sigmoid(x * mul_scalar + add_scalar)"""
+    return torch.sigmoid(x * mul_scalar + add_scalar)
+
+
+# 注册融合算子的 lowering 函数
+@register_lowering('fused_mul_add')
+def lower_fused_mul_add(x: TensorBox, mul_scalar, add_scalar):
+    """
+    fused_mul_add 的 lowering
+    直接在一个 Pointwise 中完成 x * mul_scalar + add_scalar
+    """
+    def inner_fn(idx):
+        x_val = ops.load(x.data.name if isinstance(x.data, InputBuffer) else 'buf', idx)
+        mul_const = ops.constant(float(mul_scalar))
+        add_const = ops.constant(float(add_scalar))
+        mul_result = ops.mul(x_val, mul_const)
+        return ops.add(mul_result, add_const)
+    
+    return TensorBox.create(Pointwise(
+        device=x.get_device(),
+        dtype=x.get_dtype(),
+        inner_fn=inner_fn,
+        ranges=list(x.get_size())))
+
+@register_lowering('fused_add_sigmoid')
+def lower_fused_add_sigmoid(x: TensorBox, y):
+    """
+    fused_add_sigmoid 的 lowering
+    直接在一个 Pointwise 中完成 sigmoid(x + y)
+    """
+    def inner_fn(idx):
+        x_val = ops.load(x.data.name if isinstance(x.data, InputBuffer) else 'buf', idx)
+        
+        if isinstance(y, TensorBox):
+            y_val = ops.load(y.data.name if isinstance(y.data, InputBuffer) else 'buf', idx)
+        else:
+            y_val = ops.constant(float(y))
+        
+        add_result = ops.add(x_val, y_val)
+        return ops.sigmoid(add_result)
+    
+    return TensorBox.create(Pointwise(
+        device=x.get_device(),
+        dtype=x.get_dtype(),
+        inner_fn=inner_fn,
+        ranges=list(x.get_size())))
+
+@register_lowering('fused_mul_add_sigmoid')
+def lower_fused_mul_add_sigmoid(x: TensorBox, mul_scalar, add_scalar):
+    """
+    fused_mul_add_sigmoid 的 lowering
+    直接在一个 Pointwise 中完成 sigmoid(x * mul_scalar + add_scalar)
+    """
+    def inner_fn(idx):
+        x_val = ops.load(x.data.name if isinstance(x.data, InputBuffer) else 'buf', idx)
+        mul_const = ops.constant(float(mul_scalar))
+        add_const = ops.constant(float(add_scalar))
+        mul_result = ops.mul(x_val, mul_const)
+        add_result = ops.add(mul_result, add_const)
+        return ops.sigmoid(add_result)
+    
+    return TensorBox.create(Pointwise(
+        device=x.get_device(),
+        dtype=x.get_dtype(),
+        inner_fn=inner_fn,
+        ranges=list(x.get_size())))
+
+
+# ============================================================
+# 第五部分：测试
 # ============================================================
 
 class CustomModel(torch.nn.Module):
@@ -1490,53 +1736,107 @@ class CustomModel(torch.nn.Module):
         return w
 
 def demo_fx_to_ir():
+    """完整演示：FX Graph -> FX 融合 -> IR (pre) -> IR (post)"""
     model = CustomModel()
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     example_input = torch.randn(4, 64, device=device)
     traced = fx.symbolic_trace(model)
     
     print("="*80)
-    print("步骤 1: 得到 Pytorch FX Graph")
+    print("步骤 1: 原始 FX Graph")
     print("="*80)
     print(traced.graph)
+    original_node_count = len([n for n in traced.graph.nodes if n.op == 'call_function'])
+    print(f"\n原始 FX 节点数: {original_node_count}")
     
-    # 运行 lowering
-    lowering = MockGraphLowering(traced, [example_input])
+    # ===== 新增：FX Graph 层面的融合 =====
+    fx_fusion = FXGraphFusion(traced)
+    traced_fused = fx_fusion.apply_fusions()
+    
+    print("\n" + "="*80)
+    print("步骤 2: FX Graph 融合后")
+    print("="*80)
+    print(traced_fused.graph)
+    fused_fx_node_count = len([n for n in traced_fused.graph.nodes if n.op == 'call_function'])
+    print(f"\n融合后 FX 节点数: {fused_fx_node_count}")
+    
+    if fused_fx_node_count < original_node_count:
+        fx_reduction = original_node_count - fused_fx_node_count
+        print(f"FX 层面减少: {fx_reduction} 个节点")
+    
+    # 运行 lowering (使用融合后的 FX Graph)
+    lowering = MockGraphLowering(traced_fused, [example_input])
     lowering.run()
     
     # 可视化融合前的 IR（ir_pre_fusion）
     print("\n" + "="*80)
-    print("步骤 2: ir_pre_fusion - GraphLowering 输出（未融合）")
+    print("步骤 3: ir_pre_fusion - GraphLowering 输出（未 IR 融合）")
     print("="*80)
     ir_pre_lines = lowering.ir_pre()
     
     # 可视化融合后的 IR（ir_post_fusion）
     print("\n" + "="*80)
-    print("步骤 3: ir_post_fusion - Scheduler 融合后输出")
+    print("步骤 4: ir_post_fusion - Scheduler IR 融合后输出")
     print("="*80)
     ir_post_lines = lowering.ir_post()
     
     # 统计对比
     print("\n" + "="*80)
-    print("融合效果对比")
+    print("完整融合效果对比")
     print("="*80)
     
     # 统计融合前的节点数
     pre_nodes = len([l for l in ir_pre_lines if l.startswith('op') and '.writes' in l])
     post_nodes = len([l for l in ir_post_lines if l.startswith('op') and '.writes' in l])
     
-    print(f"融合前节点数: {pre_nodes}")
-    print(f"融合后节点数: {post_nodes}")
+    print(f"原始 FX Graph:        {original_node_count} 个操作节点")
+    print(f"FX 融合后:           {fused_fx_node_count} 个操作节点 (减少 {original_node_count - fused_fx_node_count})")
+    print(f"IR pre_fusion:       {pre_nodes} 个 IR 节点")
+    print(f"IR post_fusion:      {post_nodes} 个 IR 节点 (减少 {pre_nodes - post_nodes})")
     
-    if post_nodes < pre_nodes:
-        fusion_rate = ((pre_nodes - post_nodes) / pre_nodes) * 100
-        print(f"融合率: {fusion_rate:.1f}% ({pre_nodes - post_nodes} 个节点被融合)")
-        print(f"性能提升: 减少了 {pre_nodes - post_nodes} 次 kernel 启动")
+    total_reduction = original_node_count - post_nodes
+    if total_reduction > 0:
+        total_fusion_rate = (total_reduction / original_node_count) * 100
+        print(f"\n总体优化效果:")
+        print(f"  - 从 {original_node_count} 个节点优化到 {post_nodes} 个节点")
+        print(f"  - 减少了 {total_reduction} 个节点 ({total_fusion_rate:.1f}%)")
+        print(f"  - 性能提升: 减少了 {total_reduction} 次 kernel 启动开销")
     
     print("="*80)
 
+
+def demo_no_fx_fusion():
+    """对比演示：不使用 FX Graph 融合"""
+    model = CustomModel()
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    example_input = torch.randn(4, 64, device=device)
+    traced = fx.symbolic_trace(model)
+    
+    print("\n\n" + "="*80)
+    print("对比：不使用 FX Graph 融合的效果")
+    print("="*80)
+    
+    # 直接运行 lowering (不经过 FX 融合)
+    lowering = MockGraphLowering(traced, [example_input])
+    lowering.run()
+    
+    ir_pre_lines = lowering.ir_pre()
+    ir_post_lines = lowering.ir_post()
+    
+    pre_nodes = len([l for l in ir_pre_lines if l.startswith('op') and '.writes' in l])
+    post_nodes = len([l for l in ir_post_lines if l.startswith('op') and '.writes' in l])
+    
+    print(f"\nIR pre_fusion:  {pre_nodes} 个节点")
+    print(f"IR post_fusion: {post_nodes} 个节点")
+    print(f"仅 IR 层面融合减少: {pre_nodes - post_nodes} 个节点")
+    print("="*80)
+
 if __name__ == '__main__':
+    # 演示包含 FX Graph 融合的完整流程
     demo_fx_to_ir()
+    
+    # 对比：不使用 FX Graph 融合
+    # demo_no_fx_fusion()
 ```
 
 ## 八、总结
