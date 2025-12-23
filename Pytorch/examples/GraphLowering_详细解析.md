@@ -2,6 +2,12 @@
 
 > 本文档深入分析 PyTorch Inductor 中 GraphLowering 类的工作原理，展示它如何将 FX Graph 转换为 Inductor IR。
 
+## 动画演示
+
+**完整转换流程可视化**（自动播放循环动画）：
+
+![GraphLowering 原理动画](./GraphLowering_原理动画.svg)
+
 ---
 
 ## 一、核心类继承关系
