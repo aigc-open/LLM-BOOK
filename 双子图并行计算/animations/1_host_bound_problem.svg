@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <style>
+      .title { font: bold 20px sans-serif; fill: #333; }
+      .label { font: 14px sans-serif; fill: #666; }
+      .small-text { font: 12px sans-serif; fill: #999; }
+      .host-box { fill: #ffcccc; stroke: #cc0000; stroke-width: 2; }
+      .device-box { fill: #ccffcc; stroke: #00cc00; stroke-width: 2; }
+      .idle-box { fill: #eeeeee; stroke: #999999; stroke-width: 1; stroke-dasharray: 5,5; }
+      .arrow { stroke: #666; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666" />
+    </marker>
+  </defs>
+  
+  <!-- 标题 -->
+  <text x="400" y="30" class="title" text-anchor="middle">传统KBK模式：Host Bound问题</text>
+  
+  <!-- 时间轴 -->
+  <line x1="100" y1="80" x2="700" y2="80" stroke="#333" stroke-width="2"/>
+  <text x="80" y="85" class="label">时间</text>
+  
+  <!-- Host行 -->
+  <text x="50" y="140" class="label" text-anchor="end">Host(CPU)</text>
+  <line x1="100" y1="140" x2="700" y2="140" stroke="#ddd" stroke-width="1"/>
+  
+  <!-- Device行 -->
+  <text x="50" y="200" class="label" text-anchor="end">Device(NPU)</text>
+  <line x1="100" y1="200" x2="700" y2="200" stroke="#ddd" stroke-width="1"/>
+  
+  <!-- 算子1: LayerNorm -->
+  <g id="op1">
+    <!-- Host调度 -->
+    <rect x="100" y="110" width="180" height="40" class="host-box" opacity="0">
+      <animate attributeName="opacity" values="0;1;1;1;1;1;1" keyTimes="0;0.1;0.25;0.4;0.55;0.7;1" dur="6s" repeatCount="indefinite"/>
+    </rect>
+    <text x="190" y="135" class="small-text" text-anchor="middle" opacity="0">
+      Host调度(45μs)
+      <animate attributeName="opacity" values="0;1;1;1;1;1;1" keyTimes="0;0.1;0.25;0.4;0.55;0.7;1" dur="6s" repeatCount="indefinite"/>
+    </text>
+    
+    <!-- Device空闲 -->
+    <rect x="100" y="180" width="180" height="40" class="idle-box" opacity="0">
+      <animate attributeName="opacity" values="0;1;1;1;1;1;1" keyTimes="0;0.1;0.25;0.4;0.55;0.7;1" dur="6s" repeatCount="indefinite"/>
+    </rect>
+    <text x="190" y="205" class="small-text" text-anchor="middle" opacity="0" fill="#cc0000">
+      空闲等待
+      <animate attributeName="opacity" values="0;1;1;1;1;1;1" keyTimes="0;0.1;0.25;0.4;0.55;0.7;1" dur="6s" repeatCount="indefinite"/>
+    </text>
+    
+    <!-- Device执行 -->
+    <rect x="280" y="180" width="60" height="40" class="device-box" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;1;1;1;1" keyTimes="0;0.1;0.25;0.4;0.55;0.7;1" dur="6s" repeatCount="indefinite"/>
+    </rect>
+    <text x="310" y="205" class="small-text" text-anchor="middle" opacity="0">
+      执行(10μs)
+      <animate attributeName="opacity" values="0;0;0;1;1;1;1" keyTimes="0;0.1;0.25;0.4;0.55;0.7;1" dur="6s" repeatCount="indefinite"/>
+    </text>
+  </g>
+  
+  <!-- 算子2: MatMul -->
+  <g id="op2">
+    <!-- Host调度 -->
+    <rect x="340" y="110" width="190" height="40" class="host-box" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;0;1;1;1" keyTimes="0;0.1;0.25;0.4;0.55;0.7;1" dur="6s" repeatCount="indefinite"/>
+    </rect>
+    <text x="435" y="135" class="small-text" text-anchor="middle" opacity="0">
+      Host调度(48μs)
+      <animate attributeName="opacity" values="0;0;0;0;1;1;1" keyTimes="0;0.1;0.25;0.4;0.55;0.7;1" dur="6s" repeatCount="indefinite"/>
+    </text>
+    
+    <!-- Device空闲 -->
+    <rect x="340" y="180" width="190" height="40" class="idle-box" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;0;1;1;1" keyTimes="0;0.1;0.25;0.4;0.55;0.7;1" dur="6s" repeatCount="indefinite"/>
+    </rect>
+    <text x="435" y="205" class="small-text" text-anchor="middle" opacity="0" fill="#cc0000">
+      空闲等待
+      <animate attributeName="opacity" values="0;0;0;0;1;1;1" keyTimes="0;0.1;0.25;0.4;0.55;0.7;1" dur="6s" repeatCount="indefinite"/>
+    </text>
+    
+    <!-- Device执行 -->
+    <rect x="530" y="180" width="65" height="40" class="device-box" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;0;0;0;1" keyTimes="0;0.1;0.25;0.4;0.55;0.7;1" dur="6s" repeatCount="indefinite"/>
+    </rect>
+    <text x="562" y="205" class="small-text" text-anchor="middle" opacity="0">
+      执行(12μs)
+      <animate attributeName="opacity" values="0;0;0;0;0;0;1" keyTimes="0;0.1;0.25;0.4;0.55;0.7;1" dur="6s" repeatCount="indefinite"/>
+    </text>
+  </g>
+  
+  <!-- 指示箭头 -->
+  <g id="indicator">
+    <line x1="100" y1="60" x2="100" y2="240" stroke="#ff0000" stroke-width="3" opacity="0.8">
+      <animate attributeName="x1" values="100;280;340;530;595" keyTimes="0;0.25;0.4;0.7;1" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="x2" values="100;280;340;530;595" keyTimes="0;0.25;0.4;0.7;1" dur="6s" repeatCount="indefinite"/>
+    </line>
+    <text x="100" y="50" class="small-text" text-anchor="middle" fill="#ff0000">
+      当前时刻
+      <animate attributeName="x" values="100;280;340;530;595" keyTimes="0;0.25;0.4;0.7;1" dur="6s" repeatCount="indefinite"/>
+    </text>
+  </g>
+  
+  <!-- 统计信息 -->
+  <g transform="translate(100, 280)">
+    <text x="0" y="0" class="label" fill="#cc0000">问题：Device利用率仅17.4%</text>
+    <text x="0" y="25" class="small-text">• Host调度时间占83%（浪费大量时间）</text>
+    <text x="0" y="45" class="small-text">• Device大部分时间在等待（算力闲置）</text>
+    <text x="0" y="65" class="small-text">• 完全串行执行（Host和Device从不同时工作）</text>
+  </g>
+</svg>
+

@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <style>
+      .title { font: bold 20px sans-serif; fill: #333; }
+      .label { font: 14px sans-serif; fill: #666; }
+      .small-text { font: 12px sans-serif; fill: #999; }
+      .cpu-graph { fill: #ffd699; stroke: #ff9900; stroke-width: 2; }
+      .npu-graph { fill: #99ccff; stroke: #0066cc; stroke-width: 2; }
+      .arrow { stroke: #666; stroke-width: 2; fill: none; }
+      .data-transfer { stroke: #9966ff; stroke-width: 2; stroke-dasharray: 5,5; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666" />
+    </marker>
+  </defs>
+  
+  <!-- 标题 -->
+  <text x="400" y="30" class="title" text-anchor="middle">技术一：异构并行（CPU ∥ NPU）</text>
+  
+  <!-- 原始计算图 -->
+  <g transform="translate(50, 60)">
+    <text x="0" y="0" class="label">原始计算图</text>
+    <rect x="0" y="10" width="120" height="180" fill="#f0f0f0" stroke="#999" stroke-width="1" rx="5"/>
+    <rect x="10" y="25" width="100" height="25" fill="#ffd699" stroke="#ff9900" rx="3"/>
+    <text x="60" y="42" class="small-text" text-anchor="middle">Reshape</text>
+    
+    <rect x="10" y="60" width="100" height="25" fill="#99ccff" stroke="#0066cc" rx="3"/>
+    <text x="60" y="77" class="small-text" text-anchor="middle">MatMul</text>
+    
+    <rect x="10" y="95" width="100" height="25" fill="#99ccff" stroke="#0066cc" rx="3"/>
+    <text x="60" y="112" class="small-text" text-anchor="middle">LayerNorm</text>
+    
+    <rect x="10" y="130" width="100" height="25" fill="#ffd699" stroke="#ff9900" rx="3"/>
+    <text x="60" y="147" class="small-text" text-anchor="middle">Unique</text>
+    
+    <rect x="10" y="165" width="100" height="25" fill="#99ccff" stroke="#0066cc" rx="3"/>
+    <text x="60" y="182" class="small-text" text-anchor="middle">Conv2D</text>
+  </g>
+  
+  <!-- 切分箭头 -->
+  <g transform="translate(200, 140)">
+    <path d="M 0,0 L 60,0" class="arrow" marker-end="url(#arrow)"/>
+    <text x="30" y="-5" class="small-text" text-anchor="middle">编译期切分</text>
+  </g>
+  
+  <!-- CPU子图 -->
+  <g transform="translate(300, 60)">
+    <text x="0" y="0" class="label" fill="#ff9900">CPU子图</text>
+    <rect x="0" y="10" width="120" height="100" fill="#fff5e6" stroke="#ff9900" stroke-width="2" rx="5"/>
+    <rect x="10" y="25" width="100" height="25" class="cpu-graph" rx="3" opacity="0">
+      <animate attributeName="opacity" values="0;1;1;1;1" keyTimes="0;0.2;0.4;0.6;1" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <text x="60" y="42" class="small-text" text-anchor="middle">Reshape</text>
+    
+    <rect x="10" y="60" width="100" height="25" class="cpu-graph" rx="3" opacity="0">
+      <animate attributeName="opacity" values="0;0;1;1;1" keyTimes="0;0.2;0.4;0.6;1" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <text x="60" y="77" class="small-text" text-anchor="middle">Unique</text>
+  </g>
+  
+  <!-- NPU子图 -->
+  <g transform="translate(480, 60)">
+    <text x="0" y="0" class="label" fill="#0066cc">NPU子图</text>
+    <rect x="0" y="10" width="120" height="140" fill="#e6f3ff" stroke="#0066cc" stroke-width="2" rx="5"/>
+    <rect x="10" y="25" width="100" height="25" class="npu-graph" rx="3" opacity="0">
+      <animate attributeName="opacity" values="0;1;1;1;1" keyTimes="0;0.2;0.4;0.6;1" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <text x="60" y="42" class="small-text" text-anchor="middle">MatMul</text>
+    
+    <rect x="10" y="60" width="100" height="25" class="npu-graph" rx="3" opacity="0">
+      <animate attributeName="opacity" values="0;0;1;1;1" keyTimes="0;0.2;0.4;0.6;1" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <text x="60" y="77" class="small-text" text-anchor="middle">LayerNorm</text>
+    
+    <rect x="10" y="95" width="100" height="25" class="npu-graph" rx="3" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;1;1" keyTimes="0;0.2;0.4;0.6;1" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <text x="60" y="112" class="small-text" text-anchor="middle">Conv2D</text>
+    
+    <rect x="10" y="130" width="100" height="15" class="npu-graph" rx="3" opacity="0">
+      <animate attributeName="opacity" values="0;0;0;0;1" keyTimes="0;0.2;0.4;0.6;1" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <text x="60" y="141" class="small-text" text-anchor="middle" font-size="10">...</text>
+  </g>
+  
+  <!-- 并行执行时间轴 -->
+  <g transform="translate(100, 250)">
+    <text x="0" y="0" class="label">运行时并行执行</text>
+    
+    <!-- 时间轴 -->
+    <line x1="0" y1="30" x2="600" y2="30" stroke="#333" stroke-width="2"/>
+    <text x="0" y="20" class="small-text">T=0ms</text>
+    <text x="200" y="20" class="small-text">T=2ms</text>
+    <text x="400" y="20" class="small-text">T=6ms</text>
+    <text x="550" y="20" class="small-text">T=8ms</text>
+    
+    <!-- CPU执行 -->
+    <text x="-50" y="65" class="label" text-anchor="end" fill="#ff9900">CPU</text>
+    <rect x="0" y="50" width="200" height="30" class="cpu-graph" rx="3" opacity="0">
+      <animate attributeName="opacity" values="0;1;1;1;1" keyTimes="0;0.2;0.5;0.8;1" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <text x="100" y="70" class="small-text" text-anchor="middle">CPU子图执行(2ms)</text>
+    <rect x="200" y="50" width="400" height="30" fill="#f5f5f5" stroke="#ccc" stroke-dasharray="3,3" rx="3" opacity="0">
+      <animate attributeName="opacity" values="0;0;1;1;1" keyTimes="0;0.2;0.5;0.8;1" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <text x="400" y="70" class="small-text" text-anchor="middle" fill="#999">空闲</text>
+    
+    <!-- NPU执行 -->
+    <text x="-50" y="115" class="label" text-anchor="end" fill="#0066cc">NPU</text>
+    <rect x="0" y="100" width="550" height="30" class="npu-graph" rx="3" opacity="0">
+      <animate attributeName="opacity" values="0;1;1;1;1" keyTimes="0;0.2;0.5;0.8;1" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <text x="275" y="120" class="small-text" text-anchor="middle">NPU子图执行(8ms)</text>
+    
+    <!-- 数据传输 -->
+    <path d="M 100,80 L 100,100" class="data-transfer" opacity="0">
+      <animate attributeName="opacity" values="0;1;1;1;1" keyTimes="0;0.2;0.5;0.8;1" dur="4s" repeatCount="indefinite"/>
+    </path>
+    <text x="110" y="92" class="small-text" fill="#9966ff" opacity="0">
+      D2H/H2D
+      <animate attributeName="opacity" values="0;1;1;1;1" keyTimes="0;0.2;0.5;0.8;1" dur="4s" repeatCount="indefinite"/>
+    </text>
+  </g>
+  
+  <!-- 优势说明 -->
+  <g transform="translate(100, 400)">
+    <text x="0" y="0" class="label" fill="#00cc00">✓ 优势：CPU和NPU同时工作，总耗时8ms（串行需10ms，提升20%）</text>
+  </g>
+</svg>
+
