@@ -1,0 +1,186 @@
+<mxfile host="Electron" modified="2025-12-24T00:00:00.000Z" agent="5.0" version="21.0.0" etag="xxx" type="device">
+  <diagram name="第7页-Tile索引机制" id="indexing-page">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- 背景 -->
+        <mxCell id="background" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1920" height="1080" as="geometry" />
+        </mxCell>
+        
+        <!-- 页面标题 -->
+        <mxCell id="page-title" value="深入理解：Tile 索引机制" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=56;fontStyle=1;fontColor=#C62828;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="360" y="40" width="1200" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="subtitle" value="这是 cuTile 编程最核心的概念！" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontColor=#D32F2F;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="130" width="800" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- 核心公式 -->
+        <mxCell id="formula-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;strokeWidth=4;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="210" width="1280" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="formula-label" value="核心公式" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=36;fontStyle=1;fontColor=#B71C1C;" vertex="1" parent="1">
+          <mxGeometry x="360" y="230" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="formula-text" value="实际内存位置 = index × shape = pid × tile_size" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=40;fontStyle=1;fontColor=#D32F2F;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="360" y="290" width="1200" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- 示例参数 -->
+        <mxCell id="example-params" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3F51B5;strokeWidth=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="390" width="1680" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="params-title" value="示例参数：" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontColor=#283593;" vertex="1" parent="1">
+          <mxGeometry x="160" y="410" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="params-text" value="向量总长度 = 16    每个 Tile 大小 = 4    处理器数量 = 4" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=30;fontColor=#424242;" vertex="1" parent="1">
+          <mxGeometry x="400" y="410" width="1320" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- 内存布局图 -->
+        <mxCell id="memory-title" value="内存布局与 Tile 划分" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=38;fontStyle=1;fontColor=#1565C0;" vertex="1" parent="1">
+          <mxGeometry x="660" y="520" width="600" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- 元素索引 -->
+        <mxCell id="elem-idx-0" value="0" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;strokeWidth=2;fontSize=28;fontColor=#212121;" vertex="1" parent="1">
+          <mxGeometry x="120" y="600" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="elem-idx-1" value="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;strokeWidth=2;fontSize=28;fontColor=#212121;" vertex="1" parent="1">
+          <mxGeometry x="220" y="600" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="elem-idx-2" value="2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;strokeWidth=2;fontSize=28;fontColor=#212121;" vertex="1" parent="1">
+          <mxGeometry x="320" y="600" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="elem-idx-3" value="3" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;strokeWidth=2;fontSize=28;fontColor=#212121;" vertex="1" parent="1">
+          <mxGeometry x="420" y="600" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="elem-idx-4" value="4" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;strokeWidth=2;fontSize=28;fontColor=#212121;" vertex="1" parent="1">
+          <mxGeometry x="520" y="600" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="elem-idx-5" value="5" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;strokeWidth=2;fontSize=28;fontColor=#212121;" vertex="1" parent="1">
+          <mxGeometry x="620" y="600" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="elem-idx-6" value="6" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;strokeWidth=2;fontSize=28;fontColor=#212121;" vertex="1" parent="1">
+          <mxGeometry x="720" y="600" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="elem-idx-7" value="7" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;strokeWidth=2;fontSize=28;fontColor=#212121;" vertex="1" parent="1">
+          <mxGeometry x="820" y="600" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="elem-idx-8" value="8" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;strokeWidth=2;fontSize=28;fontColor=#212121;" vertex="1" parent="1">
+          <mxGeometry x="920" y="600" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="elem-idx-9" value="9" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;strokeWidth=2;fontSize=28;fontColor=#212121;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="600" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="elem-idx-10" value="10" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;strokeWidth=2;fontSize=28;fontColor=#212121;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="600" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="elem-idx-11" value="11" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;strokeWidth=2;fontSize=28;fontColor=#212121;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="600" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="elem-idx-12" value="12" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;strokeWidth=2;fontSize=28;fontColor=#212121;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="600" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="elem-idx-13" value="13" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;strokeWidth=2;fontSize=28;fontColor=#212121;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="600" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="elem-idx-14" value="14" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;strokeWidth=2;fontSize=28;fontColor=#212121;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="600" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="elem-idx-15" value="15" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E0E0E0;strokeColor=#424242;strokeWidth=2;fontSize=28;fontColor=#212121;" vertex="1" parent="1">
+          <mxGeometry x="1620" y="600" width="100" height="70" as="geometry" />
+        </mxCell>
+        
+        <!-- Tile 标记 -->
+        <mxCell id="tile0-bracket" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;fillColor=#81C784;strokeColor=#2E7D32;strokeWidth=4;size=0.5;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="120" y="680" width="400" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tile0-label" value="Tile 0 (index=0)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#2E7D32;" vertex="1" parent="1">
+          <mxGeometry x="180" y="730" width="280" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="tile1-bracket" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;fillColor=#64B5F6;strokeColor=#1565C0;strokeWidth=4;size=0.5;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="520" y="680" width="400" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tile1-label" value="Tile 1 (index=1)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#1565C0;" vertex="1" parent="1">
+          <mxGeometry x="580" y="730" width="280" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="tile2-bracket" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;fillColor=#FFB74D;strokeColor=#E65100;strokeWidth=4;size=0.5;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="920" y="680" width="400" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tile2-label" value="Tile 2 (index=2)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#E65100;" vertex="1" parent="1">
+          <mxGeometry x="980" y="730" width="280" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="tile3-bracket" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;fillColor=#BA68C8;strokeColor=#6A1B9A;strokeWidth=4;size=0.5;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="680" width="400" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tile3-label" value="Tile 3 (index=3)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#6A1B9A;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="730" width="280" height="40" as="geometry" />
+        </mxCell>
+        
+        <!-- 处理器映射 -->
+        <mxCell id="mapping-title" value="处理器 → Tile 映射" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=38;fontStyle=1;fontColor=#6A1B9A;" vertex="1" parent="1">
+          <mxGeometry x="610" y="810" width="700" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- 处理器 0 -->
+        <mxCell id="proc0-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;strokeWidth=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="890" width="400" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="proc0-title" value="处理器 0 (pid=0)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontStyle=1;fontColor=#1B5E20;" vertex="1" parent="1">
+          <mxGeometry x="140" y="905" width="350" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="proc0-calc" value="加载元素: [0 × 4 : 0 × 4 + 4] = [0:4]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontFamily=Courier New;fontColor=#424242;" vertex="1" parent="1">
+          <mxGeometry x="140" y="950" width="350" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- 处理器 1 -->
+        <mxCell id="proc1-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1565C0;strokeWidth=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="890" width="400" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="proc1-title" value="处理器 1 (pid=1)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontStyle=1;fontColor=#0D47A1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="905" width="350" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="proc1-calc" value="加载元素: [1 × 4 : 1 × 4 + 4] = [4:8]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontFamily=Courier New;fontColor=#424242;" vertex="1" parent="1">
+          <mxGeometry x="580" y="950" width="350" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- 处理器 2 -->
+        <mxCell id="proc2-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;strokeWidth=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="890" width="400" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="proc2-title" value="处理器 2 (pid=2)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontStyle=1;fontColor=#BF360C;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="905" width="350" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="proc2-calc" value="加载元素: [2 × 4 : 2 × 4 + 4] = [8:12]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontFamily=Courier New;fontColor=#424242;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="950" width="370" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- 处理器 3 -->
+        <mxCell id="proc3-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#6A1B9A;strokeWidth=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1440" y="890" width="400" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="proc3-title" value="处理器 3 (pid=3)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontStyle=1;fontColor=#4A148C;" vertex="1" parent="1">
+          <mxGeometry x="1460" y="905" width="350" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="proc3-calc" value="加载元素: [3 × 4 : 3 × 4 + 4] = [12:16]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontFamily=Courier New;fontColor=#424242;" vertex="1" parent="1">
+          <mxGeometry x="1460" y="950" width="370" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- 页码 -->
+        <mxCell id="page-number" value="7 / 10" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontColor=#757575;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="1020" width="150" height="40" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+

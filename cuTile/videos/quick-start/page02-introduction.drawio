@@ -1,0 +1,91 @@
+<mxfile host="65bd71144e">
+    <diagram name="第2页-什么是cuTile" id="introduction-page">
+        <mxGraphModel dx="1800" dy="1183" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="background" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry width="1920" height="1080" as="geometry"/>
+                </mxCell>
+                <mxCell id="page-title" value="什么是 cuTile？" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=56;fontStyle=1;fontColor=#1565C0;fontFamily=Arial;" parent="1" vertex="1">
+                    <mxGeometry x="560" y="60" width="800" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="definition-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;strokeWidth=3;shadow=1;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="180" width="1320" height="230" as="geometry"/>
+                </mxCell>
+                <mxCell id="definition-title" value="定义" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontColor=#0D47A1;" parent="1" vertex="1">
+                    <mxGeometry x="340" y="200" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="definition-text" value="cuTile Python 是基于 Tile（数据块）编程模型的 CUDA Python 框架&#10;&#10;• 提供更高层次的抽象&#10;• 以数据块为单位进行并行计算&#10;• 告别传统的线程级编程复杂度" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontColor=#424242;" parent="1" vertex="1">
+                    <mxGeometry x="340" y="270" width="1240" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="workflow-title" value="cuTile 编程三步曲" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=42;fontStyle=1;fontColor=#1565C0;" parent="1" vertex="1">
+                    <mxGeometry x="660" y="420" width="600" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="step1-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4CAF50;strokeColor=none;shadow=1;" parent="1" vertex="1">
+                    <mxGeometry x="240" y="540" width="380" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="step1-number" value="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#FFFFFF;strokeColor=none;fontSize=48;fontStyle=1;fontColor=#2E7D32;" parent="1" vertex="1">
+                    <mxGeometry x="270" y="560" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="step1-title" value="加载 Tile" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=36;fontStyle=1;fontColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="370" y="575" width="220" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="step1-desc" value="从 GPU 全局内存&#10;加载数据块到 Tile" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontColor=#E8F5E9;" parent="1" vertex="1">
+                    <mxGeometry x="270" y="650" width="320" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow1" value="" style="shape=flexArrow;endArrow=classic;html=1;fillColor=#FF9800;strokeColor=none;width=40;endSize=8;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="640" y="639.5" as="sourcePoint"/>
+                        <mxPoint x="760" y="639.5" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="step2-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2196F3;strokeColor=none;shadow=1;" parent="1" vertex="1">
+                    <mxGeometry x="770" y="540" width="380" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="step2-number" value="2" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#FFFFFF;strokeColor=none;fontSize=48;fontStyle=1;fontColor=#1565C0;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="560" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="step2-title" value="计算处理" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=36;fontStyle=1;fontColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="575" width="220" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="step2-desc" value="对 Tile 执行计算&#10;生成新的结果 Tile" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontColor=#E3F2FD;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="650" width="320" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow2" value="" style="shape=flexArrow;endArrow=classic;html=1;fillColor=#FF9800;strokeColor=none;width=40;endSize=8;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1170" y="639.5" as="sourcePoint"/>
+                        <mxPoint x="1290" y="639.5" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="step3-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9C27B0;strokeColor=none;shadow=1;" parent="1" vertex="1">
+                    <mxGeometry x="1300" y="540" width="380" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="step3-number" value="3" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#FFFFFF;strokeColor=none;fontSize=48;fontStyle=1;fontColor=#6A1B9A;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="560" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="step3-title" value="存储结果" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=36;fontStyle=1;fontColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="1430" y="575" width="220" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="step3-desc" value="将结果 Tile 写回&#10;GPU 全局内存" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontColor=#F3E5F5;" parent="1" vertex="1">
+                    <mxGeometry x="1330" y="650" width="320" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="keypoint-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#F57C00;strokeWidth=2;shadow=1;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="820" width="1320" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="keypoint-icon" value="💡" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;" parent="1" vertex="1">
+                    <mxGeometry x="340" y="855" width="80" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="keypoint-title" value="核心优势" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontColor=#E65100;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="840" width="200" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="keypoint-text" value="专注于算法逻辑，无需关注线程管理、内存同步等底层细节  •  代码更简洁、更易维护  •  性能优化由框架自动完成" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#424242;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="885" width="1140" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="page-number" value="2 / 10" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontColor=#757575;" parent="1" vertex="1">
+                    <mxGeometry x="1720" y="1020" width="150" height="40" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

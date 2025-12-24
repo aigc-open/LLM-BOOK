@@ -1,0 +1,119 @@
+<mxfile host="Electron" modified="2025-12-24T00:00:00.000Z" agent="5.0" version="21.0.0" etag="xxx" type="device">
+  <diagram name="第5页-核心API" id="apis-page">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- 背景 -->
+        <mxCell id="background" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1920" height="1080" as="geometry" />
+        </mxCell>
+        
+        <!-- 页面标题 -->
+        <mxCell id="page-title" value="核心 API：四大基本操作" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=56;fontStyle=1;fontColor=#1565C0;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="460" y="60" width="1000" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- API 1: ct.load -->
+        <mxCell id="api1-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#2E7D32;strokeWidth=4;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="200" width="860" height="370" as="geometry" />
+        </mxCell>
+        <mxCell id="api1-number" value="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#43A047;strokeColor=none;fontSize=48;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="160" y="220" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="api1-name" value="ct.load( )" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=42;fontStyle=1;fontColor=#1B5E20;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="260" y="230" width="300" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api1-desc" value="从 GPU 内存加载数据到 Tile" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#388E3C;" vertex="1" parent="1">
+          <mxGeometry x="260" y="290" width="500" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="api1-signature" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#263238;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="160" y="350" width="800" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api1-sig-text" value="ct.load(array, index=(pid,), shape=(tile_size,))" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Courier New;fontColor=#81C784;spacing=15;" vertex="1" parent="1">
+          <mxGeometry x="170" y="358" width="780" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="api1-params" value="• array: 源数组&#xa;• index: Tile 索引（第几个数据块）&#xa;• shape: Tile 的形状（数据块大小）" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#424242;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="160" y="430" width="800" height="120" as="geometry" />
+        </mxCell>
+        
+        <!-- API 2: ct.store -->
+        <mxCell id="api2-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1565C0;strokeWidth=4;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="200" width="860" height="370" as="geometry" />
+        </mxCell>
+        <mxCell id="api2-number" value="2" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#1976D2;strokeColor=none;fontSize=48;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="220" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="api2-name" value="ct.store( )" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=42;fontStyle=1;fontColor=#0D47A1;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="230" width="320" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api2-desc" value="将 Tile 数据存储到 GPU 内存" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#1565C0;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="290" width="520" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="api2-signature" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#263238;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="350" width="800" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api2-sig-text" value="ct.store(array, index=(pid,), tile=result)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Courier New;fontColor=#64B5F6;spacing=15;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="358" width="780" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="api2-params" value="• array: 目标数组&#xa;• index: Tile 索引（存储到第几个位置）&#xa;• tile: 要存储的 Tile 数据" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#424242;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="430" width="800" height="120" as="geometry" />
+        </mxCell>
+        
+        <!-- API 3: ct.bid -->
+        <mxCell id="api3-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#E65100;strokeWidth=4;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="610" width="860" height="370" as="geometry" />
+        </mxCell>
+        <mxCell id="api3-number" value="3" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#FB8C00;strokeColor=none;fontSize=48;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="160" y="630" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="api3-name" value="ct.bid( )" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=42;fontStyle=1;fontColor=#E65100;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="260" y="640" width="280" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api3-desc" value="获取当前处理器的索引（Block ID）" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#F57C00;" vertex="1" parent="1">
+          <mxGeometry x="260" y="700" width="580" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="api3-signature" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#263238;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="160" y="760" width="800" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api3-sig-text" value="pid = ct.bid(0)  # 获取 x 维度的索引" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Courier New;fontColor=#FFB74D;spacing=15;" vertex="1" parent="1">
+          <mxGeometry x="170" y="768" width="780" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="api3-params" value="• dim: 维度参数（0=x, 1=y, 2=z）&#xa;• 返回值：当前块的索引号&#xa;• 用于确定当前处理器应该处理哪个 Tile" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#424242;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="160" y="840" width="800" height="120" as="geometry" />
+        </mxCell>
+        
+        <!-- API 4: ct.launch -->
+        <mxCell id="api4-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#6A1B9A;strokeWidth=4;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="610" width="860" height="370" as="geometry" />
+        </mxCell>
+        <mxCell id="api4-number" value="4" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#8E24AA;strokeColor=none;fontSize=48;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="630" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="api4-name" value="ct.launch( )" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=42;fontStyle=1;fontColor=#4A148C;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="640" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api4-desc" value="启动 GPU 内核函数" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#7B1FA2;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="700" width="400" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="api4-signature" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#263238;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="760" width="800" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="api4-sig-text" value="ct.launch(stream, grid, kernel, args)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Courier New;fontColor=#BA68C8;spacing=15;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="768" width="780" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="api4-params" value="• stream: CUDA 流对象&#xa;• grid: 网格大小（处理器数量）&#xa;• kernel: 内核函数  • args: 参数元组" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#424242;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="840" width="800" height="120" as="geometry" />
+        </mxCell>
+        
+        <!-- 页码 -->
+        <mxCell id="page-number" value="5 / 10" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontColor=#757575;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="1020" width="150" height="40" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+

@@ -1,0 +1,168 @@
+<mxfile host="Electron" modified="2025-12-24T00:00:00.000Z" agent="5.0" version="21.0.0" etag="xxx" type="device">
+  <diagram name="第10页-总结与展望" id="summary-page">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- 背景渐变 -->
+        <mxCell id="background" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a237e;gradientColor=#283593;strokeColor=none;gradientDirection=south;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1920" height="1080" as="geometry" />
+        </mxCell>
+        
+        <!-- 页面标题 -->
+        <mxCell id="page-title" value="学习总结与展望" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=60;fontStyle=1;fontColor=#FFFFFF;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="560" y="50" width="800" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- 学到了什么 -->
+        <mxCell id="learned-title" value="✅ 你已经掌握了" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=42;fontStyle=1;fontColor=#4CAF50;" vertex="1" parent="1">
+          <mxGeometry x="660" y="160" width="600" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- 成就卡片 -->
+        <mxCell id="achievement1" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;strokeWidth=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="260" width="420" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ach1-icon" value="🔧" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;" vertex="1" parent="1">
+          <mxGeometry x="140" y="280" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ach1-text" value="安装配置&#xa;cuTile 开发环境" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#1B5E20;" vertex="1" parent="1">
+          <mxGeometry x="220" y="285" width="300" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="achievement2" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1565C0;strokeWidth=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="260" width="420" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ach2-icon" value="💡" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;" vertex="1" parent="1">
+          <mxGeometry x="600" y="280" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ach2-text" value="理解核心概念&#xa;Tile 与 Kernel" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#0D47A1;" vertex="1" parent="1">
+          <mxGeometry x="680" y="285" width="300" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="achievement3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;strokeWidth=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="260" width="420" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ach3-icon" value="🎯" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="280" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ach3-text" value="掌握四大 API&#xa;load / store / bid / launch" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontStyle=1;fontColor=#BF360C;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="280" width="300" height="105" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="achievement4" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1BEE7;strokeColor=#6A1B9A;strokeWidth=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="260" width="370" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ach4-icon" value="💻" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="280" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ach4-text" value="编写完整程序&#xa;向量加法示例" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#4A148C;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="285" width="250" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="achievement5" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F9A825;strokeWidth=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="440" width="420" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ach5-icon" value="🔍" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;" vertex="1" parent="1">
+          <mxGeometry x="370" y="460" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ach5-text" value="深入理解&#xa;Tile 索引机制" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#F57F17;" vertex="1" parent="1">
+          <mxGeometry x="450" y="465" width="300" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="achievement6" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCCBC;strokeColor=#D84315;strokeWidth=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="810" y="440" width="420" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ach6-icon" value="📊" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;" vertex="1" parent="1">
+          <mxGeometry x="830" y="460" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ach6-text" value="使用工具&#xa;性能分析与优化" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#BF360C;" vertex="1" parent="1">
+          <mxGeometry x="910" y="465" width="300" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="achievement7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B2DFDB;strokeColor=#00695C;strokeWidth=3;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="440" width="420" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ach7-icon" value="🚀" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="460" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ach7-text" value="最佳实践&#xa;高效 GPU 编程" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#004D40;" vertex="1" parent="1">
+          <mxGeometry x="1370" y="465" width="300" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- 下一步学习 -->
+        <mxCell id="next-section" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E88E5;strokeColor=#0D47A1;strokeWidth=4;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="640" width="1750" height="360" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="next-title" value="🎓 下一步学习路径" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=44;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="610" y="670" width="700" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- 学习路径 -->
+        <mxCell id="path1" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1976D2;strokeWidth=2;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="770" width="330" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="path1-num" value="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#1976D2;strokeColor=none;fontSize=32;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="280" y="790" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="path1-text" value="执行模型&#xa;&#xa;了解 cuTile 的&#xa;并行执行机制" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontColor=#0D47A1;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="180" y="865" width="290" height="90" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="path2" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1976D2;strokeWidth=2;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="770" width="330" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="path2-num" value="2" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#1976D2;strokeColor=none;fontSize=32;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="650" y="790" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="path2-text" value="数据模型&#xa;&#xa;深入学习 Tile 的&#xa;数据结构与操作" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontColor=#0D47A1;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="550" y="865" width="290" height="90" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="path3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1976D2;strokeWidth=2;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="900" y="770" width="330" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="path3-num" value="3" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#1976D2;strokeColor=none;fontSize=32;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="790" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="path3-text" value="内存模型&#xa;&#xa;掌握内存层次和&#xa;优化技巧" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontColor=#0D47A1;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="920" y="865" width="290" height="90" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="path4" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1976D2;strokeWidth=2;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="770" width="330" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="path4-num" value="4" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#1976D2;strokeColor=none;fontSize=32;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="1390" y="790" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="path4-text" value="高级特性&#xa;&#xa;探索复杂算法&#xa;实现与调优" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontColor=#0D47A1;spacing=4;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="865" width="290" height="90" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="path5" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#1976D2;strokeWidth=2;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="770" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="path5-icon" value="🎯" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=56;" vertex="1" parent="1">
+          <mxGeometry x="1680" y="800" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="path5-text" value="成为&#xa;GPU 专家" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#0D47A1;" vertex="1" parent="1">
+          <mxGeometry x="1650" y="890" width="180" height="70" as="geometry" />
+        </mxCell>
+        
+        <!-- 结束语 -->
+        <mxCell id="closing" value="感谢观看！祝你在 GPU 编程的道路上越走越远！" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontColor=#FFD54F;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="460" y="1000" width="1000" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- 页码 -->
+        <mxCell id="page-number" value="10 / 10" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontColor=#B0BEC5;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="1020" width="150" height="40" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+
