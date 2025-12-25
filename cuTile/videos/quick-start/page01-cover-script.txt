@@ -1,0 +1,11 @@
+大家好！欢迎来到 cuTile Python 快速入门教程。
+
+cuTile 是 NVIDIA 推出的基于 Tile 编程模型的 CUDA Python 框架。它为我们带来了三大核心优势：
+
+首先是"高层抽象"，cuTile 让我们能够以 Tile（数据块）为单位进行编程，而不需要关注底层的线程细节。
+
+其次是"简化开发"，它提供了 Python 友好的接口，让 GPU 编程变得更加简单直观。
+
+最后是"高性能"，作为 NVIDIA CUDA Toolkit 的一部分，cuTile 充分发挥了 GPU 的并行计算能力。
+
+让我们开始这段精彩的学习之旅吧！

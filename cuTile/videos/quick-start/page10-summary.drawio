@@ -1,0 +1,183 @@
+<mxfile host="Electron" modified="2025-12-24T00:00:00.000Z" agent="5.0" version="21.0.0" etag="xxx" type="device">
+  <diagram name="第10页-总结与展望" id="summary-page">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- 1. 背景层 -->
+        <mxCell id="bg-dark" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#111111;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1920" height="1080" as="geometry" />
+        </mxCell>
+        
+        <!-- 装饰：庆祝光晕 -->
+        <mxCell id="glow-top" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#76FF03;strokeColor=none;opacity=5;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="660" y="-300" width="600" height="600" as="geometry" />
+        </mxCell>
+
+        <!-- 装饰：路径背景线 -->
+        <mxCell id="path-bg-line" value="" style="curved=1;endArrow=none;html=1;strokeColor=#333333;strokeWidth=4;dashed=1;dashPattern=1 4;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="200" y="850" as="sourcePoint" />
+            <mxPoint x="1700" y="850" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="500" y="950" />
+              <mxPoint x="1000" y="750" />
+              <mxPoint x="1400" y="950" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 2. 标题区 -->
+        <!-- 注意：& 符号已转义为 &amp; -->
+        <mxCell id="page-title" value="Summary &amp; Next Steps" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=72;fontStyle=1;fontColor=#FFFFFF;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="560" y="50" width="800" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="page-subtitle" value="回顾成就 · 展望未来" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontColor=#B0BEC5;fontFamily=Arial;letterSpacing=4;" vertex="1" parent="1">
+          <mxGeometry x="560" y="140" width="800" height="40" as="geometry" />
+        </mxCell>
+        
+        <!-- 3. 成就回顾区 (左侧) -->
+        <mxCell id="section-1-title" value="✅ 已掌握的核心能力" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=36;fontStyle=1;fontColor=#76FF03;" vertex="1" parent="1">
+          <mxGeometry x="150" y="240" width="600" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- 成就卡片背景 -->
+        <mxCell id="ach-list-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#424242;strokeWidth=2;opacity=90;" vertex="1" parent="1">
+          <mxGeometry x="150" y="320" width="1620" height="300" as="geometry" />
+        </mxCell>
+        
+        <!-- 第一列 -->
+        <mxCell id="col-1-title" value="基础环境" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#00B0FF;" vertex="1" parent="1">
+          <mxGeometry x="200" y="350" width="250" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="col-1-item1" value="• 环境搭建与配置" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#E0E0E0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="410" width="250" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="col-1-item2" value="• Tile / Kernel 概念" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#E0E0E0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="460" width="250" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 分隔线1 -->
+        <mxCell id="sep-1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#424242;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="500" y="350" width="2" height="240" as="geometry" />
+        </mxCell>
+
+        <!-- 第二列 -->
+        <mxCell id="col-2-title" value="核心 API" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#FFD740;" vertex="1" parent="1">
+          <mxGeometry x="550" y="350" width="250" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="col-2-item1" value="• ct.load / ct.store" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#E0E0E0;" vertex="1" parent="1">
+          <mxGeometry x="550" y="410" width="250" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="col-2-item2" value="• ct.bid / ct.launch" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#E0E0E0;" vertex="1" parent="1">
+          <mxGeometry x="550" y="460" width="250" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 分隔线2 -->
+        <mxCell id="sep-2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#424242;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="850" y="350" width="2" height="240" as="geometry" />
+        </mxCell>
+
+        <!-- 第三列 -->
+        <mxCell id="col-3-title" value="⭐ 核心机制" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#FF5252;" vertex="1" parent="1">
+          <mxGeometry x="900" y="350" width="300" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="col-3-item1" value="• Tile 索引计算机制" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#E0E0E0;" vertex="1" parent="1">
+          <mxGeometry x="900" y="410" width="300" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="col-3-item2" value="• 内存映射与布局" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#E0E0E0;" vertex="1" parent="1">
+          <mxGeometry x="900" y="460" width="300" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 分隔线3 -->
+        <mxCell id="sep-3" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#424242;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1250" y="350" width="2" height="240" as="geometry" />
+        </mxCell>
+
+        <!-- 第四列 -->
+        <mxCell id="col-4-title" value="工程实践" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#76FF03;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="350" width="300" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="col-4-item1" value="• 完整代码编写" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#E0E0E0;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="410" width="300" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="col-4-item2" value="• Nsight 性能分析" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#E0E0E0;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="460" width="300" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- 4. 进阶路径区 -->
+        <mxCell id="section-2-title" value="🚀 下一步：进阶之路" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=36;fontStyle=1;fontColor=#00B0FF;" vertex="1" parent="1">
+          <mxGeometry x="150" y="680" width="600" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- 节点1 -->
+        <mxCell id="step-1" value="1. 执行模型" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1A237E;strokeColor=#00B0FF;strokeWidth=3;fontSize=24;fontStyle=1;fontColor=#FFFFFF;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="780" width="200" height="200" as="geometry" />
+        </mxCell>
+        
+        <!-- 箭头1 -->
+        <mxCell id="arrow-1" value="" style="shape=flexArrow;endArrow=classic;html=1;fillColor=#424242;strokeColor=none;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="420" y="880" as="sourcePoint" />
+            <mxPoint x="530" y="880" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 节点2 -->
+        <mxCell id="step-2" value="2. 数据模型" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1A237E;strokeColor=#00B0FF;strokeWidth=3;fontSize=24;fontStyle=1;fontColor=#FFFFFF;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="780" width="200" height="200" as="geometry" />
+        </mxCell>
+        
+        <!-- 箭头2 -->
+        <mxCell id="arrow-2" value="" style="shape=flexArrow;endArrow=classic;html=1;fillColor=#424242;strokeColor=none;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="770" y="880" as="sourcePoint" />
+            <mxPoint x="880" y="880" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 节点3 -->
+        <mxCell id="step-3" value="3. 内存模型" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1A237E;strokeColor=#00B0FF;strokeWidth=3;fontSize=24;fontStyle=1;fontColor=#FFFFFF;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="900" y="780" width="200" height="200" as="geometry" />
+        </mxCell>
+        
+        <!-- 箭头3 -->
+        <mxCell id="arrow-3" value="" style="shape=flexArrow;endArrow=classic;html=1;fillColor=#424242;strokeColor=none;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1120" y="880" as="sourcePoint" />
+            <mxPoint x="1230" y="880" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 节点4 -->
+        <mxCell id="step-4" value="4. 高级特性" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1A237E;strokeColor=#00B0FF;strokeWidth=3;fontSize=24;fontStyle=1;fontColor=#FFFFFF;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1250" y="780" width="200" height="200" as="geometry" />
+        </mxCell>
+        
+        <!-- 箭头4 -->
+        <mxCell id="arrow-4" value="" style="shape=flexArrow;endArrow=classic;html=1;fillColor=#76FF03;strokeColor=none;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1470" y="880" as="sourcePoint" />
+            <mxPoint x="1580" y="880" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 终点 -->
+        <mxCell id="step-final" value="GPU&#xa;Expert" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;fillColor=#00C853;strokeColor=#69F0AE;strokeWidth=3;fontSize=32;fontStyle=1;fontColor=#FFFFFF;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="780" width="220" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- 底部 -->
+        <mxCell id="footer-thanks" value="Thanks for Watching!" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontColor=#76FF03;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="660" y="1020" width="600" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="page-number" value="10" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=120;fontStyle=1;fontColor=#333333;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="1750" y="50" width="150" height="150" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

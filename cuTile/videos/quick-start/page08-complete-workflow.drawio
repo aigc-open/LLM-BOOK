@@ -1,0 +1,125 @@
+<mxfile host="Electron" modified="2025-12-24T00:00:00.000Z" agent="5.0" version="21.0.0" etag="xxx" type="device">
+  <diagram name="第8页-完整执行流程" id="workflow-page">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- 背景 -->
+        <mxCell id="background" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1920" height="1080" as="geometry" />
+        </mxCell>
+        
+        <!-- 页面标题 -->
+        <mxCell id="page-title" value="完整执行流程：从准备到验证" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=56;fontStyle=1;fontColor=#1565C0;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="360" y="40" width="1200" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- 阶段1：数据准备 -->
+        <mxCell id="stage1-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E3F2FD;strokeColor=#1976D2;strokeWidth=4;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="160" width="820" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="stage1-badge" value="阶段 1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#1976D2;strokeColor=none;fontSize=32;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="140" y="180" width="90" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="stage1-title" value="数据准备" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=42;fontStyle=1;fontColor=#0D47A1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="195" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="stage1-code1" value="vector_size = 4096" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#263238;strokeColor=none;fontSize=26;fontFamily=Courier New;fontColor=#64B5F6;align=left;spacing=15;" vertex="1" parent="1">
+          <mxGeometry x="140" y="290" width="750" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="stage1-code2" value="tile_size = 16" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#263238;strokeColor=none;fontSize=26;fontFamily=Courier New;fontColor=#64B5F6;align=left;spacing=15;" vertex="1" parent="1">
+          <mxGeometry x="140" y="355" width="750" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="stage1-code3" value="a, b, c = cp.array(...)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#263238;strokeColor=none;fontSize=26;fontFamily=Courier New;fontColor=#64B5F6;align=left;spacing=15;" vertex="1" parent="1">
+          <mxGeometry x="140" y="420" width="750" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- 阶段2：网格配置 -->
+        <mxCell id="stage2-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#43A047;strokeWidth=4;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="160" width="820" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="stage2-badge" value="阶段 2" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#43A047;strokeColor=none;fontSize=32;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="180" width="90" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="stage2-title" value="网格配置" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=42;fontStyle=1;fontColor=#1B5E20;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="195" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="stage2-formula" value="grid = (cdiv(vector_size, tile_size), 1, 1)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#263238;strokeColor=none;fontSize=26;fontFamily=Courier New;fontColor=#81C784;align=left;spacing=15;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="290" width="750" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="stage2-calc" value="= (cdiv(4096, 16), 1, 1)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#263238;strokeColor=none;fontSize=26;fontFamily=Courier New;fontColor=#81C784;align=left;spacing=15;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="355" width="750" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="stage2-result" value="= (256, 1, 1)  ← 启动 256 个处理器" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#263238;strokeColor=none;fontSize=26;fontFamily=Courier New;fontColor=#A5D6A7;align=left;spacing=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="420" width="750" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- 箭头 -->
+        <mxCell id="arrow-down1" value="" style="shape=flexArrow;endArrow=classic;html=1;fillColor=#546E7A;strokeColor=none;width=40;endSize=8;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="959.5" y="470" as="sourcePoint" />
+            <mxPoint x="959.5" y="540" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 阶段3：内核启动 -->
+        <mxCell id="stage3-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#FF6F00;strokeWidth=4;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="550" width="1720" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="stage3-badge" value="阶段 3" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#FF6F00;strokeColor=none;fontSize=32;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="140" y="575" width="90" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="stage3-title" value="启动内核" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=42;fontStyle=1;fontColor=#E65100;" vertex="1" parent="1">
+          <mxGeometry x="250" y="590" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="stage3-code" value="ct.launch(cp.cuda.get_current_stream(), grid, vector_add, (a, b, c, tile_size))" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#263238;strokeColor=none;fontSize=28;fontFamily=Courier New;fontColor=#FFB74D;align=center;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="140" y="675" width="1650" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- 箭头 -->
+        <mxCell id="arrow-down2" value="" style="shape=flexArrow;endArrow=classic;html=1;fillColor=#546E7A;strokeColor=none;width=40;endSize=8;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="959.5" y="770" as="sourcePoint" />
+            <mxPoint x="959.5" y="840" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- 阶段4：GPU执行 -->
+        <mxCell id="stage4-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#7B1FA2;strokeWidth=4;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="850" width="820" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="stage4-badge" value="阶段 4" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#7B1FA2;strokeColor=none;fontSize=32;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="140" y="875" width="90" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="stage4-title" value="GPU 并行执行" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=42;fontStyle=1;fontColor=#4A148C;" vertex="1" parent="1">
+          <mxGeometry x="250" y="890" width="400" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="stage4-desc" value="256 个处理器同时执行&#xa;每个加载 → 计算 → 存储" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#6A1B9A;" vertex="1" parent="1">
+          <mxGeometry x="240" y="945" width="600" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- 阶段5：结果验证 -->
+        <mxCell id="stage5-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#D32F2F;strokeWidth=4;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="850" width="820" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="stage5-badge" value="阶段 5" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#D32F2F;strokeColor=none;fontSize=32;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="875" width="90" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="stage5-title" value="结果验证" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=42;fontStyle=1;fontColor=#B71C1C;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="890" width="300" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="stage5-desc" value="将结果传回 CPU&#xa;与预期结果对比" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#C62828;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="945" width="600" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- 页码 -->
+        <mxCell id="page-number" value="8 / 10" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontColor=#757575;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="1020" width="150" height="40" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+

@@ -1,0 +1,19 @@
+在开始 cuTile 编程之前，我们需要准备好开发环境。
+
+首先是"前置要求"。
+
+在硬件方面，你需要一台运行 Linux 或 Windows 操作系统的计算机，配备计算能力为 10.x 或 12.x 的 NVIDIA GPU，并且安装了 r580 或更高版本的 NVIDIA 驱动。
+
+在软件方面，需要安装 CUDA Toolkit 13.1 或更高版本，以及 Python 3.10 到 3.13 之间的任意版本。
+
+准备就绪后，我们就可以开始"安装步骤"了。
+
+第一步，安装 cuTile Python 核心包。在终端中运行：pip install cuda-tile
+
+第二步，安装 CuPy。这是必需的依赖包，用于 GPU 数组操作。运行：pip install cupy-cuda13x
+
+第三步，安装其他依赖。这一步是可选的，但建议安装。运行：pip install torch pytest numpy。这些工具在开发和测试时会非常有用。
+
+安装完成后，你就可以开始 cuTile 编程了！
+
+特别提示：请确保你的 GPU 驱动版本满足要求，建议使用最新的 CUDA Toolkit 以获得最佳性能和功能支持。
