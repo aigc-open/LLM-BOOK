@@ -1,0 +1,61 @@
+<mxfile host="65bd71144e">
+    <diagram name="第6页-Tile内核" id="tile-kernel">
+        <mxGraphModel dx="1795" dy="1057" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a1a1a;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry width="1920" height="1560" as="geometry"/>
+                </mxCell>
+                <mxCell id="title" value="Tile 内核：@ct.kernel" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=72;fontStyle=1;fontColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="60" width="1200" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="title-line" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76FF03;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="160" width="150" height="6" as="geometry"/>
+                </mxCell>
+                <mxCell id="def-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1B3A1B;strokeColor=#76FF03;strokeWidth=4;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="220" width="1680" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="def-icon" value="⚡" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=80;" parent="1" vertex="1">
+                    <mxGeometry x="160" y="240" width="100" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="def-title" value="内核是 Tile Code 的入口点" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;fontStyle=1;fontColor=#76FF03;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="245" width="900" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="def-text" value="Grid 中的每个 Block 都会执行内核函数 | 必须使用 ct.launch() 启动" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontColor=#E0E0E0;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="305" width="1200" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="basic-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#42A5F5;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="400" width="850" height="1020" as="geometry"/>
+                </mxCell>
+                <mxCell id="basic-title" value="基本内核示例：向量加法" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=40;fontStyle=1;fontColor=#42A5F5;" parent="1" vertex="1">
+                    <mxGeometry x="160" y="430" width="750" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="basic-code" value="@ct.kernel&#10;def vector_add(a, b, c):&#10;    &quot;&quot;&quot;向量加法内核&quot;&quot;&quot;&#10;    # 1. 获取 Block ID&#10;    pid = ct.bid(0)&#10;    &#10;    # 2. 加载数据 Tile&#10;    tile_a = ct.load(a,&#10;                     index=(pid,),&#10;                     shape=(16,))&#10;    tile_b = ct.load(b,&#10;                     index=(pid,),&#10;                     shape=(16,))&#10;    &#10;    # 3. Tile 计算（并行）&#10;    tile_c = tile_a + tile_b&#10;    &#10;    # 4. 存储结果&#10;    ct.store(c, index=(pid,),&#10;             tile=tile_c)&#10;&#10;# Host 端启动&#10;n = 1024&#10;a = cp.random.rand(n).astype(cp.float32)&#10;b = cp.random.rand(n).astype(cp.float32)&#10;c = cp.zeros(n, dtype=cp.float32)&#10;&#10;tile_size = 16&#10;num_blocks = n // tile_size  # 64 个 Block&#10;grid = (num_blocks, 1, 1)&#10;stream = cp.cuda.get_current_stream()&#10;&#10;# 启动内核&#10;ct.launch(stream, grid, vector_add, (a, b, c))" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=22;fontFamily=Courier New;fontColor=#E0E0E0;spacingLeft=20;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="140" y="490" width="810" height="420" as="geometry"/>
+                </mxCell>
+                <mxCell id="2d-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#76FF03;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="1020" y="400" width="780" height="1010" as="geometry"/>
+                </mxCell>
+                <mxCell id="2d-title" value="2D Grid 示例：矩阵处理" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=40;fontStyle=1;fontColor=#76FF03;" parent="1" vertex="1">
+                    <mxGeometry x="1060" y="430" width="700" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="2d-code" value="@ct.kernel&#10;def matrix_process(matrix, output):&#10;    &quot;&quot;&quot;2D Grid 处理矩阵&quot;&quot;&quot;&#10;    # 获取 2D Block 索引&#10;    row = ct.bid(0)  # Y 维度&#10;    col = ct.bid(1)  # X 维度&#10;    &#10;    # 加载 2D Tile (16×16)&#10;    tile = ct.load(matrix,&#10;                   index=(row, col),&#10;                   shape=(16, 16))&#10;    &#10;    # 处理&#10;    result = tile * 2.0&#10;    &#10;    # 存储&#10;    ct.store(output,&#10;             index=(row, col),&#10;             tile=result)&#10;&#10;# 启动 2D Grid&#10;matrix = cp.random.rand(256, 256)&#10;output = cp.zeros_like(matrix)&#10;&#10;tile_h, tile_w = 16, 16&#10;grid_y = 256 // tile_h  # 16&#10;grid_x = 256 // tile_w  # 16&#10;grid = (grid_y, grid_x, 1)  # 2D Grid&#10;&#10;stream = cp.cuda.get_current_stream()&#10;ct.launch(stream, grid,&#10;          matrix_process,&#10;          (matrix, output))" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=22;fontFamily=Courier New;fontColor=#E0E0E0;spacingLeft=20;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="1040" y="490" width="740" height="420" as="geometry"/>
+                </mxCell>
+                <mxCell id="keypoint-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4A148C;strokeColor=#BA68C8;strokeWidth=3;opacity=30;" parent="1" vertex="1">
+                    <mxGeometry x="140" y="1440" width="1680" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="keypoint-icon" value="🔑" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=50;" parent="1" vertex="1">
+                    <mxGeometry x="170" y="1455" width="60" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="keypoint-text" value="关键流程：① 获取 Block ID → ② 加载 Tile → ③ 计算 → ④ 存储结果 | 所有 Block 并行执行！" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontColor=#E1BEE7;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="250" y="1465" width="1550" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="page-number" value="06" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=72;fontStyle=1;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="1720" y="970" width="150" height="80" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

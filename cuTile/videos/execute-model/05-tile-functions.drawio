@@ -1,0 +1,79 @@
+<mxfile host="65bd71144e">
+    <diagram name="第5页-Tile函数" id="tile-functions">
+        <mxGraphModel dx="1795" dy="1057" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a1a1a;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry width="1920" height="1410" as="geometry"/>
+                </mxCell>
+                <mxCell id="title" value="Tile 函数：@ct.function" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=72;fontStyle=1;fontColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="60" width="1200" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="title-line" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76FF03;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="160" width="150" height="6" as="geometry"/>
+                </mxCell>
+                <mxCell id="decorator-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1B3A1B;strokeColor=#76FF03;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="220" width="800" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="decorator-title" value="@ct.function 装饰器" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=42;fontStyle=1;fontColor=#76FF03;" parent="1" vertex="1">
+                    <mxGeometry x="160" y="245" width="500" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="decorator-params" value="参数：host=False  在 Host 可用（默认否）&#10;      tile=True   在 Tile 可用（默认是）" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Courier New;fontColor=#E0E0E0;spacingLeft=20;" parent="1" vertex="1">
+                    <mxGeometry x="160" y="300" width="740" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="usage-title" value="三种使用方式" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;fontStyle=1;fontColor=#FFB300;" parent="1" vertex="1">
+                    <mxGeometry x="1000" y="240" width="400" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="way1-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A5F;strokeColor=#42A5F5;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="1000" y="320" width="800" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="way1-label" value="① 仅在 Tile Code 可用" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontColor=#42A5F5;" parent="1" vertex="1">
+                    <mxGeometry x="1040" y="340" width="500" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="way1-code" value="@ct.function&#10;def compute(x):&#10;    return x * x" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Courier New;fontColor=#E0E0E0;spacingLeft=20;" parent="1" vertex="1">
+                    <mxGeometry x="1040" y="385" width="740" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="way2-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3D1F;strokeColor=#76FF03;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="1000" y="510" width="800" height="270" as="geometry"/>
+                </mxCell>
+                <mxCell id="way2-label" value="② 在 Host 和 Tile 都可用" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontColor=#76FF03;" parent="1" vertex="1">
+                    <mxGeometry x="1040" y="530" width="600" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="way2-code" value="@ct.function(host=True, tile=True)&#10;def add_const(x, c):&#10;    return x + c&#10;&#10;# Host: add_const(10, 5)&#10;# Tile: add_const(tile, 10.0)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=24;fontFamily=Courier New;fontColor=#E0E0E0;spacingLeft=20;" parent="1" vertex="1">
+                    <mxGeometry x="1040" y="575" width="740" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="way3-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4A148C;strokeColor=#BA68C8;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="990" y="820" width="800" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="way3-label" value="③ 自动推断（推荐）" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontColor=#CE93D8;" parent="1" vertex="1">
+                    <mxGeometry x="1030" y="840" width="500" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="way3-code" value="# 不使用装饰器&#10;def relu(x):&#10;    return ct.maximum(x, 0.0)&#10;&#10;@ct.function  # 只标注入口函数&#10;def pipeline(x):&#10;    return relu(x)  # relu 自动可用" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=24;fontFamily=Courier New;fontColor=#E0E0E0;spacingLeft=20;" parent="1" vertex="1">
+                    <mxGeometry x="1030" y="885" width="740" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="example-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#555555;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="420" width="800" height="870" as="geometry"/>
+                </mxCell>
+                <mxCell id="example-title" value="完整示例：神经网络激活函数" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=38;fontStyle=1;fontColor=#FFB300;" parent="1" vertex="1">
+                    <mxGeometry x="160" y="450" width="700" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="example-code" value="# 简单工具函数：不标注（自动推断）&#10;def relu(x):&#10;    return ct.maximum(x, 0.0)&#10;&#10;def relu_derivative(x):&#10;    return ct.where(x &gt; 0, 1.0, 0.0)&#10;&#10;# 调用其他未标注函数&#10;def leaky_relu(x, alpha=0.01):&#10;    positive = relu(x)  # 递归推断&#10;    negative = x * alpha&#10;    return ct.where(x &gt; 0, positive, negative)&#10;&#10;# 只标注入口函数&#10;@ct.function&#10;def activation_pipeline(x):&#10;    return leaky_relu(x)&#10;&#10;@ct.kernel&#10;def apply_activation(input_arr, output_arr):&#10;    pid = ct.bid(0)&#10;    tile_in = ct.load(input_arr,&#10;                      index=(pid,), shape=(16,))&#10;    &#10;    # 所有函数自动可用&#10;    tile_out = activation_pipeline(tile_in)&#10;    &#10;    ct.store(output_arr, index=(pid,),&#10;             tile=tile_out)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=21;fontFamily=Courier New;fontColor=#E0E0E0;spacingLeft=20;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="140" y="510" width="760" height="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="tip-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF6F00;strokeColor=#FF8F00;strokeWidth=3;opacity=20;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="1310" width="1680" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="tip-icon" value="💡" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=50;" parent="1" vertex="1">
+                    <mxGeometry x="100" y="1325" width="60" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="tip-text" value="最佳实践：核心逻辑函数显式标注 @ct.function，简单工具函数让系统自动推断" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=30;fontColor=#FFD54F;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="180" y="1330" width="1550" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="page-number" value="05" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=72;fontStyle=1;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="1720" y="970" width="150" height="80" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

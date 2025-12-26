@@ -1,0 +1,85 @@
+<mxfile host="65bd71144e">
+    <diagram name="第9页-常量性" id="constants">
+        <mxGraphModel dx="1795" dy="1057" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a1a1a;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="40" width="1920" height="1360" as="geometry"/>
+                </mxCell>
+                <mxCell id="title" value="常量性：编译时优化" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=72;fontStyle=1;fontColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="60" width="1200" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="title-line" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76FF03;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="160" width="150" height="6" as="geometry"/>
+                </mxCell>
+                <mxCell id="const-def-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1B3A1B;strokeColor=#76FF03;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="220" width="800" height="350" as="geometry"/>
+                </mxCell>
+                <mxCell id="const-def-title" value="常量表达式包括" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=42;fontStyle=1;fontColor=#76FF03;" parent="1" vertex="1">
+                    <mxGeometry x="160" y="250" width="500" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="const-def-list" value="① 字面量对象&lt;br&gt;   x = 42&lt;br&gt;   y = 3.14&lt;br&gt;&lt;br&gt;② 整数算术表达式&lt;br&gt;   a = 10 + 20  # → 30&lt;br&gt;   b = 5 * 6    # → 30&lt;br&gt;&lt;br&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Courier New;fontColor=#E0E0E0;spacingLeft=20;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="300" width="340" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="embed-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A5F;strokeColor=#42A5F5;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="1000" y="220" width="750" height="350" as="geometry"/>
+                </mxCell>
+                <mxCell id="embed-title" value="常量嵌入（Constant Embedding）" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=38;fontStyle=1;fontColor=#42A5F5;" parent="1" vertex="1">
+                    <mxGeometry x="1040" y="250" width="720" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="embed-feature" value="✓ 参数像字面值替换一样&#10;✓ 不同值生成独立的内核机器码&#10;✓ 机器表示为 0 字节（不占寄存器）" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#E0E0E0;spacingLeft=20;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="1040" y="310" width="740" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="embed-pros" value="优点：更激进的编译器优化，更少的寄存器使用" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontColor=#76FF03;spacingLeft=20;" parent="1" vertex="1">
+                    <mxGeometry x="1040" y="420" width="740" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="embed-cons" value="缺点：每个不同值都会编译一次，增加编译时间" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontColor=#FF6F00;spacingLeft=20;" parent="1" vertex="1">
+                    <mxGeometry x="1040" y="470" width="740" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="usage-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#FFB300;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="90" y="610" width="940" height="690" as="geometry"/>
+                </mxCell>
+                <mxCell id="usage-title" value="使用 ct.Constant 标注" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=42;fontStyle=1;fontColor=#FFB300;" parent="1" vertex="1">
+                    <mxGeometry x="160" y="640" width="600" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="usage-code" value="@ct.kernel&#10;def kernel(a, b,&#10;           tile_size: ct.Constant[int],      # 常量嵌入&#10;           scale_factor: ct.Constant[float]):  # 常量嵌入&#10;    &quot;&quot;&quot;tile_size 和 scale_factor 会被常量嵌入&quot;&quot;&quot;&#10;    pid = ct.bid(0)&#10;    &#10;    # tile_size 在编译时已知，可以优化&#10;    tile_a = ct.load(a, index=(pid,), shape=(tile_size,))&#10;    &#10;    # scale_factor 也在编译时已知&#10;    result = tile_a * scale_factor&#10;    &#10;    ct.store(b, index=(pid,), tile=result)&#10;&#10;# 启动内核&#10;ct.launch(stream, grid, kernel, (a, b, 16, 2.5))&#10;&#10;# 不同的值会触发重新编译！&#10;ct.launch(stream, grid, kernel, (a, b, 32, 2.5))  # tile_size=32" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=22;fontFamily=Courier New;fontColor=#E0E0E0;spacingLeft=20;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="140" y="700" width="730" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="best-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4A148C;strokeColor=#BA68C8;strokeWidth=3;opacity=30;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="850" width="410" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="best-icon" value="✓" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=60;fontColor=#76FF03;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="1080" y="870" width="80" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="best-title" value="推荐使用常量嵌入" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontColor=#CE93D8;" parent="1" vertex="1">
+                    <mxGeometry x="1170" y="870" width="400" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="best-text" value="• Tile 形状参数&#10;• 循环边界（需要展开时）" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontColor=#E1BEE7;spacingLeft=20;" parent="1" vertex="1">
+                    <mxGeometry x="1170" y="910" width="720" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="avoid-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B71C1C;strokeColor=#F44336;strokeWidth=3;opacity=30;" parent="1" vertex="1">
+                    <mxGeometry x="1140" y="1040" width="590" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="avoid-icon" value="✗" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=60;fontColor=#FF5252;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="1170" y="1060" width="60" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="avoid-title" value="避免常量嵌入" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontColor=#FF5252;" parent="1" vertex="1">
+                    <mxGeometry x="1250" y="1060" width="350" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="avoid-text" value="• 频繁变化的参数（大量重新编译）&#10;• 大范围的参数值（生成大量版本）" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontColor=#FFCDD2;spacingLeft=20;" parent="1" vertex="1">
+                    <mxGeometry x="1250" y="1100" width="650" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="page-number" value="09" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=72;fontStyle=1;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="1720" y="970" width="150" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="@ct.kernel&#10;def kernel(a, b,&#10;           tile_size: ct.Constant[int],      # 常量嵌入&#10;           scale_factor: ct.Constant[float]):  # 常量嵌入&#10;    &quot;&quot;&quot;tile_size 和 scale_factor 会被常量嵌入&quot;&quot;&quot;&#10;    pid = ct.bid(0)&#10;    &#10;    # tile_size 在编译时已知，可以优化&#10;    tile_a = ct.load(a, index=(pid,), shape=(tile_size,))&#10;    &#10;    # scale_factor 也在编译时已知&#10;    result = tile_a * scale_factor&#10;    &#10;    ct.store(b, index=(pid,), tile=result)&#10;&#10;# 启动内核&#10;ct.launch(stream, grid, kernel, (a, b, 16, 2.5))&#10;&#10;# 不同的值会触发重新编译！&#10;ct.launch(stream, grid, kernel, (a, b, 32, 2.5))  # tile_size=32" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=22;fontFamily=Courier New;fontColor=#E0E0E0;spacingLeft=20;spacingTop=10;" vertex="1" parent="1">
+                    <mxGeometry x="140" y="700" width="730" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="③&amp;nbsp;从常量赋值的对象&lt;br&gt;tile_size&amp;nbsp;=&amp;nbsp;16&lt;br&gt;double&amp;nbsp;=&amp;nbsp;tile_size&amp;nbsp;*&amp;nbsp;2&amp;nbsp;#&amp;nbsp;→&amp;nbsp;32&lt;br&gt;&lt;br&gt;④&amp;nbsp;全局常量&lt;br&gt;GLOBAL_SIZE&amp;nbsp;=&amp;nbsp;128" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=26;fontFamily=Courier New;fontColor=#E0E0E0;spacingLeft=20;spacingTop=10;" vertex="1" parent="1">
+                    <mxGeometry x="440" y="300" width="370" height="240" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

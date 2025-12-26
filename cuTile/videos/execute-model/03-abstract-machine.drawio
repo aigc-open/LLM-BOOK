@@ -1,0 +1,100 @@
+<mxfile host="65bd71144e">
+    <diagram name="第3页-抽象机器模型" id="abstract-machine">
+        <mxGraphModel dx="1795" dy="1057" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a1a1a;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry width="1920" height="1080" as="geometry"/>
+                </mxCell>
+                <mxCell id="title" value="抽象机器模型：Grid 与 Block" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=68;fontStyle=1;fontColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="60" width="1200" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="title-line" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76FF03;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="160" width="150" height="6" as="geometry"/>
+                </mxCell>
+                <mxCell id="grid1d-title" value="1D Grid（一维网格）" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=38;fontStyle=1;fontColor=#42A5F5;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="220" width="500" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="block0" value="Block₀" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A5F;strokeColor=#42A5F5;strokeWidth=3;fontSize=26;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="290" width="150" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="block1" value="Block₁" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A5F;strokeColor=#42A5F5;strokeWidth=3;fontSize=26;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="290" y="290" width="150" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="block2" value="Block₂" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A5F;strokeColor=#42A5F5;strokeWidth=3;fontSize=26;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="290" width="150" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="dots1d" value="..." style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=40;fontColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="630" y="290" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="blockn" value="Blockₙ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A5F;strokeColor=#42A5F5;strokeWidth=3;fontSize=26;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="730" y="290" width="150" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="grid2d-title" value="2D Grid（二维网格）" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=38;fontStyle=1;fontColor=#76FF03;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="430" width="500" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="block00" value="Block₀₀" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3D1F;strokeColor=#76FF03;strokeWidth=3;fontSize=22;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="500" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="block01" value="Block₀₁" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3D1F;strokeColor=#76FF03;strokeWidth=3;fontSize=22;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="270" y="500" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="block02" value="Block₀₂" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3D1F;strokeColor=#76FF03;strokeWidth=3;fontSize=22;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="420" y="500" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="block03" value="Block₀₃" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3D1F;strokeColor=#76FF03;strokeWidth=3;fontSize=22;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="570" y="500" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="block10" value="Block₁₀" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3D1F;strokeColor=#76FF03;strokeWidth=3;fontSize=22;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="590" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="block11" value="Block₁₁" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3D1F;strokeColor=#76FF03;strokeWidth=3;fontSize=22;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="270" y="590" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="block12" value="Block₁₂" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3D1F;strokeColor=#76FF03;strokeWidth=3;fontSize=22;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="420" y="590" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="block13" value="Block₁₃" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3D1F;strokeColor=#76FF03;strokeWidth=3;fontSize=22;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="570" y="590" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="block20" value="Block₂₀" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3D1F;strokeColor=#76FF03;strokeWidth=3;fontSize=22;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="680" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="block21" value="Block₂₁" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3D1F;strokeColor=#76FF03;strokeWidth=3;fontSize=22;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="270" y="680" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="block22" value="Block₂₂" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3D1F;strokeColor=#76FF03;strokeWidth=3;fontSize=22;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="420" y="680" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="block23" value="Block₂₃" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3D1F;strokeColor=#76FF03;strokeWidth=3;fontSize=22;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="570" y="680" width="130" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="code-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2A2A2A;strokeColor=#555555;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="990" y="180" width="780" height="630" as="geometry"/>
+                </mxCell>
+                <mxCell id="code-title" value="启动内核代码示例" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=36;fontStyle=1;fontColor=#FFB300;" parent="1" vertex="1">
+                    <mxGeometry x="1030" y="210" width="400" height="45" as="geometry"/>
+                </mxCell>
+                <mxCell id="code-content" value="# 1D Grid: 8 个 Block 并行&#10;grid = (8, 1, 1)&#10;ct.launch(stream, grid, kernel, args)&#10;&#10;# 2D Grid: 16×16 网格&#10;grid = (16, 16, 1)&#10;ct.launch(stream, grid, kernel, args)&#10;&#10;# 3D Grid: 8×8×8 立方体&#10;grid = (8, 8, 8)&#10;ct.launch(stream, grid, kernel, args)&#10;&#10;# 在内核中获取 Block ID&#10;@ct.kernel&#10;def my_kernel(data):&#10;    pid = ct.bid(0)  # 第一维的 Block ID&#10;    row = ct.bid(0)  # Y 维度&#10;    col = ct.bid(1)  # X 维度" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=24;fontFamily=Courier New;fontColor=#E0E0E0;spacingLeft=20;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="1010" y="270" width="740" height="420" as="geometry"/>
+                </mxCell>
+                <mxCell id="keypoint-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4A148C;strokeColor=#7B1FA2;strokeWidth=3;opacity=30;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="820" width="1660" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="keypoint-icon" value="💡" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=60;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="850" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="keypoint-title" value="关键要点" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=40;fontStyle=1;fontColor=#CE93D8;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="850" width="200" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="keypoint-text" value="• Grid 定义了 Block 的组织方式（1D/2D/3D）   • 所有 Block 并行执行相同的内核代码   • 使用 ct.bid() 获取当前 Block 的索引" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#F3E5F5;spacingLeft=20;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="900" width="1500" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="page-number" value="03" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=72;fontStyle=1;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="1720" y="970" width="150" height="80" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
