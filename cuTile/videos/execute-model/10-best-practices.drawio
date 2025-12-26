@@ -1,0 +1,100 @@
+<mxfile host="65bd71144e">
+    <diagram name="第10页-最佳实践" id="best-practices">
+        <mxGraphModel dx="1826" dy="1057" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a1a1a;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry width="1920" height="1190" as="geometry"/>
+                </mxCell>
+                <mxCell id="title" value="最佳实践与总结" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=72;fontStyle=1;fontColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="60" width="1200" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="title-line" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76FF03;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="160" width="150" height="6" as="geometry"/>
+                </mxCell>
+                <mxCell id="keypoints-title" value="🎯 关键要点" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=52;fontStyle=1;fontColor=#FFB300;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="210" width="500" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="point1-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A5F;strokeColor=#42A5F5;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="300" width="850" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="point1-number" value="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#42A5F5;strokeColor=none;fontSize=48;fontColor=#000000;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="160" y="330" width="70" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="point1-title" value="Block vs Tile" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=38;fontStyle=1;fontColor=#42A5F5;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="325" width="300" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="point1-text" value="Block = 执行单元 | Tile = 数据单元" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#E0E0E0;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="375" width="690" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="point2-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1B3A1B;strokeColor=#76FF03;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="1020" y="300" width="780" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="point2-number" value="2" style="ellipse;whiteSpace=wrap;html=1;fillColor=#76FF03;strokeColor=none;fontSize=48;fontColor=#000000;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="1060" y="330" width="70" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="point2-title" value="执行空间" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=38;fontStyle=1;fontColor=#76FF03;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="325" width="250" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="point2-text" value="Host (CPU) → Tile (GPU) → SIMT (传统)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#E0E0E0;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="375" width="620" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="point3-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4A148C;strokeColor=#BA68C8;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="460" width="850" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="point3-number" value="3" style="ellipse;whiteSpace=wrap;html=1;fillColor=#BA68C8;strokeColor=none;fontSize=48;fontColor=#000000;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="160" y="495" width="70" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="point3-title" value="函数类型" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=38;fontStyle=1;fontColor=#CE93D8;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="490" width="250" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="point3-text" value="@ct.kernel：内核，Grid 入口&#10;@ct.function：Tile 函数，可复用逻辑&#10;自动推断：未标注函数自动加入执行空间" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=26;fontColor=#E0E0E0;spacingTop=5;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="540" width="690" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="point4-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3E2723;strokeColor=#FF6F00;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="1020" y="460" width="780" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="point4-number" value="4" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FF6F00;strokeColor=none;fontSize=48;fontColor=#000000;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="1060" y="495" width="70" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="point4-title" value="并行性" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=38;fontStyle=1;fontColor=#FF6F00;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="490" width="200" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="point4-text" value="Block 级：显式指定（Grid）&#10;Thread 级：自动处理（隐式）&#10;Tile 操作：自动并行化 + 自动同步" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=26;fontColor=#E0E0E0;spacingTop=5;" parent="1" vertex="1">
+                    <mxGeometry x="1160" y="540" width="620" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="recommend-title" value="✓ 推荐做法" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;fontStyle=1;fontColor=#76FF03;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="650" width="500" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="recommend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1B3A1B;strokeColor=#76FF03;strokeWidth=2;opacity=50;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="730" width="850" height="410" as="geometry"/>
+                </mxCell>
+                <mxCell id="recommend-list" value="✓ 使用常量嵌入标注 Tile 形状参数&#10;  tile_size: ct.Constant[int]&#10;&#10;✓ 合理组织 Grid 大小以匹配问题规模&#10;  grid = (n // tile_size, 1, 1)&#10;&#10;✓ 利用 @ct.function 复用代码&#10;  分解复杂逻辑为多个函数&#10;&#10;✓ 简单工具函数让编译器自动推断&#10;  不需要逐个标注，保持代码简洁" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#E0E0E0;spacingLeft=20;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="140" y="750" width="810" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="avoid-title" value="✗ 避免的做法" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;fontStyle=1;fontColor=#FF5252;" parent="1" vertex="1">
+                    <mxGeometry x="1020" y="650" width="500" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="avoid-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3E2723;strokeColor=#FF6F00;strokeWidth=2;opacity=50;" parent="1" vertex="1">
+                    <mxGeometry x="1020" y="730" width="780" height="410" as="geometry"/>
+                </mxCell>
+                <mxCell id="avoid-list" value="✗ 不要混淆 Block 和 Tile 的概念&#10;  它们是完全不同的！&#10;&#10;✗ 不要在 Tile Code 使用未支持的 Python 特性&#10;  没有 Python 运行时&#10;&#10;✗ 不要对频繁变化的参数使用常量嵌入&#10;  会导致大量重新编译&#10;&#10;✗ 不要传递别名数组给内核&#10;  会导致数据竞争" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#E0E0E0;spacingLeft=20;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="1040" y="750" width="740" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="summary-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A237E;strokeColor=#42A5F5;strokeWidth=4;opacity=40;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="190" width="1680" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="summary-text" value="cuTile Python 提供了简洁优雅的 GPU 编程体验，让你专注于算法本身而不是底层细节！" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=36;fontColor=#90CAF9;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="190" y="138" width="1680" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="footer" value="感谢观看！祝你在 GPU 编程之旅中收获满满！" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#B0BEC5;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="1140" width="1680" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="page-number" value="10" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=72;fontStyle=1;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="1720" y="970" width="150" height="80" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

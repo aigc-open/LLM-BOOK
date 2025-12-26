@@ -1,0 +1,112 @@
+<mxfile host="Electron" modified="2025-12-26T00:00:00.000Z" agent="5.0" version="21.0.0" type="device">
+  <diagram name="第1页-封面" id="cover-page">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- 背景层 -->
+        <mxCell id="bg-dark" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#111111;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1920" height="1080" as="geometry" />
+        </mxCell>
+        
+        <!-- 装饰网格 -->
+        <mxCell id="grid-pattern-1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#333333;strokeWidth=1;dashed=1;dashPattern=1 4;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="-100" width="800" height="800" as="geometry" />
+        </mxCell>
+        
+        <!-- 装饰光晕左上 -->
+        <mxCell id="glow-1" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#76FF03;strokeColor=none;opacity=10;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="-200" y="-200" width="800" height="800" as="geometry" />
+        </mxCell>
+        
+        <!-- 装饰光晕右下 -->
+        <mxCell id="glow-2" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#00B0FF;strokeColor=none;opacity=10;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="600" width="800" height="800" as="geometry" />
+        </mxCell>
+
+        <!-- 装饰代码背景 -->
+        <mxCell id="bg-code" value="@ct.kernel&#xa;def vector_add(a, b, c):&#xa;    pid = ct.bid(0)&#xa;    tile_a = ct.load(a, index=(pid,))&#xa;    tile_b = ct.load(b, index=(pid,))&#xa;    result = tile_a + tile_b&#xa;    ct.store(c, index=(pid,), tile=result)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=22;fontFamily=Courier New;fontColor=#333333;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="150" width="600" height="250" as="geometry" />
+        </mxCell>
+
+        <!-- 品牌标识 -->
+        <mxCell id="brand-tag" value="NVIDIA GPU PROGRAMMING" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#76FF03;strokeWidth=2;fontSize=20;fontColor=#76FF03;fontStyle=1;spacingLeft=20;spacingRight=20;" vertex="1" parent="1">
+          <mxGeometry x="200" y="320" width="340" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- 主标题 -->
+        <mxCell id="title-main" value="cuTile Python" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=140;fontStyle=1;fontColor=#FFFFFF;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="190" y="380" width="1200" height="160" as="geometry" />
+        </mxCell>
+        
+        <!-- 副标题 -->
+        <mxCell id="title-sub" value="执行模型详解" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=60;fontColor=#B0BEC5;fontFamily=Arial;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="540" width="800" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- 装饰线条 -->
+        <mxCell id="line-accent" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76FF03;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="200" y="640" width="120" height="8" as="geometry" />
+        </mxCell>
+
+        <!-- 特性卡片 1 -->
+        <mxCell id="card-1" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#424242;strokeWidth=2;opacity=90;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="280" width="500" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="card-1-icon" value="⚡" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=60;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="305" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="card-1-title" value="Block 级并行" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="300" width="350" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="card-1-desc" value="显式指定网格和线程块" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontColor=#9E9E9E;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="345" width="350" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- 特性卡片 2 -->
+        <mxCell id="card-2" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#424242;strokeWidth=2;opacity=90;" vertex="1" parent="1">
+          <mxGeometry x="1250" y="440" width="500" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="card-2-icon" value="🧩" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=60;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="465" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="card-2-title" value="Tile 抽象" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="460" width="350" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="card-2-desc" value="数据块级的高层抽象" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontColor=#9E9E9E;" vertex="1" parent="1">
+          <mxGeometry x="1380" y="505" width="350" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- 特性卡片 3 -->
+        <mxCell id="card-3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#424242;strokeWidth=2;opacity=90;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="600" width="500" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="card-3-icon" value="🔄" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=60;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="625" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="card-3-title" value="自动同步" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="1430" y="620" width="350" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="card-3-desc" value="无需显式线程同步操作" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontColor=#9E9E9E;" vertex="1" parent="1">
+          <mxGeometry x="1430" y="665" width="350" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- 底部信息 -->
+        <mxCell id="footer-logo" value="NVIDIA" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontColor=#76FF03;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="200" y="900" width="200" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="footer-text" value="Developer Zone" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#B0BEC5;" vertex="1" parent="1">
+          <mxGeometry x="340" y="904" width="200" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="page-number" value="01" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=120;fontStyle=1;fontColor=#333333;fontFamily=Arial;" vertex="1" parent="1">
+          <mxGeometry x="1650" y="880" width="200" height="150" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+

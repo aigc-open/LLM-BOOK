@@ -1,0 +1,64 @@
+<mxfile host="65bd71144e">
+    <diagram name="第7页-Python子集" id="python-subset">
+        <mxGraphModel dx="1795" dy="1057" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a1a1a;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry width="1920" height="1270" as="geometry"/>
+                </mxCell>
+                <mxCell id="title" value="Python 子集和对象模型" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=72;fontStyle=1;fontColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="60" width="1200" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="title-line" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76FF03;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="160" width="150" height="6" as="geometry"/>
+                </mxCell>
+                <mxCell id="warning-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B71C1C;strokeColor=#F44336;strokeWidth=4;opacity=30;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="220" width="1680" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="warning-icon" value="⚠️" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=70;" parent="1" vertex="1">
+                    <mxGeometry x="160" y="240" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="warning-title" value="核心限制：Tile Code 中没有 Python 运行时！" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;fontStyle=1;fontColor=#FF5252;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="245" width="1200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="warning-text" value="只有本文档明确列举的 Python 特性才被支持" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontColor=#FFCDD2;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="295" width="800" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="supported-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1B3A1B;strokeColor=#76FF03;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="380" width="800" height="860" as="geometry"/>
+                </mxCell>
+                <mxCell id="supported-title" value="✓ 支持的特性" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;fontStyle=1;fontColor=#76FF03;" parent="1" vertex="1">
+                    <mxGeometry x="160" y="410" width="400" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="supported-list" value="控制流语句&#10;  • if / elif / else&#10;  • for i in range(n)&#10;  • while 循环&#10;  • 嵌套控制流&#10;&#10;基本类型&#10;  • int, float, bool&#10;  • Tile 类型&#10;&#10;函数调用&#10;  • @ct.function 函数&#10;  • 自动推断的函数&#10;&#10;内置操作&#10;  • 算术运算：+, -, *, /&#10;  • 比较运算：&gt;, &lt;, ==, !=&#10;  • 逻辑运算：and, or, not" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#E0E0E0;spacingLeft=20;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="160" y="480" width="740" height="430" as="geometry"/>
+                </mxCell>
+                <mxCell id="unsupported-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3E2723;strokeColor=#FF6F00;strokeWidth=3;" parent="1" vertex="1">
+                    <mxGeometry x="1000" y="380" width="800" height="610" as="geometry"/>
+                </mxCell>
+                <mxCell id="unsupported-title" value="✗ 不支持的特性" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;fontStyle=1;fontColor=#FF6F00;" parent="1" vertex="1">
+                    <mxGeometry x="1040" y="410" width="500" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="unsupported-list" value="✗ Lambda 表达式&#10;✗ 异常处理 (try/except)&#10;✗ 协程 (async/await)&#10;✗ 动态类型特性&#10;✗ 反射和元编程&#10;✗ 文件 I/O&#10;✗ 大部分标准库&#10;✗ print() 调试&#10;✗ 字符串操作&#10;✗ 列表推导式&#10;✗ 字典和集合&#10;✗ 类定义（除了作为参数）&#10;✗ range() 负步长&#10;✗ 生成器和迭代器" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#E0E0E0;spacingLeft=20;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="1040" y="480" width="740" height="430" as="geometry"/>
+                </mxCell>
+                <mxCell id="immutable-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A237E;strokeColor=#42A5F5;strokeWidth=3;opacity=40;" parent="1" vertex="1">
+                    <mxGeometry x="970" y="1020" width="900" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="immutable-icon" value="🔒" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=50;" parent="1" vertex="1">
+                    <mxGeometry x="1010" y="1080" width="60" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="immutable-text" value="不可变性规则：Tile Code 中创建的所有对象都是不可变的！唯一例外：作为参数传入的数组可以修改" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontColor=#90CAF9;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="1100" y="1060" width="500" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="page-number" value="07" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=72;fontStyle=1;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="1720" y="970" width="150" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" style="edgeStyle=none;html=1;" edge="1" parent="1" source="immutable-text" target="immutable-text">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

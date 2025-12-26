@@ -1,0 +1,22 @@
+本节介绍 Tile 函数，它是可以在 Tile Code 中调用的可复用函数。
+
+Tile 函数使用 @ct.function 装饰器来定义。这个装饰器有两个参数：host 控制是否可以从 Host Code 调用，默认是 False。tile 控制是否可以从 Tile Code 调用，默认是 True。
+
+让我们看右边的三种使用方式。
+
+第一种，仅在 Tile Code 可用。直接使用 @ct.function 装饰器，不加任何参数。这种函数只能在 GPU 的 Tile Code 中调用，不能在 CPU 的 Host Code 中使用。
+
+第二种，在 Host 和 Tile 都可用。使用 @ct.function(host=True, tile=True)。这样定义的函数可以在 CPU 和 GPU 两边都调用，非常灵活。
+
+第三种，自动推断，这是推荐的方式。对于简单的工具函数，你可以不使用装饰器。当这个未标注的函数被 Tile 函数调用时，它会自动被加入到 Tile 执行空间。这个过程是递归的，调用链上的所有函数都会被自动推断。
+
+让我们看左边的完整示例，这是神经网络的激活函数。
+
+relu 函数没有使用装饰器，它是简单的工具函数。relu_derivative 也没有标注。leaky_relu 调用了 relu 函数，也不需要标注。
+
+只有入口函数 activation_pipeline 使用了 @ct.function 装饰器。当这个函数被内核调用时，所有它依赖的函数，包括 leaky_relu、relu 和 relu_derivative，都会被自动推断为可用。
+
+在内核函数 apply_activation 中，我们直接调用 activation_pipeline，所有的激活函数都能正常工作，无需逐个标注。
+
+记住最佳实践：对于核心逻辑函数，显式使用 @ct.function 标注，提高代码可读性。对于简单的工具函数，让系统自动推断，保持代码简洁。
+

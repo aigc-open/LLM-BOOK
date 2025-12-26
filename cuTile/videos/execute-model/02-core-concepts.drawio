@@ -1,0 +1,123 @@
+<mxfile host="Electron" modified="2025-12-26T00:00:00.000Z" agent="5.0" version="21.0.0" type="device">
+  <diagram name="第2页-核心概念" id="core-concepts">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- 背景 -->
+        <mxCell id="bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a1a1a;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1920" height="1080" as="geometry" />
+        </mxCell>
+        
+        <!-- 标题 -->
+        <mxCell id="title" value="核心概念：Block vs Tile" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=72;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="150" y="80" width="1000" height="90" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="title-line" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76FF03;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="150" y="180" width="150" height="6" as="geometry" />
+        </mxCell>
+
+        <!-- 重要提示框 -->
+        <mxCell id="important-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF6F00;strokeColor=#FF8F00;strokeWidth=3;opacity=20;" vertex="1" parent="1">
+          <mxGeometry x="150" y="230" width="1600" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="important-icon" value="⚠️" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=60;" vertex="1" parent="1">
+          <mxGeometry x="180" y="250" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="important-title" value="重要区别：Block ≠ Tile" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=42;fontStyle=1;fontColor=#FFB300;" vertex="1" parent="1">
+          <mxGeometry x="290" y="250" width="600" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="important-text" value="这是理解 cuTile 最关键的概念！" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#FFD54F;" vertex="1" parent="1">
+          <mxGeometry x="290" y="300" width="500" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Block 部分 -->
+        <mxCell id="block-container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A5F;strokeColor=#42A5F5;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="200" y="420" width="650" height="550" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="block-header" value="Block（块）" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;fontStyle=1;fontColor=#42A5F5;" vertex="1" parent="1">
+          <mxGeometry x="200" y="440" width="650" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="block-def" value="执行单元" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=36;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="510" width="650" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="block-icon" value="🔧" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=80;" vertex="1" parent="1">
+          <mxGeometry x="360" y="580" width="330" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="block-feature1" value="✓ 负责运行代码" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#E0E0E0;" vertex="1" parent="1">
+          <mxGeometry x="250" y="710" width="550" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="block-feature2" value="✓ 多个线程的集合" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#E0E0E0;" vertex="1" parent="1">
+          <mxGeometry x="250" y="760" width="550" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="block-feature3" value="✓ 并行执行单位" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#E0E0E0;" vertex="1" parent="1">
+          <mxGeometry x="250" y="810" width="550" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="block-feature4" value="✓ 可处理多个 Tile" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#E0E0E0;" vertex="1" parent="1">
+          <mxGeometry x="250" y="860" width="550" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Tile 部分 -->
+        <mxCell id="tile-container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F3D1F;strokeColor=#76FF03;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="420" width="650" height="550" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="tile-header" value="Tile（数据块）" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=48;fontStyle=1;fontColor=#76FF03;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="440" width="650" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="tile-def" value="数据单元" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=36;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="510" width="650" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="tile-icon" value="📦" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=80;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="580" width="330" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="tile-feature1" value="✓ 内存中的数据片段" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#E0E0E0;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="710" width="550" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="tile-feature2" value="✓ 被 Block 处理的数据" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#E0E0E0;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="760" width="550" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="tile-feature3" value="✓ 有固定的形状" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#E0E0E0;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="810" width="550" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="tile-feature4" value="✓ 可以有多种形状" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#E0E0E0;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="860" width="550" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- 箭头和关系 -->
+        <mxCell id="arrow" value="" style="endArrow=classic;html=1;strokeColor=#FFFFFF;strokeWidth=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="block-container" target="tile-container">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="850" y="695" as="sourcePoint" />
+            <mxPoint x="1020" y="695" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="arrow-label" value="处理" style="text;html=1;strokeColor=none;fillColor=#333333;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=32;fontColor=#FFFFFF;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="875" y="665" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- 页脚 -->
+        <mxCell id="page-number" value="02" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=72;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="970" width="150" height="80" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+

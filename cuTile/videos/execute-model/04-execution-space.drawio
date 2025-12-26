@@ -1,0 +1,100 @@
+<mxfile host="65bd71144e">
+    <diagram name="第4页-执行空间" id="execution-space">
+        <mxGraphModel dx="1795" dy="1057" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1a1a1a;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry width="1920" height="1160" as="geometry"/>
+                </mxCell>
+                <mxCell id="title" value="执行空间：三种运行环境" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=72;fontStyle=1;fontColor=#FFFFFF;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="60" width="1200" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="title-line" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76FF03;strokeColor=none;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="160" width="150" height="6" as="geometry"/>
+                </mxCell>
+                <mxCell id="host-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#263238;strokeColor=#4FC3F7;strokeWidth=4;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="230" width="500" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="host-header" value="Host Code" style="text;html=1;strokeColor=none;fillColor=#4FC3F7;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=40;fontStyle=1;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="260" width="400" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="host-subtitle" value="CPU 上执行" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#B0BEC5;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="330" width="400" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="host-features" value="✓ Python 标准代码&#10;✓ 可调用 @ct.kernel&#10;✓ 使用 ct.launch() 启动&#10;✓ CuPy/NumPy 可用" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#E0E0E0;spacingLeft=20;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="380" width="400" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="tile-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1B3A1B;strokeColor=#76FF03;strokeWidth=4;" parent="1" vertex="1">
+                    <mxGeometry x="720" y="230" width="500" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="tile-header" value="Tile Code" style="text;html=1;strokeColor=none;fillColor=#76FF03;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=40;fontStyle=1;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="770" y="260" width="400" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="tile-subtitle" value="GPU 上执行（Tile 抽象）" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#B0BEC5;" parent="1" vertex="1">
+                    <mxGeometry x="770" y="330" width="400" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="tile-features" value="✓ 使用 Tile 抽象&#10;✓ @ct.kernel 内核代码&#10;✓ @ct.function 函数&#10;✓ 不能直接访问线程" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#E0E0E0;spacingLeft=20;" parent="1" vertex="1">
+                    <mxGeometry x="770" y="380" width="400" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="simt-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3E2723;strokeColor=#FF6F00;strokeWidth=4;" parent="1" vertex="1">
+                    <mxGeometry x="1290" y="230" width="500" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="simt-header" value="SIMT Code" style="text;html=1;strokeColor=none;fillColor=#FF6F00;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=40;fontStyle=1;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="1340" y="260" width="400" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="simt-subtitle" value="GPU 上执行（传统 CUDA）" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontColor=#B0BEC5;" parent="1" vertex="1">
+                    <mxGeometry x="1340" y="330" width="400" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="simt-features" value="✓ 传统 CUDA 编程&#10;✓ 直接操作线程&#10;✓ threadIdx / blockIdx&#10;✓ 与 Tile Code 不同" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=24;fontColor=#E0E0E0;spacingLeft=20;" parent="1" vertex="1">
+                    <mxGeometry x="1340" y="380" width="400" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow1" value="" style="endArrow=classic;html=1;strokeColor=#4FC3F7;strokeWidth=6;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="650" y="370" as="sourcePoint"/>
+                        <mxPoint x="720" y="370" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arrow1-label" value="ct.launch()" style="text;html=1;strokeColor=none;fillColor=#1E3A5F;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=22;fontColor=#FFFFFF;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="320" width="140" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="code-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#212121;strokeColor=#555555;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="150" y="570" width="1640" height="570" as="geometry"/>
+                </mxCell>
+                <mxCell id="code-title" value="代码示例对比" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=42;fontStyle=1;fontColor=#FFB300;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="600" width="400" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="host-code-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A237E;strokeColor=#4FC3F7;strokeWidth=2;opacity=50;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="670" width="450" height="390" as="geometry"/>
+                </mxCell>
+                <mxCell id="host-code-label" value="Host Code" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#4FC3F7;" parent="1" vertex="1">
+                    <mxGeometry x="220" y="685" width="200" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="host-code" value="import cupy as cp&#10;import cuda.tile as ct&#10;&#10;# CPU 上的代码&#10;a = cp.arange(1024)&#10;b = cp.zeros(1024)&#10;&#10;grid = (64, 1, 1)&#10;stream = cp.cuda.Stream()&#10;&#10;# 启动内核&#10;ct.launch(stream, grid,&#10;          kernel, (a, b))" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=20;fontFamily=Courier New;fontColor=#E0E0E0;spacingLeft=15;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="220" y="725" width="410" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="tile-code-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1B3A1B;strokeColor=#76FF03;strokeWidth=2;opacity=50;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="670" width="500" height="460" as="geometry"/>
+                </mxCell>
+                <mxCell id="tile-code-label" value="Tile Code" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#76FF03;" parent="1" vertex="1">
+                    <mxGeometry x="720" y="685" width="200" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="tile-code" value="@ct.kernel&#10;def kernel(a, b):&#10;    # GPU 上的 Tile 代码&#10;    pid = ct.bid(0)&#10;    &#10;    # 加载 Tile&#10;    tile_a = ct.load(a,&#10;        index=(pid,),&#10;        shape=(16,))&#10;    &#10;    # Tile 操作&#10;    result = tile_a * 2&#10;    &#10;    # 存储 Tile&#10;    ct.store(b, index=(pid,),&#10;             tile=result)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=20;fontFamily=Courier New;fontColor=#E0E0E0;spacingLeft=15;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="720" y="725" width="460" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="simt-code-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3E2723;strokeColor=#FF6F00;strokeWidth=2;opacity=50;" parent="1" vertex="1">
+                    <mxGeometry x="1250" y="670" width="500" height="440" as="geometry"/>
+                </mxCell>
+                <mxCell id="simt-code-label" value="SIMT Code (CUDA)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1;fontColor=#FF6F00;" parent="1" vertex="1">
+                    <mxGeometry x="1270" y="685" width="300" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="simt-code" value="__global__ void kernel(&#10;    float* a, float* b, int n) {&#10;    // 传统 CUDA 代码&#10;    int idx = threadIdx.x +&#10;        blockIdx.x * blockDim.x;&#10;    &#10;    // 直接访问线程索引&#10;    if (idx &lt; n) {&#10;        b[idx] = a[idx] * 2.0f;&#10;    }&#10;}&#10;&#10;// C++ 启动&#10;kernel&lt;&lt;&lt;blocks, threads&gt;&gt;&gt;(&#10;    a, b, n);" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=20;fontFamily=Courier New;fontColor=#E0E0E0;spacingLeft=15;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="1270" y="725" width="460" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="page-number" value="04" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=72;fontStyle=1;fontColor=#333333;" parent="1" vertex="1">
+                    <mxGeometry x="1720" y="970" width="150" height="80" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

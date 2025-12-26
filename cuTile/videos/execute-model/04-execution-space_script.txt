@@ -1,0 +1,18 @@
+现在我们来了解执行空间的概念。执行空间定义了代码可以在哪些环境中运行。cuTile 有三种不同的执行空间。
+
+第一种是 Host Code，主机代码，运行在 CPU 上。这是标准的 Python 代码，可以使用 Python 的所有特性。在 Host Code 中，你可以调用 @ct.kernel 装饰的内核函数，使用 ct.launch 来启动 GPU 内核，CuPy 和 NumPy 这些库都可以正常使用。
+
+第二种是 Tile Code，运行在 GPU 上，但使用 Tile 抽象层。这是 cuTile 的核心，使用数据块的高层抽象。在 Tile Code 中编写 @ct.kernel 内核代码和 @ct.function 函数。注意，Tile Code 不能直接访问线程，线程管理是隐式的。
+
+第三种是 SIMT Code，这是传统的 CUDA 编程模型。同样运行在 GPU 上，但与 Tile Code 是完全不同的执行空间。SIMT Code 可以直接操作线程，使用 threadIdx 和 blockIdx 这些传统 CUDA 概念。
+
+代码是如何从 Host 到 Tile 的呢？通过 ct.launch 函数。Host Code 调用 ct.launch 来启动 GPU 内核，然后控制转移到 Tile Code 执行。
+
+让我们看底部的代码对比。左边是 Host Code，在 CPU 上准备数据，设置网格参数，然后调用 ct.launch 启动内核。
+
+中间是 Tile Code，使用 @ct.kernel 装饰器定义内核函数。在内核中使用 ct.bid 获取 Block 索引，用 ct.load 加载数据块，进行 Tile 操作，最后用 ct.store 存储结果。
+
+右边是传统的 SIMT Code，使用 CUDA C++ 编写，直接操作线程索引。
+
+记住，cuTile 的 Tile Code 和传统 CUDA 的 SIMT Code 是两种不同的编程模型，不要混淆它们。
+
