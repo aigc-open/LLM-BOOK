@@ -12,7 +12,7 @@ fi
 cd "$(dirname "$0")"
 
 # 目录配置
-STATIC_DIR="videos/memory-model"          # 静态资源目录（输入：图片、旁白文本）
+STATIC_DIR="videos/performance-tuning"          # 静态资源目录（输入：图片、旁白文本）
 OUTPUT_DIR="$STATIC_DIR/output"          # 输出目录（生成的视频）
 VIDEO_DIR="$OUTPUT_DIR/videos"  # 章节视频目录
 
@@ -20,18 +20,18 @@ VIDEO_DIR="$OUTPUT_DIR/videos"  # 章节视频目录
 CHAPTERS=(
   "01-封面.png:01-封面_script.txt:01-封面.mp4:封面"
   "02-概述.png:02-概述_script.txt:02-概述.mp4:概述"
-  "03-问题场景.png:03-问题场景_script.txt:03-问题场景.mp4:问题场景"
-  "04-解决方案.png:04-解决方案_script.txt:04-解决方案.mp4:解决方案"
-  "05-RELAXED.png:05-RELAXED_script.txt:05-RELAXED.mp4:RELAXED"
-  "06-ACQUIRE.png:06-ACQUIRE_script.txt:06-ACQUIRE.mp4:ACQUIRE"
-  "07-RELEASE.png:07-RELEASE_script.txt:07-RELEASE.mp4:RELEASE"
-  "08-ACQ_REL.png:08-ACQ_REL_script.txt:08-ACQ_REL.mp4:ACQ_REL"
-  "09-Order对比.png:09-Order对比_script.txt:09-Order对比.mp4:Order对比"
-  "10-BLOCK.png:10-BLOCK_script.txt:10-BLOCK.mp4:BLOCK"
-  "11-DEVICE.png:11-DEVICE_script.txt:11-DEVICE.mp4:DEVICE"
-  "12-SYS.png:12-SYS_script.txt:12-SYS.mp4:SYS"
-  "13-Scope对比.png:13-Scope对比_script.txt:13-Scope对比.mp4:Scope对比"
-  "14-生产者消费者.png:14-生产者消费者_script.txt:14-生产者消费者.mp4:生产者消费者"
+  "03-ByTarget介绍.png:03-ByTarget介绍_script.txt:03-ByTarget介绍.mp4:ByTarget介绍"
+  "04-ByTarget用法.png:04-ByTarget用法_script.txt:04-ByTarget用法.mp4:ByTarget用法"
+  "05-架构标识.png:05-架构标识_script.txt:05-架构标识.mp4:架构标识"
+  "06-内核参数配置.png:06-内核参数配置_script.txt:06-内核参数配置.mp4:内核参数配置"
+  "07-矩阵乘法实战.png:07-矩阵乘法实战_script.txt:07-矩阵乘法实战.mp4:矩阵乘法实战"
+  "08-latency参数.png:08-latency参数_script.txt:08-latency参数.mp4:latency参数"
+  "09-allow_tma参数.png:09-allow_tma参数_script.txt:09-allow_tma参数.mp4:allow_tma参数"
+  "10-性能提示策略.png:10-性能提示策略_script.txt:10-性能提示策略.mp4:性能提示策略"
+  "11-调优策略矩阵.png:11-调优策略矩阵_script.txt:11-调优策略矩阵.mp4:调优策略矩阵"
+  "12-内存密集型模式.png:12-内存密集型模式_script.txt:12-内存密集型模式.mp4:内存密集型模式"
+  "13-计算密集型模式.png:13-计算密集型模式_script.txt:13-计算密集型模式.mp4:计算密集型模式"
+  "14-向量加法实战.png:14-向量加法实战_script.txt:14-向量加法实战.mp4:向量加法实战"
   "15-最佳实践.png:15-最佳实践_script.txt:15-最佳实践.mp4:最佳实践"
   "16-总结.png:16-总结_script.txt:16-总结.mp4:总结"
 )
@@ -66,20 +66,26 @@ for chapter in "${CHAPTERS[@]}"; do
   # 用逗号连接所有图片路径
   IMAGE_INPUT=$(IFS=,; echo "${IMAGE_PATHS[*]}")
   
-  python -m txt_images_to_ai_video generate \
-    --input_txt="$STATIC_DIR/${script_file}" \
-    --input_image="$IMAGE_INPUT" \
-    --output_video="$VIDEO_DIR/${video_file}" \
-    --voice="$VOICE" \
-    --speed="$SPEED"
-  
-  # 检查视频是否生成成功
-  if [ $? -eq 0 ]; then
-    echo "✓ ${title} 生成成功"
+  # 检查视频是否已存在
+  if [ -f "$VIDEO_DIR/${video_file}" ]; then
+    echo "⊙ ${title} 已存在，跳过生成"
     VIDEO_FILES+=("$VIDEO_DIR/${video_file}")
   else
-    echo "✗ ${title} 生成失败"
-    exit 1
+    python -m txt_images_to_ai_video generate \
+      --input_txt="$STATIC_DIR/${script_file}" \
+      --input_image="$IMAGE_INPUT" \
+      --output_video="$VIDEO_DIR/${video_file}" \
+      --voice="$VOICE" \
+      --speed="$SPEED"
+    
+    # 检查视频是否生成成功
+    if [ $? -eq 0 ]; then
+      echo "✓ ${title} 生成成功"
+      VIDEO_FILES+=("$VIDEO_DIR/${video_file}")
+    else
+      echo "✗ ${title} 生成失败"
+      exit 1
+    fi
   fi
   
   echo "--------------------------------"
