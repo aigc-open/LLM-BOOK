@@ -3,10 +3,16 @@
 # 视频生成脚本
 # 注意：需要先将 drawio 文件导出为 PNG 图片
 
+if [ -z "$OPENAI_API_KEY" ]; then
+  echo "未设置 OPENAI_API_KEY，已退出。"
+  exit 1
+fi
+
+
 cd "$(dirname "$0")"
 
 # 目录配置
-STATIC_DIR="videos/data-model"          # 静态资源目录（输入：图片、旁白文本）
+STATIC_DIR="videos/memory-model"          # 静态资源目录（输入：图片、旁白文本）
 OUTPUT_DIR="$STATIC_DIR/output"          # 输出目录（生成的视频）
 VIDEO_DIR="$OUTPUT_DIR/videos"  # 章节视频目录
 
@@ -14,16 +20,20 @@ VIDEO_DIR="$OUTPUT_DIR/videos"  # 章节视频目录
 CHAPTERS=(
   "01-封面.png:01-封面_script.txt:01-封面.mp4:封面"
   "02-概述.png:02-概述_script.txt:02-概述.mp4:概述"
-  "03-全局数组.png:03-全局数组_script.txt:03-全局数组.mp4:全局数组"
-  "04-Tile数组.png:04-Tile数组_script.txt:04-Tile数组.mp4:Tile数组"
-  "05-空间概念.png:05-空间概念_script.txt:05-空间概念.mp4:空间概念"
-  "06-形状广播.png:06-形状广播_script.txt:06-形状广播.mp4:形状广播"
-  "07-数据类型.png:07-数据类型_script.txt:07-数据类型.mp4:数据类型"
-  "08-类型转换.png:08-类型转换_script.txt:08-类型转换.mp4:类型转换"
-  "09-标量与元组.png:09-标量与元组_script.txt:09-标量与元组.mp4:标量与元组"
-  "10-舍入与填充.png:10-舍入与填充_script.txt:10-舍入与填充.mp4:舍入与填充"
-  "11-实战示例.png:11-实战示例_script.txt:11-实战示例.mp4:实战示例"
-  "12-总结.png:12-总结_script.txt:12-总结.mp4:总结"
+  "03-问题场景.png:03-问题场景_script.txt:03-问题场景.mp4:问题场景"
+  "04-解决方案.png:04-解决方案_script.txt:04-解决方案.mp4:解决方案"
+  "05-RELAXED.png:05-RELAXED_script.txt:05-RELAXED.mp4:RELAXED"
+  "06-ACQUIRE.png:06-ACQUIRE_script.txt:06-ACQUIRE.mp4:ACQUIRE"
+  "07-RELEASE.png:07-RELEASE_script.txt:07-RELEASE.mp4:RELEASE"
+  "08-ACQ_REL.png:08-ACQ_REL_script.txt:08-ACQ_REL.mp4:ACQ_REL"
+  "09-Order对比.png:09-Order对比_script.txt:09-Order对比.mp4:Order对比"
+  "10-BLOCK.png:10-BLOCK_script.txt:10-BLOCK.mp4:BLOCK"
+  "11-DEVICE.png:11-DEVICE_script.txt:11-DEVICE.mp4:DEVICE"
+  "12-SYS.png:12-SYS_script.txt:12-SYS.mp4:SYS"
+  "13-Scope对比.png:13-Scope对比_script.txt:13-Scope对比.mp4:Scope对比"
+  "14-生产者消费者.png:14-生产者消费者_script.txt:14-生产者消费者.mp4:生产者消费者"
+  "15-最佳实践.png:15-最佳实践_script.txt:15-最佳实践.mp4:最佳实践"
+  "16-总结.png:16-总结_script.txt:16-总结.mp4:总结"
 )
 
 # 语音配置
