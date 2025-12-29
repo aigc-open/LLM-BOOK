@@ -210,3 +210,4 @@ pytorch
 *.pt
 torch_compile_debug
 output/
+videos/
