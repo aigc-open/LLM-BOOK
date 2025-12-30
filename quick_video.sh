@@ -12,28 +12,24 @@ fi
 cd "$(dirname "$0")"
 
 # 目录配置
-STATIC_DIR="videos/performance-tuning"          # 静态资源目录（输入：图片、旁白文本）
+STATIC_DIR="Pytorch/compile/videos/TorchInductor"          # 静态资源目录（输入：图片、旁白文本）
 OUTPUT_DIR="$STATIC_DIR/output"          # 输出目录（生成的视频）
 VIDEO_DIR="$OUTPUT_DIR/videos"  # 章节视频目录
 
 # 配置章节列表（格式：图片文件名:旁白文件名:视频文件名:章节标题）
+# 如需调整章节和资源，请同步修改本地静态资源目录中的文件名
 CHAPTERS=(
-  "01-封面.png:01-封面_script.txt:01-封面.mp4:封面"
-  "02-概述.png:02-概述_script.txt:02-概述.mp4:概述"
-  "03-ByTarget介绍.png:03-ByTarget介绍_script.txt:03-ByTarget介绍.mp4:ByTarget介绍"
-  "04-ByTarget用法.png:04-ByTarget用法_script.txt:04-ByTarget用法.mp4:ByTarget用法"
-  "05-架构标识.png:05-架构标识_script.txt:05-架构标识.mp4:架构标识"
-  "06-内核参数配置.png:06-内核参数配置_script.txt:06-内核参数配置.mp4:内核参数配置"
-  "07-矩阵乘法实战.png:07-矩阵乘法实战_script.txt:07-矩阵乘法实战.mp4:矩阵乘法实战"
-  "08-latency参数.png:08-latency参数_script.txt:08-latency参数.mp4:latency参数"
-  "09-allow_tma参数.png:09-allow_tma参数_script.txt:09-allow_tma参数.mp4:allow_tma参数"
-  "10-性能提示策略.png:10-性能提示策略_script.txt:10-性能提示策略.mp4:性能提示策略"
-  "11-调优策略矩阵.png:11-调优策略矩阵_script.txt:11-调优策略矩阵.mp4:调优策略矩阵"
-  "12-内存密集型模式.png:12-内存密集型模式_script.txt:12-内存密集型模式.mp4:内存密集型模式"
-  "13-计算密集型模式.png:13-计算密集型模式_script.txt:13-计算密集型模式.mp4:计算密集型模式"
-  "14-向量加法实战.png:14-向量加法实战_script.txt:14-向量加法实战.mp4:向量加法实战"
-  "15-最佳实践.png:15-最佳实践_script.txt:15-最佳实践.mp4:最佳实践"
-  "16-总结.png:16-总结_script.txt:16-总结.mp4:总结"
+  "00_封面.png:00_封面_script.txt:00_封面.mp4:封面"
+  "01_为什么需要TorchInductor.png:01_为什么需要TorchInductor_script.txt:01_为什么需要TorchInductor.mp4:为什么需要TorchInductor"
+  "02_整体架构.png:02_整体架构_script.txt:02_整体架构.mp4:整体架构"
+  "03_Lowering机制.png:03_Lowering机制_script.txt:03_Lowering机制.mp4:Lowering机制"
+  "04_Proxy魔术方法.png:04_Proxy魔术方法_script.txt:04_Proxy魔术方法.mp4:Proxy魔术方法"
+  "05_GraphLowering核心.png:05_GraphLowering核心_script.txt:05_GraphLowering核心.mp4:GraphLowering核心"
+  "06_Scheduler调度.png:06_Scheduler调度_script.txt:06_Scheduler调度.mp4:Scheduler调度"
+  "07_Triton代码生成.png:07_Triton代码生成_script.txt:07_Triton代码生成.mp4:Triton代码生成"
+  "08_内存优化技术.png:08_内存优化技术_script.txt:08_内存优化技术.mp4:内存优化技术"
+  "09_完整示例.png:09_完整示例_script.txt:09_完整示例.mp4:完整示例"
+  "10_总结.png:10_总结_script.txt:10_总结.mp4:总结"
 )
 
 # 语音配置

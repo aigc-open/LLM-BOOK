@@ -294,5 +294,3 @@ TorchFX 是 PyTorch 迈向“编译器时代”的基石工具。它打破了模
 *   **Graph Transformation**：修改图结构实现优化（如融合）。
 *   **Interpreter**：自定义执行逻辑。
 
-**下一章预告**：
-在理解了图捕获技术后，我们将探讨另一种执行模式——**Lazy Tensor**。它如何做到“不到最后时刻绝不计算”？这种机制在 TPU 训练中为何如此重要？请看 [第四章：Lazy Tensor 延迟执行机制](./04_LazyTensor延迟执行机制.md)。
