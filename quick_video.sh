@@ -12,7 +12,7 @@ fi
 cd "$(dirname "$0")"
 
 # 目录配置
-STATIC_DIR="Pytorch/compile/videos/TorchInductor"          # 静态资源目录（输入：图片、旁白文本）
+STATIC_DIR="agents/kilo_code/videos"          # 静态资源目录（输入：图片、旁白文本）
 OUTPUT_DIR="$STATIC_DIR/output"          # 输出目录（生成的视频）
 VIDEO_DIR="$OUTPUT_DIR/videos"  # 章节视频目录
 
@@ -20,16 +20,18 @@ VIDEO_DIR="$OUTPUT_DIR/videos"  # 章节视频目录
 # 如需调整章节和资源，请同步修改本地静态资源目录中的文件名
 CHAPTERS=(
   "00_封面.png:00_封面_script.txt:00_封面.mp4:封面"
-  "01_为什么需要TorchInductor.png:01_为什么需要TorchInductor_script.txt:01_为什么需要TorchInductor.mp4:为什么需要TorchInductor"
-  "02_整体架构.png:02_整体架构_script.txt:02_整体架构.mp4:整体架构"
-  "03_Lowering机制.png:03_Lowering机制_script.txt:03_Lowering机制.mp4:Lowering机制"
-  "04_Proxy魔术方法.png:04_Proxy魔术方法_script.txt:04_Proxy魔术方法.mp4:Proxy魔术方法"
-  "05_GraphLowering核心.png:05_GraphLowering核心_script.txt:05_GraphLowering核心.mp4:GraphLowering核心"
-  "06_Scheduler调度.png:06_Scheduler调度_script.txt:06_Scheduler调度.mp4:Scheduler调度"
-  "07_Triton代码生成.png:07_Triton代码生成_script.txt:07_Triton代码生成.mp4:Triton代码生成"
-  "08_内存优化技术.png:08_内存优化技术_script.txt:08_内存优化技术.mp4:内存优化技术"
-  "09_完整示例.png:09_完整示例_script.txt:09_完整示例.mp4:完整示例"
-  "10_总结.png:10_总结_script.txt:10_总结.mp4:总结"
+  "01-kilo安装.png:01-kilo安装_script.txt:01-kilo安装.mp4:kilo安装"
+  "02-ph8大模型密钥获取.png:02-ph8大模型密钥获取_script.txt:02-ph8大模型密钥获取.mp4:ph8大模型密钥获取"
+  "03-配置密钥供应商.png:03-配置密钥供应商_script.txt:03-配置密钥供应商.mp4:配置密钥供应商"
+  "04-kilo配置系统读写mcp等权限.png:04-kilo配置系统读写mcp等权限_script.txt:04-kilo配置系统读写mcp等权限.mp4:kilo配置系统读写mcp等权限"
+  "05-chat效果.png:05-chat效果_script.txt:05-chat效果.mp4:chat效果"
+  "06_提示词编写原则.png:06_提示词编写原则_script.txt:06_提示词编写原则.mp4:提示词编写原则"
+  "07_提示词实战模板.png:07_提示词实战模板_script.txt:07_提示词实战模板.mp4:提示词实战模板"
+  "08_如何改代码.png:08_如何改代码_script.txt:08_如何改代码.mp4:如何改代码"
+  "09_代码修改示例.png:09_代码修改示例_script.txt:09_代码修改示例.mp4:代码修改示例"
+  "10_使用技巧总结.png:10_使用技巧总结_script.txt:10_使用技巧总结.mp4:使用技巧总结"
+  "11_效率提升对比.png:11_效率提升对比_script.txt:11_效率提升对比.mp4:效率提升对比"
+  "12_结尾.png:12_结尾_script.txt:12_结尾.mp4:结尾"
 )
 
 # 语音配置
