@@ -12,24 +12,23 @@ fi
 cd "$(dirname "$0")"
 
 # 目录配置
-STATIC_DIR="agents/codex/videos"          # 静态资源目录（输入：图片、旁白文本）
+STATIC_DIR="agents/ph8/videos"          # 静态资源目录（输入：图片、旁白文本）
 OUTPUT_DIR="$STATIC_DIR/output"          # 输出目录（生成的视频）
 VIDEO_DIR="$OUTPUT_DIR/videos"  # 章节视频目录
 
 # 配置章节列表（格式：图片文件名:旁白文件名:视频文件名:章节标题）
-# 如需调整章节和资源，请同步修改本地静态资源目录中的文件名
+# 注意同步本地静态资源目录中的文件名和格式
 CHAPTERS=(
-  "00_封面.png:00_封面_script.txt:00_封面.mp4:封面"
-  "01_为什么选择CodeX.png:01_为什么选择CodeX_script.txt:01_为什么选择CodeX.mp4:为什么选择CodeX"
-  "02-ph8大模型密钥获取.png:02-ph8大模型密钥获取_script.txt:02-ph8大模型密钥获取.mp4:ph8大模型密钥获取"
-  "03-ph8-models.png:03-ph8-models_script.txt:03-ph8-models.mp4:ph8模型选择"
-  "04_快速配置.png:04_快速配置_script.txt:04_快速配置.mp4:快速配置"
-  "05-codex-home.png:05-codex-home_script.txt:05-codex-home.mp4:主界面介绍"
-  "06_两大工作模式.png:06_两大工作模式_script.txt:06_两大工作模式.mp4:两大工作模式"
-  "07_五大实战场景.png:07_五大实战场景_script.txt:07_五大实战场景.mp4:五大实战场景"
-  "08_提示词工程.png:08_提示词工程_script.txt:08_提示词工程.mp4:提示词工程"
-  "09_成功案例.png:09_成功案例_script.txt:09_成功案例.mp4:成功案例"
-  "10_总结与行动清单.png:10_总结与行动清单_script.txt:10_总结与行动清单.mp4:总结与行动清单"
+  "01-cover.png:01-cover_script.txt:01-cover.mp4:封面"
+  "02-features.png:02-features_script.txt:02-features.mp4:为什么选择CodeX"
+  "03-homepage.png:03-homepage_script.txt:03-homepage.mp4:ph8大模型密钥获取"
+  "04-model-square.png:04-model-square_script.txt:04-model-square.mp4:ph8模型选择"
+  "05-vendors.png:05-vendors_script.txt:05-vendors.mp4:快速配置"
+  "06-models.png:06-models_script.txt:06-models.mp4:主界面介绍"
+  "07-api.png:07-api_script.txt:07-api.mp4:两大工作模式"
+  "08-cases.png:08-cases_script.txt:08-cases.mp4:五大实战场景"
+  "09-advantages.png:09-advantages_script.txt:09-advantages.mp4:提示词工程"
+  "10-start.png:10-start_script.txt:10-start.mp4:成功案例"
 )
 
 # 语音配置
