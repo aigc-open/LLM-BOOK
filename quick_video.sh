@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source env.sh
+
 # 视频生成脚本
 # 注意：需要先将 drawio 文件导出为 PNG 图片
 
@@ -12,23 +14,28 @@ fi
 cd "$(dirname "$0")"
 
 # 目录配置
-STATIC_DIR="agents/ph8/videos"          # 静态资源目录（输入：图片、旁白文本）
+STATIC_DIR="agents/maxkb/videos"          # 静态资源目录（输入：图片、旁白文本）
 OUTPUT_DIR="$STATIC_DIR/output"          # 输出目录（生成的视频）
 VIDEO_DIR="$OUTPUT_DIR/videos"  # 章节视频目录
 
 # 配置章节列表（格式：图片文件名:旁白文件名:视频文件名:章节标题）
 # 注意同步本地静态资源目录中的文件名和格式
 CHAPTERS=(
-  "01-cover.png:01-cover_script.txt:01-cover.mp4:封面"
-  "02-features.png:02-features_script.txt:02-features.mp4:为什么选择CodeX"
-  "03-homepage.png:03-homepage_script.txt:03-homepage.mp4:ph8大模型密钥获取"
-  "04-model-square.png:04-model-square_script.txt:04-model-square.mp4:ph8模型选择"
-  "05-vendors.png:05-vendors_script.txt:05-vendors.mp4:快速配置"
-  "06-models.png:06-models_script.txt:06-models.mp4:主界面介绍"
-  "07-api.png:07-api_script.txt:07-api.mp4:两大工作模式"
-  "08-cases.png:08-cases_script.txt:08-cases.mp4:五大实战场景"
-  "09-advantages.png:09-advantages_script.txt:09-advantages.mp4:提示词工程"
-  "10-start.png:10-start_script.txt:10-start.mp4:成功案例"
+  "page01-cover.drawio.png:page01-cover-script.txt:page01-cover.mp4:封面"
+  "page02-problems.drawio.png:page02-problems-script.txt:page02-problems.mp4:问题分析"
+  "page03-rag-intro.drawio.png:page03-rag-intro-script.txt:page03-rag-intro.mp4:RAG介绍"
+  "page04-rag-workflow1.drawio.png:page04-rag-workflow1-script.txt:page04-rag-workflow1.mp4:RAG工作流程1"
+  "page05-rag-workflow2.drawio.png:page05-rag-workflow2-script.txt:page05-rag-workflow2.mp4:RAG工作流程2"
+  "page06-rag-comparison.drawio.png:page06-rag-comparison-script.txt:page06-rag-comparison.mp4:RAG对比"
+  "page07-maxkb-intro.drawio.png:page07-maxkb-intro-script.txt:page07-maxkb-intro.mp4:MaxKB介绍"
+  "page08-deployment.drawio.png:page08-deployment-script.txt:page08-deployment.mp4:部署方案"
+  "page09-maxkb-01.png:page09-maxkb-01-script.txt:page09-maxkb-01.mp4:MaxKB演示1"
+  "page09-maxkb-02.png:page09-maxkb-02-script.txt:page09-maxkb-02.mp4:MaxKB演示2"
+  "page09-maxkb-03.png:page09-maxkb-03-script.txt:page09-maxkb-03.mp4:MaxKB演示3"
+  "page09-maxkb-04.png:page09-maxkb-04-script.txt:page09-maxkb-04.mp4:MaxKB演示4"
+  "page09-maxkb-05.png:page09-maxkb-05-script.txt:page09-maxkb-05.mp4:MaxKB演示5"
+  "page09-maxkb-06.png:page09-maxkb-06-script.txt:page09-maxkb-06.mp4:MaxKB演示6"
+  "page09-maxkb-07.png:page09-maxkb-07-script.txt:page09-maxkb-07.mp4:MaxKB演示7"
 )
 
 # 语音配置

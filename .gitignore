@@ -211,3 +211,4 @@ pytorch
 torch_compile_debug
 output/
 videos/
+env.sh
