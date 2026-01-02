@@ -14,28 +14,26 @@ fi
 cd "$(dirname "$0")"
 
 # 目录配置
-STATIC_DIR="agents/maxkb/videos"          # 静态资源目录（输入：图片、旁白文本）
+STATIC_DIR="vllm/simple"          # 静态资源目录（输入：图片、旁白文本）
 OUTPUT_DIR="$STATIC_DIR/output"          # 输出目录（生成的视频）
 VIDEO_DIR="$OUTPUT_DIR/videos"  # 章节视频目录
 
 # 配置章节列表（格式：图片文件名:旁白文件名:视频文件名:章节标题）
 # 注意同步本地静态资源目录中的文件名和格式
 CHAPTERS=(
-  "page01-cover.drawio.png:page01-cover-script.txt:page01-cover.mp4:封面"
-  "page02-problems.drawio.png:page02-problems-script.txt:page02-problems.mp4:问题分析"
-  "page03-rag-intro.drawio.png:page03-rag-intro-script.txt:page03-rag-intro.mp4:RAG介绍"
-  "page04-rag-workflow1.drawio.png:page04-rag-workflow1-script.txt:page04-rag-workflow1.mp4:RAG工作流程1"
-  "page05-rag-workflow2.drawio.png:page05-rag-workflow2-script.txt:page05-rag-workflow2.mp4:RAG工作流程2"
-  "page06-rag-comparison.drawio.png:page06-rag-comparison-script.txt:page06-rag-comparison.mp4:RAG对比"
-  "page07-maxkb-intro.drawio.png:page07-maxkb-intro-script.txt:page07-maxkb-intro.mp4:MaxKB介绍"
-  "page08-deployment.drawio.png:page08-deployment-script.txt:page08-deployment.mp4:部署方案"
-  "page09-maxkb-01.png:page09-maxkb-01-script.txt:page09-maxkb-01.mp4:MaxKB演示1"
-  "page09-maxkb-02.png:page09-maxkb-02-script.txt:page09-maxkb-02.mp4:MaxKB演示2"
-  "page09-maxkb-03.png:page09-maxkb-03-script.txt:page09-maxkb-03.mp4:MaxKB演示3"
-  "page09-maxkb-04.png:page09-maxkb-04-script.txt:page09-maxkb-04.mp4:MaxKB演示4"
-  "page09-maxkb-05.png:page09-maxkb-05-script.txt:page09-maxkb-05.mp4:MaxKB演示5"
-  "page09-maxkb-06.png:page09-maxkb-06-script.txt:page09-maxkb-06.mp4:MaxKB演示6"
-  "page09-maxkb-07.png:page09-maxkb-07-script.txt:page09-maxkb-07.mp4:MaxKB演示7"
+  "01_cover.png:01_cover_script.txt:01_cover.mp4:封面"
+  "02_intro.png:02_intro_script.txt:02_intro.mp4:介绍"
+  "03_paged_attention.png:03_paged_attention_script.txt:03_paged_attention.mp4:分页注意力"
+  "04_advantages.png:04_advantages_script.txt:04_advantages.mp4:优势"
+  "05_installation.png:05_installation_script.txt:05_installation.mp4:安装"
+  "06_model_support.png:06_model_support_script.txt:06_model_support.mp4:模型支持"
+  "07_usage_openai_api.png:07_usage_openai_api_script.txt:07_usage_openai_api.mp4:OpenAI API使用"
+  "08_usage_native_api.png:08_usage_native_api_script.txt:08_usage_native_api.mp4:原生API使用"
+  "09_usage_langchain.png:09_usage_langchain_script.txt:09_usage_langchain.mp4:LangChain使用"
+  "10_parameters.png:10_parameters_script.txt:10_parameters.mp4:参数配置"
+  "11_examples.png:11_examples_script.txt:11_examples.mp4:示例"
+  "12_best_practices.png:12_best_practices_script.txt:12_best_practices.mp4:最佳实践"
+  "13_summary.png:13_summary_script.txt:13_summary.mp4:总结"
 )
 
 # 语音配置
